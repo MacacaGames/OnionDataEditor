@@ -1,0 +1,93 @@
+.h1 {
+    -unity-text-align: middle-center;
+    padding: 0 10;
+    margin: 0;
+    font-size: 18px;
+    opacity: 0.5;
+}
+
+.h2 {
+    -unity-text-align: middle-center;
+    padding: 0 10;
+    margin: 0;
+    font-size: 16px;
+    opacity: 0.5;
+}
+
+.h3 {
+    -unity-text-align: middle-center;
+    padding: 0 10;
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.5;
+}
+
+.p {
+    -unity-text-align: upper-center;
+    padding: 0 10;
+    margin: 0;
+}
+
+.dammy-space {
+    flex-grow: 1;
+}
+
+#target-field .unity-object-field__label {
+    display: none;
+}
+
+#data-info-btn-list .onion-btn {
+    width: 80px;
+    height: 30px;
+}
+
+.card {
+    margin: 5;
+    background-color: rgba(135, 135, 135, 0.15);
+    border-radius: 5;
+}
+
+.onion-btn {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 9999;
+    background-image: none;
+    margin: 5;
+    padding: 10;
+}
+
+.onion-btn:hover {
+    background-color: rgba(2, 106, 167, 0.5);
+}
+
+.onion-btn:active {
+    background-color: rgba(88, 120, 138, 0.5);
+}
+
+.onion-btn.onion-icon-btn {
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+}
+
+.btn-icon {
+    height: 16px;
+    width: 16px;
+}
+
+.data-info {
+    flex-grow: 0;
+    height: 120px;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0.06);
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.inspect-container {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
