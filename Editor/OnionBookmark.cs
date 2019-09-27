@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEditor;
 
 [CreateAssetMenu(menuName = "Onion Data/Bookmark", fileName = "OnionBookmark")]
-public class OnionBookmark : ScriptableObject
+public class OnionBookmark : QueryableData
 {
     [Onion.NodeTitle]
     string bookmarkName => target.name;
@@ -18,5 +18,15 @@ public class OnionBookmark : ScriptableObject
 
         onionWindow.target = target;
 
+    }
+
+    public override string GetID()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override IEnumerable<QueryableData> GetData()
+    {
+        throw new System.NotImplementedException();
     }
 }

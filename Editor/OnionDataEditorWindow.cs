@@ -12,7 +12,7 @@ using CloudMacaca;
 
 public class OnionDataEditorWindow : EditorWindow
 {
-    const string path = "Assets/UIElement/OnionDataEditor";
+    const string path = "Assets/OnionDataEditor";
 
     ScriptableObject _target;
     public ScriptableObject target
@@ -29,6 +29,9 @@ public class OnionDataEditorWindow : EditorWindow
             {
                 tree = new TreeRoot(_target);
                 tree.SetTreeRoot();
+
+                rootVisualElement.Q("btn-add-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
+                rootVisualElement.Q("btn-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
             }
         }
     }
@@ -63,20 +66,36 @@ public class OnionDataEditorWindow : EditorWindow
         cloneTree.style.flexGrow = 1;
         root.Add(cloneTree);
 
+        CreateNeededAsset();
+
         //綁定btn-refresh
         root.Q<Button>("btn-refresh").clickable.clicked += () => { if (tree != null) tree.SetTreeRoot(); };
         root.Q("btn-refresh-icon").style.backgroundImage = EditorGUIUtility.FindTexture("d_Refresh");
 
-
         //綁定btn-bookmark
-        root.Q<Button>("btn-bookmark").clickable.clicked += () =>
+        root.Q<Button>("btn-bookmark").clickable.clicked += () => { target = bookmarkGroup; };
+        root.Q("btn-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("FolderFavorite Icon");
+
+        //綁定btn-add-bookmark
+        root.Q<Button>("btn-add-bookmark").clickable.clicked += () =>
         {
-            var bookmarkGroup = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path + "/OnionBookmarkGroup.asset") as ScriptableObject;
-            if (bookmarkGroup != null)
-                target = bookmarkGroup;
-            else
-                Debug.Log("N");
+            if (bookmarkGroup != null && target != bookmarkGroup)
+            {
+                if (bookmarkGroup.GetData<OnionBookmark>().Select(_ => _.target).Contains(target) == false)
+                {
+                    var bookmark = CreateInstance<OnionBookmark>();
+                    bookmark.target = target;
+
+                    AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
+                    bookmarkGroup.AddData(bookmark);
+                }
+                else
+                {
+                    Debug.LogError("This bookmark already exists.");
+                }
+            }
         };
+        root.Q("btn-add-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("Favorite Icon");
 
         //建構treeview
         VisualElement containerRoot = root.Q("tree-view-container");
@@ -90,40 +109,31 @@ public class OnionDataEditorWindow : EditorWindow
         //target-field設定與綁定
         root.Q<ObjectField>("target-field").objectType = typeof(ScriptableObject);
         root.Q<ObjectField>("target-field").RegisterValueChangedCallback(_ => target = _.newValue as ScriptableObject);
-
-        SwitchPage("page-main");
-
-        //GetPageElement("page-main").Add(new IMGUIContainer(InspectorHandle));
+        
 
         var inspectorContainer = new IMGUIContainer(DrawInspector);
         inspectorContainer.AddToClassList("inspect-container");
         root.Q("inspector-scroll").Q("unity-content-container").Add(inspectorContainer);
     }
 
-
-
-    //切換頁面
-    VisualElement SwitchPage(string pageName)
+    DataGroup bookmarkGroup = null;
+    void CreateNeededAsset()
     {
-        VisualElement result = null;
-        foreach (var page in this.rootVisualElement[0].Children())
+        //bookmark group
+        bookmarkGroup = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path + "/OnionBookmarkGroup.asset") as DataGroup;
+        if (bookmarkGroup == null)
         {
-            page.style.display = (page.name == pageName) ? DisplayStyle.Flex : DisplayStyle.None;
-            if (page.name == pageName)
-                result = page;
+            bookmarkGroup = CreateInstance<DataGroup>();
+            AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
+            bookmarkGroup = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path + "/OnionBookmarkGroup.asset") as DataGroup;
         }
-        return result;
+
+        //bookmark folder
+        if (AssetDatabase.IsValidFolder($"{path}/Bookmark") == false)
+            AssetDatabase.CreateFolder(path, "Bookmark");
+
     }
-    VisualElement GetPageElement(string pageName)
-    {
-        VisualElement result = null;
-        foreach (var page in this.rootVisualElement[0].Children())
-        {
-            if (page.name == pageName)
-                result = page;
-        }
-        return result;
-    }
+
 
     //IMGUIContainer Handler
     void DrawTreeView()

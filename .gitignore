@@ -16,6 +16,6 @@
 # need include the meta of file
 !*.*.meta
 
-/Bookmark
+/Bookmark/*
 OnionBookmarkGroup.asset
 OnionBookmarkGroup.asset.meta
