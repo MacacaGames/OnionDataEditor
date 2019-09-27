@@ -353,7 +353,7 @@ public class OnionDataEditorWindow : EditorWindow
 
             if (window.treeViewState == null)
                 window.treeViewState = treeView.state;
-
+            
         }
 
         void CreatTree(TreeNode node, int depth)
@@ -482,6 +482,7 @@ public class OnionDataEditorWindow : EditorWindow
         public DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
         {
             rowHeight = 20F;
+            isSelectChange = false;
 
             SetData(tree);
         }
@@ -606,9 +607,18 @@ public class OnionDataEditorWindow : EditorWindow
         }
 
         //Events
+        bool isSelectChange = false;
         protected override void SingleClickedItem(int id)
         {
             base.SingleClickedItem(id);
+
+            if (isSelectChange)
+            {
+                isSelectChange = false;
+                return;
+            }
+
+            GetWindow<OnionDataEditorWindow>().OnTriggerItem(treeQuery[id].dataObj);
         }
         protected override void DoubleClickedItem(int id)
         {
@@ -620,7 +630,10 @@ public class OnionDataEditorWindow : EditorWindow
             base.SelectionChanged(selectedIds);
 
             if (selectedIds.Count > 0)
+            {
+                isSelectChange = true;
                 GetWindow<OnionDataEditorWindow>().OnTriggerItem(treeQuery[selectedIds[0]].dataObj);
+            }
         }
     }
 
