@@ -69,15 +69,9 @@ namespace OnionCollections
             List<T> result = new List<T>();
             foreach (var item in target)
             {
-                var fieldAttrs = Attribute.GetCustomAttributes(item);
-                foreach (Attribute attr in fieldAttrs)
-                {
-                    if (attr.GetType() == attribute || attr.GetType().IsSubclassOf(attribute))
-                    {
-                        result.Add(item as T);
-                        break;
-                    }
-                }
+                var fieldAttrs = Attribute.GetCustomAttributes(item, attribute, true);
+                if (fieldAttrs.Length > 0)
+                    result.Add(item as T);
             }
             return result;
         }

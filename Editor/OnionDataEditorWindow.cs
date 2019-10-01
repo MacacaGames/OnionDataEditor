@@ -208,7 +208,7 @@ public class OnionDataEditorWindow : EditorWindow
 
 
     //GetNode
-    const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
+    const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;// | BindingFlags.DeclaredOnly;
     static T TryGetNodeAttrValue<T>(ScriptableObject dataObj, Type attrType) where T : class
     {
         ReflectionUtility.GetValueResult result = new ReflectionUtility.GetValueResult
@@ -220,7 +220,10 @@ public class OnionDataEditorWindow : EditorWindow
         if (dataObj != null)
         {
             var type = dataObj.GetType();
-            var fields = type.GetMembers(defaultBindingFlags).FilterWithAttribute(attrType).ToList();
+            var fields = type.GetMembers(defaultBindingFlags)
+                .Where(_ => _.MemberType == MemberTypes.Field || _.MemberType == MemberTypes.Property)
+                .FilterWithAttribute(attrType)
+                .ToList();
 
             if (fields.Count > 0)                                //若有掛Attribute
             {
@@ -414,7 +417,7 @@ public class OnionDataEditorWindow : EditorWindow
             if (node.dataObj != null)
             {
                 var type = node.dataObj.GetType();
-                var fields = type.GetFields(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeElementAttribute)).ToList();
+                var fields = type.GetMembers(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeElementAttribute)).ToList();
 
                 if (fields.Count > 0)
                 {
