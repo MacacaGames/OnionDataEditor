@@ -301,6 +301,17 @@ public class OnionDataEditorWindow : EditorWindow
         }
         return null;
     }
+    static OnionAction GetNodeOnDoubleClickAction(ScriptableObject dataObj)
+    {
+        if (dataObj != null)
+        {
+            var type = dataObj.GetType();
+            var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeOnDoubleClickAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
+            if (method != null)
+                return new OnionAction(method, dataObj, method.Name);
+        }
+        return null;
+    }
 
     //UI事件
     ScriptableObject selectObject;
@@ -312,19 +323,24 @@ public class OnionDataEditorWindow : EditorWindow
 
         int selectionId = tree.treeView.GetSelection()[0];
         OnionAction onSelectedAction = tree.treeView.treeQuery[selectionId].onSelectedAction;
-
         if (onSelectedAction != null)
-        {
             onSelectedAction.action.Invoke();
-        }
 
     }
     void OnDoubleClick(ScriptableObject dataObj)
     {
         int selectionId = tree.treeView.GetSelection()[0];
-        var selectionObject = tree.treeView.treeQuery[selectionId].dataObj;
 
-        EditorGUIUtility.PingObject(selectionObject);   //Ping
+        OnionAction onDoubleClickAction = tree.treeView.treeQuery[selectionId].onDoubleClickAction;
+        if (onDoubleClickAction != null)
+        {
+            onDoubleClickAction.action.Invoke();
+        }
+        else
+        {
+            var selectionObject = tree.treeView.treeQuery[selectionId].dataObj;
+            EditorGUIUtility.PingObject(selectionObject);   //Ping
+        }
     }
 
 
@@ -438,6 +454,7 @@ public class OnionDataEditorWindow : EditorWindow
         public TreeNode parent = null;
         public List<TreeNode> nodes = new List<TreeNode>();
         public OnionAction onSelectedAction = null;
+        public OnionAction onDoubleClickAction = null;
 
         public TreeNode(ScriptableObject _)
         {
@@ -446,6 +463,7 @@ public class OnionDataEditorWindow : EditorWindow
             icon = GetIcon(_);
 
             onSelectedAction = GetNodeOnSelectedAction(_);
+            onDoubleClickAction = GetNodeOnDoubleClickAction(_);
         }
 
         protected string GetDisplayName(ScriptableObject _)
