@@ -8,7 +8,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using UnityEditor.IMGUI.Controls;
-using CloudMacaca;
+using OnionCollections;
 
 public class OnionDataEditorWindow : EditorWindow
 {
@@ -211,7 +211,7 @@ public class OnionDataEditorWindow : EditorWindow
     const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
     static T TryGetNodeAttrValue<T>(ScriptableObject dataObj, Type attrType) where T : class
     {
-        CloudMacaca.ReflectionUtility.GetValueResult result = new ReflectionUtility.GetValueResult
+        ReflectionUtility.GetValueResult result = new ReflectionUtility.GetValueResult
         {
             hasValue = false,
             value = null
