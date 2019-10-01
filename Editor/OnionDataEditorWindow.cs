@@ -402,13 +402,12 @@ public class OnionDataEditorWindow : EditorWindow
 
                 if (fields.Count > 0)
                 {
-                    List<TreeNode> result = new List<TreeNode>(
-                        fields[0]                                                   //只會抓第一個Attr就返回，之後再視需求擴充
-                        .GetValue<IEnumerable<ScriptableObject>>(node.dataObj)
-                        .Select(_ => new TreeNode(_))
-                        );
+                    var result = fields[0]                                                   //只會抓第一個Attr就返回，之後再視需求擴充
+                        .GetValue<IEnumerable<ScriptableObject>>(node.dataObj);
 
-                    return result;
+                    return (result != null) ? 
+                        result.Select(_ => new TreeNode(_)).ToList() : 
+                        new List<TreeNode>(); 
                 }
             }
 
