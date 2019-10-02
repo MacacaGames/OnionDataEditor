@@ -81,13 +81,17 @@ public class OnionDataEditorWindow : EditorWindow
         {
             if (bookmarkGroup != null && target != bookmarkGroup)
             {
-                if (bookmarkGroup.GetData<OnionBookmark>().Select(_ => _.target).Contains(target) == false)
+                IEnumerable<OnionBookmark> bookmarks = bookmarkGroup.GetData<OnionBookmark>();
+
+                if (bookmarks == null || bookmarks.Select(_ => _.target).Contains(target) == false)
                 {
                     var bookmark = CreateInstance<OnionBookmark>();
                     bookmark.target = target;
 
                     AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
-                    bookmarkGroup.AddData(bookmark);
+                    var tempList = (bookmarkGroup.elementData == null) ? new List<ScriptableObject>() : new List<ScriptableObject>(bookmarkGroup.elementData);
+                    tempList.Add(bookmark);
+                    bookmarkGroup.elementData = tempList.ToArray();
                 }
                 else
                 {
@@ -124,8 +128,8 @@ public class OnionDataEditorWindow : EditorWindow
         if (bookmarkGroup == null)
         {
             bookmarkGroup = CreateInstance<DataGroup>();
+            bookmarkGroup.elementData = new ScriptableObject[0];
             AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
-            bookmarkGroup = AssetDatabase.LoadAssetAtPath<ScriptableObject>(path + "/OnionBookmarkGroup.asset") as DataGroup;
         }
 
         //bookmark folder

@@ -15,7 +15,7 @@ public abstract class QueryableData : ScriptableObject
 
     public IEnumerable<T> GetData<T>() where T:QueryableData
     {
-        return GetData().OfType<T>();
+        return GetData()?.OfType<T>();
     }
     
     protected QueryableData QueryById(string id)

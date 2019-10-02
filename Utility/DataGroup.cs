@@ -25,8 +25,8 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
         throw new NotImplementedException();
     }
     public override IEnumerable<QueryableData> GetData()
-    {
-        return data.OfType<QueryableData>();
+    {        
+        return data?.OfType<QueryableData>();
     }
 
     public int IndexOf(ScriptableObject item)
@@ -67,13 +67,17 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
 
 
 #if (UNITY_EDITOR)
-
-    public void AddData(ScriptableObject item)
+    
+    public ScriptableObject[] elementData
     {
-        List<ScriptableObject> list = data.ToList();
-        list.Add(item);
-
-        data = list.ToArray();
+        set
+        {
+            data = value;
+        }
+        get
+        {
+            return data;
+        }
     }
 
     [Onion.NodeTitle]
