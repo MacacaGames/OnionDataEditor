@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 94d105044477e8540a5daf5fd69c08e5, type: 3}
+  m_Name: Area01
+  m_EditorClassIdentifier: 
+  id: 1
+  areaName: BeginArea
+  monsterDatas:
+  - {fileID: 11400000, guid: bdb88ae1ef5a2d242959a96426861f92, type: 2}
+  - {fileID: 11400000, guid: bdb88ae1ef5a2d242959a96426861f92, type: 2}
+  - {fileID: 11400000, guid: 1a583e41dfc85394794b5af251e6bc4f, type: 2}
