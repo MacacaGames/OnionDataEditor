@@ -1,7 +1,10 @@
-﻿using System.Collections;
+﻿#if(UNITY_EDITOR)
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using OnionCollections.DataEditor;
 
 [CreateAssetMenu(menuName = "Onion Data/Bookmark", fileName = "OnionBookmark")]
 public class OnionBookmark : QueryableData
@@ -30,3 +33,5 @@ public class OnionBookmark : QueryableData
         throw new System.NotImplementedException();
     }
 }
+
+#endif
