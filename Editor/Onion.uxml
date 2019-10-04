@@ -26,8 +26,13 @@
             <ui:ScrollView name="inspector-scroll" style="flex-grow: 1;" />
             <ui:VisualElement name="data-info" class="data-info">
                 <Style path="Assets/OnionDataEditor/Editor/Onion.uss" />
-                <ui:Label name="info-title" class="h3" style="height: 25px; margin: 0; -unity-text-align: middle-left;" />
-                <ui:Label name="info-description" class="p" style="height: 30px; -unity-text-align: middle-left; margin: 0;" />
+                <ui:VisualElement style="flex-direction: row;">
+                    <ui:Label name="info-title" class="h3" style="height: 30px; margin: 0; -unity-text-align: middle-left; flex-grow: 1;" />
+                    <ui:Button name="btn-info-document" class="onion-icon-btn onion-btn" style="width: 30px; height: 30px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
+                        <ui:VisualElement name="btn-info-document-icon" style="width: 16px; height: 16px;" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:Label name="info-description" class="p" style="-unity-text-align: middle-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 5px; padding-bottom: 5px; height: 40px;" />
                 <ui:VisualElement name="data-info-btn-list" style="height: 35px; flex-direction: row;" />
             </ui:VisualElement>
         </ui:VisualElement>

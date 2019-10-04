@@ -27,6 +27,7 @@ namespace OnionCollections.DataEditor
 
                 VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
                 containerRoot.visible = (value != null);
+
                 if (value != null)
                 {
                     tree = new TreeRoot(_target);
@@ -103,6 +104,15 @@ namespace OnionCollections.DataEditor
             };
             root.Q("btn-add-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("Favorite Icon");
 
+            //綁定btn-info-document
+            root.Q<Button>("btn-info-document").clickable.clicked += () => 
+            {
+                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectObject));
+            };
+            root.Q("btn-info-document-icon").style.backgroundImage = EditorGUIUtility.FindTexture("_Help");
+
+
+
             //建構treeview
             VisualElement containerRoot = root.Q("tree-view-container");
             if (treeViewContainer == null)
@@ -166,6 +176,8 @@ namespace OnionCollections.DataEditor
         List<Button> actionBtns = new List<Button>();
         void DisplayInfo(TreeNode node)
         {
+            rootVisualElement.Q("btn-info-document").style.display = (node.dataObj != null) ? DisplayStyle.Flex : DisplayStyle.None;
+
             DisplayTextInfo(node);
             DisplayActionButtonInfo(node);
         }

@@ -1,0 +1,30 @@
+#title{
+	font-size: 16px;
+	padding: 10px;
+	margin: 0;
+}
+
+#content{
+	padding: 10px;
+}
+
+.element{
+	padding: 0 0 10px 0
+}
+
+.title{
+	font-size: 14px;
+
+}
+
+.description{
+
+	font-size: 11px;
+	white-space: normal;
+	line-height: 22px;
+	opacity: 0.7;
+
+	padding-left: 8px;
+	border-left-width: 3px;
+	border-color: #888;
+}
