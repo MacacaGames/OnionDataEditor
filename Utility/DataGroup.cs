@@ -17,9 +17,10 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
     [Onion.NodeElement]
     [SerializeField]
     ScriptableObject[] data;
-
-    public int Count => data.Length;
     
+    public QueryableData this[string id] => QueryByID(id);
+    public QueryableData this[int index] => data[index] as QueryableData;
+        
     public override string GetID()
     {
         throw new NotImplementedException();
@@ -28,12 +29,7 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
     {        
         return data?.OfType<QueryableData>();
     }
-
-    public int IndexOf(ScriptableObject item)
-    {
-        return Array.IndexOf(data, item);
-    }
-
+    
     public T Get<T>(int index) where T : ScriptableObject
     {
         return Get(index) as T;
