@@ -18,7 +18,7 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
     [SerializeField]
     QueryableData[] data;
 
-    public QueryableData this[string id] => QueryByID(id);
+    public QueryableData this[string id] => this.QueryByID(id) as QueryableData;
     public QueryableData this[int index] => data[index];
 
     public override string GetID()
@@ -42,7 +42,7 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
     /// <summary>隨機取得一個。</summary>
     public T RandomPickOne<T>() where T : ScriptableObject
     {
-        return Get<T>(UnityEngine.Random.Range(0, Count));
+        return Get<T>(UnityEngine.Random.Range(0, this.Count()));
     }
 
 
