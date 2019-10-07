@@ -4,12 +4,7 @@ using UnityEngine;
 using System;
 using System.Linq;
 
-public interface IQueryableData
+public interface IQueryableData : IEnumerable, IEnumerable<IQueryableData>
 {
     string GetID();
-
-    IEnumerable<IQueryableData> GetData();
-
-    IEnumerable<T> GetData<T>() where T : IQueryableData;
-    
 }

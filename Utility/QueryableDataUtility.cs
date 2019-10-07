@@ -16,25 +16,20 @@ public static class QueryableDataUtility
 
     public static bool TryQueryByID(this IQueryableData queryableObj, string id, out IQueryableData result)
     {
-        IQueryableData data = queryableObj.GetData().SingleOrDefault(_ => _.GetID() == id);
+        IQueryableData data = queryableObj.SingleOrDefault(_ => _.GetID() == id);
         result = data;
         return data != null;
     }
 
-    public static int Count(this IQueryableData queryableObj)
+    public static bool HasID(this IQueryableData queryableObj, string id)
     {
-        return queryableObj.GetData().Count();
-    }
-
-    public static bool HasID(this IQueryableData queryableObj,string id)
-    {
-        var data = queryableObj.GetData().SingleOrDefault(_ => _.GetID() == id);
+        var data = queryableObj.SingleOrDefault(_ => _.GetID() == id);
         return data != null;
     }
 
-    public static int IndexOf(this IQueryableData queryableObj,IQueryableData item)
+    public static int IndexOf(this IQueryableData queryableObj, IQueryableData item)
     {
-        return Array.IndexOf(queryableObj.GetData().ToArray(), item);
+        return Array.IndexOf(queryableObj.ToArray(), item);
     }
 
 

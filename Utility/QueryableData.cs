@@ -15,12 +15,7 @@ public abstract class QueryableData : ScriptableObject, IQueryableData, IEnumera
         return GetData()?.OfType<T>();
     }
     
-
-    public IEnumerator GetEnumerator()
-    {
-        return GetData().GetEnumerator();
-    }
-    IEnumerator<IQueryableData> IEnumerable<IQueryableData>.GetEnumerator()
+    IEnumerator<IQueryableData>  IEnumerable<IQueryableData>.GetEnumerator()
     {
         foreach (var item in GetData())
             yield return item;

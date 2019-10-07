@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 
 [CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
-public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
+public class DataGroup : QueryableData
 {
 
     [SerializeField]
@@ -21,16 +21,17 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
     public QueryableData this[string id] => this.QueryByID(id) as QueryableData;
     public QueryableData this[int index] => data[index];
 
-    public override string GetID()
-    {
-        throw new NotImplementedException();
-    }
     public override IEnumerable<IQueryableData> GetData()
     {
         return data;
     }
 
-    public T Get<T>(int index) where T : ScriptableObject
+    public override string GetID()
+    {
+        throw new NotImplementedException();
+    }
+
+    public T Get<T>(int index) where T : QueryableData
     {
         return Get(index) as T;
     }
@@ -40,21 +41,9 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
     }
 
     /// <summary>隨機取得一個。</summary>
-    public T RandomPickOne<T>() where T : ScriptableObject
+    public T RandomPickOne<T>() where T : QueryableData
     {
         return Get<T>(UnityEngine.Random.Range(0, this.Count()));
-    }
-
-
-    IEnumerator<QueryableData> IEnumerable<QueryableData>.GetEnumerator()
-    {
-        foreach (var item in data)
-            yield return item;
-    }
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        foreach (var item in data)
-            yield return item;
     }
 
 
@@ -81,10 +70,3 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
 #endif
 
 }
-/*
-public class DataGroup<T> : DataGroup where T: IQueryableData
-{
-    public new T this[string id] => QueryByID(id);
-    public new T this[int index] => data[index];
-}
-*/

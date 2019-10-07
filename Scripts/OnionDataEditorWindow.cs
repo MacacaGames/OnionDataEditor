@@ -23,6 +23,7 @@ namespace OnionCollections.DataEditor
             set
             {
                 _target = value;
+                
                 rootVisualElement.Q<ObjectField>("target-field").SetValueWithoutNotify(value);
 
                 VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
@@ -33,9 +34,28 @@ namespace OnionCollections.DataEditor
                     tree = new TreeRoot(_target);
                     tree.SetTreeRoot();
 
+                    selectedNode = tree;
+
                     rootVisualElement.Q("btn-add-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
                     rootVisualElement.Q("btn-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
                 }
+            }
+        }
+
+
+        TreeNode _selectedNode;
+        TreeNode selectedNode
+        {
+            get { return _selectedNode; }
+            set
+            {
+                _selectedNode = value;
+
+                if (selectedInspectorEditor == null || selectedInspectorEditor.target != value.dataObj)
+                    selectedInspectorEditor = Editor.CreateEditor(value.dataObj);
+
+                var root = this.rootVisualElement;
+                root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(value.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
             }
         }
 
@@ -107,7 +127,7 @@ namespace OnionCollections.DataEditor
             //綁定btn-info-document
             root.Q<Button>("btn-info-document").clickable.clicked += () => 
             {
-                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectObject));
+                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.dataObj));
             };
             root.Q("btn-info-document-icon").style.backgroundImage = EditorGUIUtility.FindTexture("_Help");
 
@@ -161,15 +181,12 @@ namespace OnionCollections.DataEditor
         }
 
         //Inspector
-        Editor inspectorEditor;
+        Editor selectedInspectorEditor;
         void DrawInspector()
         {
-            if (selectObject != null)
+            if (selectedNode != null && selectedNode.dataObj != null)
             {
-                if (inspectorEditor == null || inspectorEditor.target != selectObject)
-                    inspectorEditor = Editor.CreateEditor(selectObject);
-
-                inspectorEditor.OnInspectorGUI();
+                selectedInspectorEditor.OnInspectorGUI();
             }
         }
 
@@ -223,10 +240,10 @@ namespace OnionCollections.DataEditor
 
 
         //UI事件
-        ScriptableObject selectObject;
+
         public void OnTriggerItem(TreeNode node)
         {
-            selectObject = node.dataObj;
+            selectedNode = node;
 
             DisplayInfo(node);
 
