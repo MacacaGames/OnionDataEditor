@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "ActionData", menuName = "Custom/ActionData")]
-public class ActionData : ScriptableObject
+public class ActionData : QueryableData
 {
     [SerializeField]
     string speaker;
@@ -34,5 +34,19 @@ public class ActionData : ScriptableObject
         Debug.Log($"{speaker} : !!!!!!!!!!!!!!!!!!!");
     }
 
+
+    /*
+     * 因為這個資料不需要再往下查找，就不用這麼做了
+     */
+
+    public override IEnumerable<IQueryableData> GetData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetID()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 

@@ -5,7 +5,7 @@ using System;
 using System.Linq;
 
 [CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
-public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObject>
+public class DataGroup : QueryableData, IEnumerable, IEnumerable<QueryableData>
 {
 
     [SerializeField]
@@ -16,25 +16,25 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
 
     [Onion.NodeElement]
     [SerializeField]
-    ScriptableObject[] data;
-    
+    QueryableData[] data;
+
     public QueryableData this[string id] => QueryByID(id);
-    public QueryableData this[int index] => data[index] as QueryableData;
-        
+    public QueryableData this[int index] => data[index];
+
     public override string GetID()
     {
         throw new NotImplementedException();
     }
-    public override IEnumerable<QueryableData> GetData()
-    {        
-        return data?.OfType<QueryableData>();
+    public override IEnumerable<IQueryableData> GetData()
+    {
+        return data;
     }
-    
+
     public T Get<T>(int index) where T : ScriptableObject
     {
         return Get(index) as T;
     }
-    public ScriptableObject Get(int index)
+    public QueryableData Get(int index)
     {
         return data[index];
     }
@@ -46,11 +46,7 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
     }
 
 
-    public IEnumerator GetEnumerator()
-    {
-        return data.GetEnumerator();
-    }
-    IEnumerator<ScriptableObject> IEnumerable<ScriptableObject>.GetEnumerator()
+    IEnumerator<QueryableData> IEnumerable<QueryableData>.GetEnumerator()
     {
         foreach (var item in data)
             yield return item;
@@ -63,8 +59,8 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
 
 
 #if (UNITY_EDITOR)
-    
-    public ScriptableObject[] elementData
+
+    public QueryableData[] elementData
     {
         set
         {
@@ -85,3 +81,10 @@ public class DataGroup : QueryableData, IEnumerable, IEnumerable<ScriptableObjec
 #endif
 
 }
+/*
+public class DataGroup<T> : DataGroup where T: IQueryableData
+{
+    public new T this[string id] => QueryByID(id);
+    public new T this[int index] => data[index];
+}
+*/

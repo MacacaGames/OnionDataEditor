@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "MonsterData", menuName = "Custom/MonsterData")]
-public class MonsterData : ScriptableObject
+public class MonsterData : QueryableData
 {
     [Onion.NodeTitle]
     public string monsterName;
@@ -23,5 +23,19 @@ public class MonsterData : ScriptableObject
 
     public int hp;
     public int atk;
-    
+
+
+    /*
+     * 因為這個資料不需要再往下查找，就不用這麼做了
+     */
+
+    public override IEnumerable<IQueryableData> GetData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetID()
+    {
+        throw new System.NotImplementedException();
+    }
 }

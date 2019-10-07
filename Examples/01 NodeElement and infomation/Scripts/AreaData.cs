@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]
-public class AreaData : ScriptableObject
+public class AreaData : QueryableData
 {
     /*
      * 掛上NodeTitle的Field、Property，型別須為string，
@@ -31,5 +31,18 @@ public class AreaData : ScriptableObject
 
 
 
+    /*
+     * 因為這個資料不需要再往下查找，就不用這麼做了
+     */
+
+    public override IEnumerable<IQueryableData> GetData()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override string GetID()
+    {
+        throw new System.NotImplementedException();
+    }
 }
 

@@ -28,7 +28,7 @@ public class OnionBookmark : QueryableData
         throw new System.NotImplementedException();
     }
 
-    public override IEnumerable<QueryableData> GetData()
+    public override IEnumerable<IQueryableData> GetData()
     {
         throw new System.NotImplementedException();
     }

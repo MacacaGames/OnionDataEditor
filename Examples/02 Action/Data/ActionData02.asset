@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0da2d08ea9289b54ea40efb5c907f7a8, type: 3}
   m_Name: ActionData02
   m_EditorClassIdentifier: 
-  speaker: Alex
-  speakContent: hum....
+  speaker: Owen
+  speakContent: yeee

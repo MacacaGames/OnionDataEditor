@@ -76,7 +76,7 @@ namespace OnionCollections.DataEditor
             root.Q("btn-refresh-icon").style.backgroundImage = EditorGUIUtility.FindTexture("d_Refresh");
 
             //綁定btn-bookmark
-            root.Q<Button>("btn-bookmark").clickable.clicked += () => { target = bookmarkGroup; };
+            root.Q<Button>("btn-bookmark").clickable.clicked += () => { target = bookmarkGroup as ScriptableObject; };
             root.Q("btn-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("FolderFavorite Icon");
 
             //綁定btn-add-bookmark
@@ -92,7 +92,7 @@ namespace OnionCollections.DataEditor
                         bookmark.target = target;
 
                         AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
-                        var tempList = (bookmarkGroup.elementData == null) ? new List<ScriptableObject>() : new List<ScriptableObject>(bookmarkGroup.elementData);
+                        var tempList = (bookmarkGroup.elementData == null) ? new List<QueryableData>() : new List<QueryableData>(bookmarkGroup.elementData);
                         tempList.Add(bookmark);
                         bookmarkGroup.elementData = tempList.ToArray();
                     }
@@ -140,7 +140,7 @@ namespace OnionCollections.DataEditor
             if (bookmarkGroup == null)
             {
                 bookmarkGroup = CreateInstance<DataGroup>();
-                bookmarkGroup.elementData = new ScriptableObject[0];
+                bookmarkGroup.elementData = new QueryableData[0];
                 AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
             }
 
