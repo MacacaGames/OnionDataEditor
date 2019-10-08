@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using System.Linq;
 
 public static class QueryableDataUtility
 {
@@ -16,20 +15,38 @@ public static class QueryableDataUtility
 
     public static bool TryQueryByID(this IQueryableData queryableObj, string id, out IQueryableData result)
     {
-        IQueryableData data = queryableObj.SingleOrDefault(_ => _.GetID() == id);
-        result = data;
-        return data != null;
+        foreach(var data in queryableObj)
+        {
+            if (data.GetID() == id)
+            {
+                result = data;
+                return true;
+            }
+        }
+        result = null;
+        return false;
     }
 
     public static bool HasID(this IQueryableData queryableObj, string id)
     {
-        var data = queryableObj.SingleOrDefault(_ => _.GetID() == id);
-        return data != null;
+        foreach (var data in queryableObj)
+            if (data.GetID() == id)
+                return true;
+
+        return false;
     }
 
     public static int IndexOf(this IQueryableData queryableObj, IQueryableData item)
     {
-        return Array.IndexOf(queryableObj.ToArray(), item);
+        int index = -1;
+        foreach (var data in queryableObj)
+        {
+            index++;
+            if (data == item)
+                return index;
+        }
+
+        return -1;
     }
 
 
