@@ -20,13 +20,13 @@ namespace OnionCollections
             {
                 List<TreeNode> nodeList = new List<TreeNode>();
 
-                var type = dataObj.GetType();
+                var members = dataObj.GetType().GetMembers(defaultBindingFlags);
 
-                var members = type.GetMembers(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeElementAttribute)).ToList();
-                if (members.Count > 0)
+                var elList =  members.FilterWithAttribute(typeof(Onion.NodeElementAttribute)).ToList();
+                if (elList.Count > 0)
                 {
 
-                    foreach (var member in members)
+                    foreach (var member in elList)
                     {
                         if (member.TryGetValue(dataObj, out ScriptableObject result_single))
                             nodeList.Add(new TreeNode(result_single));
@@ -35,17 +35,29 @@ namespace OnionCollections
                     }
 
                 }
-
-                var pseudoMembers = type.GetMembers(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodePseudoElementAttribute)).ToList();
-                if (pseudoMembers.Count > 0)
+                var pseudoList = members.FilterWithAttribute(typeof(Onion.NodePseudoElementAttribute)).ToList();
+                if (pseudoList.Count > 0)
                 {
-                    foreach (var member in pseudoMembers)
+                    foreach (var member in pseudoList)
                     {
-                        if (member.TryGetValue(dataObj, out TreeNode result_pseudo))
+                        if (member.GetMemberInfoType() == typeof(TreeNode))
                         {
-                            if (result_pseudo.isPseudo == false)
-                                throw new System.NotImplementedException("This node must be pseudo.");
-                            nodeList.Add(result_pseudo);
+                            if (member.TryGetValue(dataObj, out TreeNode result_pseudo))
+                            {
+                                if (result_pseudo.isPseudo == false)
+                                    throw new System.NotImplementedException("This node must be pseudo.");
+                                nodeList.Add(result_pseudo);
+                            }
+                        }
+                        else if(member.GetMemberInfoType() == typeof(IEnumerable<TreeNode>))
+                        {
+                            if (member.TryGetValue(dataObj, out IEnumerable<TreeNode> result_pseudo))
+                            {
+                                foreach(var pseudoNode in result_pseudo)
+                                    if (pseudoNode.isPseudo == false)
+                                        throw new System.NotImplementedException("This node must be pseudo.");
+                                nodeList.AddRange(result_pseudo);
+                            }
                         }
                     }
                 }
