@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "MonsterData", menuName = "Custom/MonsterData")]
+//[CreateAssetMenu(fileName = "MonsterData", menuName = "Custom/MonsterData")]    //想要測試時，可以使用這行來創造新的資料
 public class MonsterData : QueryableData
 {
     [OnionCollections.DataEditor.NodeTitle]

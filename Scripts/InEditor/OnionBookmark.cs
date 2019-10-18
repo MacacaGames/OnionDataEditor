@@ -8,7 +8,6 @@ using OnionCollections.DataEditor;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    [CreateAssetMenu(menuName = "Onion Data/Bookmark", fileName = "OnionBookmark")]
     public class OnionBookmark : QueryableData
     {
         [OnionCollections.DataEditor.NodeTitle]

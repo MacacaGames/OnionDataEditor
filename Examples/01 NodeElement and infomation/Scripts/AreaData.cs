@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]
+//[CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]    //想要測試時，可以使用這行來創造新的資料
 public class AreaData : QueryableData
 {
     /*

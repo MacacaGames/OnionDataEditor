@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "ActionData", menuName = "Custom/ActionData")]
+//[CreateAssetMenu(fileName = "ActionData", menuName = "Custom/ActionData")]    //想要測試時，可以使用這行來創造新的資料
 public class ActionData : QueryableData
 {
     [SerializeField]
