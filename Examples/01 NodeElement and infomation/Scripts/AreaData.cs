@@ -10,7 +10,7 @@ public class AreaData : QueryableData
      * 加入後即可成為節點的標題，因為可以允許Property，所以也可以有一些特殊變化。
      */
 
-    [Onion.NodeTitle]
+    [OnionCollections.DataEditor.NodeTitle]
     public string areaName;
 
     /*
@@ -26,7 +26,7 @@ public class AreaData : QueryableData
      * 加入後即可成為子節點，是最核心的功能。
      */
 
-    [Onion.NodeElement]
+    [OnionCollections.DataEditor.NodeElement]
     public MonsterData[] monsterDatas;
 
 

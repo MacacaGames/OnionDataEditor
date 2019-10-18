@@ -14,7 +14,7 @@ public class DataGroup : QueryableData
     [SerializeField]
     string description;
 
-    [Onion.NodeElement]
+    [OnionCollections.DataEditor.NodeElement]
     [SerializeField]
     QueryableData[] data;
 
@@ -61,10 +61,10 @@ public class DataGroup : QueryableData
         }
     }
 
-    [Onion.NodeTitle]
+    [OnionCollections.DataEditor.NodeTitle]
     string nodeTitle => string.IsNullOrEmpty(title) ? name : title;
 
-    [Onion.NodeDescription]
+    [OnionCollections.DataEditor.NodeDescription]
     string nodeDescription => description;
 
 #endif

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onion
+namespace OnionCollections.DataEditor
 {
     /// <summary>說明欄位功能。</summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]

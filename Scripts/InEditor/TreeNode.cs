@@ -1,12 +1,12 @@
-﻿using System.Collections;
+﻿#if(UNITY_EDITOR)
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using System.Linq;
-using OnionCollections.DataEditor;
 
-namespace OnionCollections
+namespace OnionCollections.DataEditor.Editor
 {
     public class TreeRoot : TreeNode
     {
@@ -174,3 +174,4 @@ namespace OnionCollections
     }
         
 }
+#endif

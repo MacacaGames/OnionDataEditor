@@ -10,7 +10,7 @@ using System;
 using System.Linq;
 using UnityEditor.IMGUI.Controls;
 
-namespace OnionCollections.DataEditor
+namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDataEditorWindow : EditorWindow
     {
@@ -52,7 +52,7 @@ namespace OnionCollections.DataEditor
                 _selectedNode = value;
 
                 if (selectedInspectorEditor == null || selectedInspectorEditor.target != value.dataObj)
-                    selectedInspectorEditor = Editor.CreateEditor(value.dataObj);
+                    selectedInspectorEditor = UnityEditor.Editor.CreateEditor(value.dataObj);
 
                 var root = this.rootVisualElement;
                 root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(value.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
@@ -181,7 +181,7 @@ namespace OnionCollections.DataEditor
         }
 
         //Inspector
-        Editor selectedInspectorEditor;
+        UnityEditor.Editor selectedInspectorEditor;
         void DrawInspector()
         {
             if (selectedNode != null && selectedNode.dataObj != null)

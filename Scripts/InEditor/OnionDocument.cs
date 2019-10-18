@@ -7,7 +7,7 @@ using System;
 using System.Reflection;
 using System.Text;
 
-namespace OnionCollections
+namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDocument
     {
@@ -23,7 +23,7 @@ namespace OnionCollections
             List<DocumentObject.ElementFieldData> elData = new List<DocumentObject.ElementFieldData>();
             foreach (var el in type.GetMembers(defaultBindingFlags))
             {
-                var attr = el.GetCustomAttribute<Onion.FieldDescriptionAttribute>();
+                var attr = el.GetCustomAttribute<OnionCollections.DataEditor.FieldDescriptionAttribute>();
                 if (attr != null)
                 {
                     elData.Add(new DocumentObject.ElementFieldData

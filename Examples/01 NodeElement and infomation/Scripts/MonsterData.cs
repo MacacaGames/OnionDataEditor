@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "MonsterData", menuName = "Custom/MonsterData")]
 public class MonsterData : QueryableData
 {
-    [Onion.NodeTitle]
+    [OnionCollections.DataEditor.NodeTitle]
     public string monsterName;
 
     /*
@@ -13,7 +13,7 @@ public class MonsterData : QueryableData
      * 加入後即可成為節點的描述，在選擇節點時會顯示在資訊區塊，同樣你也可以用Property做一些處理。
      */
     
-    [Onion.NodeDescription]
+    [OnionCollections.DataEditor.NodeDescription]
     public string monsterDescription;
     
     /*

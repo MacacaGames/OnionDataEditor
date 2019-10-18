@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Onion
+namespace OnionCollections.DataEditor.Editor
 {
     /// <summary>在OnionDataEditor中定義此節點底下的偽節點。</summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 
-namespace OnionCollections.DataEditor
+namespace OnionCollections.DataEditor.Editor
 {
     public class DataObjTreeView : TreeView
     {

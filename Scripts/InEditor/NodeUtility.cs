@@ -1,13 +1,17 @@
-﻿using System.Collections;
+﻿
+#if(UNITY_EDITOR)
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
+
 using System.Reflection;
 using OnionCollections;
 
-namespace OnionCollections
+namespace OnionCollections.DataEditor.Editor
 {
 
     public static class NodeUtility
@@ -22,7 +26,7 @@ namespace OnionCollections
 
                 var members = dataObj.GetType().GetMembers(defaultBindingFlags);
 
-                var elList =  members.FilterWithAttribute(typeof(Onion.NodeElementAttribute)).ToList();
+                var elList =  members.FilterWithAttribute(typeof(OnionCollections.DataEditor.NodeElementAttribute)).ToList();
                 if (elList.Count > 0)
                 {
 
@@ -35,7 +39,7 @@ namespace OnionCollections
                     }
 
                 }
-                var pseudoList = members.FilterWithAttribute(typeof(Onion.NodePseudoElementAttribute)).ToList();
+                var pseudoList = members.FilterWithAttribute(typeof(NodePseudoElementAttribute)).ToList();
                 if (pseudoList.Count > 0)
                 {
                     foreach (var member in pseudoList)
@@ -86,20 +90,20 @@ namespace OnionCollections
     
         public static string GetNodeTitle(this ScriptableObject dataObj)
         {
-            var result = TryGetNodeAttrValue<string>(dataObj, typeof(Onion.NodeTitleAttribute));
+            var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeTitleAttribute));
             return result as string;
         }
         public static string GetNodeDescription(this ScriptableObject dataObj)
         {
-            var result = TryGetNodeAttrValue<string>(dataObj, typeof(Onion.NodeDescriptionAttribute));
+            var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeDescriptionAttribute));
             return result as string;
         }
         public static Texture GetNodeIcon(this ScriptableObject dataObj)
         {
-            var result = TryGetNodeAttrValue<Texture>(dataObj, typeof(Onion.NodeIconAttribute));
+            var result = TryGetNodeAttrValue<Texture>(dataObj, typeof(NodeIconAttribute));
             if (result == null)
             {
-                var s = TryGetNodeAttrValue<Sprite>(dataObj, typeof(Onion.NodeIconAttribute));
+                var s = TryGetNodeAttrValue<Sprite>(dataObj, typeof(NodeIconAttribute));
                 if (s) result = s.texture;
             }
             return result;
@@ -111,12 +115,12 @@ namespace OnionCollections
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
-                var methods = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeActionAttribute)).ToList();
+                var methods = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(OnionCollections.DataEditor.NodeActionAttribute)).ToList();
                 foreach (var method in methods)
                 {
                     if (method.GetGenericArguments().Length == 0)    //只接受沒有參數的Method
                     {
-                        var attr = method.GetCustomAttribute<Onion.NodeActionAttribute>();
+                        var attr = method.GetCustomAttribute<OnionCollections.DataEditor.NodeActionAttribute>();
                         result.Add(new OnionAction(method, dataObj, attr.actionName ?? method.Name));
                     }
                 }
@@ -128,7 +132,7 @@ namespace OnionCollections
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
-                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeOnSelectedAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
+                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnSelectedAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
                 if (method != null)
                     return new OnionAction(method, dataObj, method.Name);
             }
@@ -139,7 +143,7 @@ namespace OnionCollections
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
-                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(Onion.NodeOnDoubleClickAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
+                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnDoubleClickAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
                 if (method != null)
                     return new OnionAction(method, dataObj, method.Name);
             }
@@ -148,3 +152,5 @@ namespace OnionCollections
 
     }
 }
+
+#endif

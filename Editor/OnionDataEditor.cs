@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System;
-using System.Linq;
-using System.Reflection;
-using OnionCollections;
-using OnionCollections.DataEditor;
+using OnionCollections.DataEditor.Editor;
 
 public static class OnionDataEditor
 {

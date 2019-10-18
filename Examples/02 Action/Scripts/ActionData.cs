@@ -11,12 +11,13 @@ public class ActionData : QueryableData
     [SerializeField]
     string speakContent;
 
+#if(UNITY_EDITOR)
 
     /*
      * 掛上NodeAction的Method，在選擇節點時，會成為按鈕讓你可以快速執行動作。
      */
 
-    [Onion.NodeAction("Action01")]
+    [OnionCollections.DataEditor.NodeAction("Action01")]
     public void DoSomething()
     {
         Debug.Log($"{speaker} : {speakContent}");
@@ -28,11 +29,13 @@ public class ActionData : QueryableData
      * 掛上NodeAction的Method，在選擇節點時，會成為按鈕讓你可以快速執行動作。
      */
 
-    [Onion.NodeAction("Action02")]
+    [OnionCollections.DataEditor.NodeAction("Action02")]
     public void DoMore()
     {
         Debug.Log($"{speaker} : !!!!!!!!!!!!!!!!!!!");
     }
+
+#endif 
 
 
     /*
