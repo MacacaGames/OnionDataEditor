@@ -15,15 +15,15 @@ namespace OnionCollections.DataEditor.Editor
     public class OnionDataEditorWindow : EditorWindow
     {
         const string path = "Assets/OnionDataEditor";
-
+        
         ScriptableObject _target;
-        public ScriptableObject target
+        ScriptableObject target
         {
             get => _target;
             set
             {
                 _target = value;
-                
+                                
                 rootVisualElement.Q<ObjectField>("target-field").SetValueWithoutNotify(value);
 
                 VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
@@ -34,25 +34,28 @@ namespace OnionCollections.DataEditor.Editor
                     tree = new TreeRoot(_target);
                     tree.SetTreeRoot();
 
-                    selectedNode = tree;
+                    //選擇Root
+                    selectedNode = tree;                    
+                    tree.treeView.SetSelection(new List<int> { 0 });    
 
                     rootVisualElement.Q("btn-add-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
                     rootVisualElement.Q("btn-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
                 }
             }
         }
-
-
+        
         TreeNode _selectedNode;
         TreeNode selectedNode
         {
-            get { return _selectedNode; }
+            get => _selectedNode; 
             set
             {
                 _selectedNode = value;
 
                 if (selectedInspectorEditor == null || selectedInspectorEditor.target != value.dataObj)
                     selectedInspectorEditor = UnityEditor.Editor.CreateEditor(value.dataObj);
+
+                DisplayInfo(value);
 
                 var root = this.rootVisualElement;
                 root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(value.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
@@ -69,8 +72,17 @@ namespace OnionCollections.DataEditor.Editor
         public static OnionDataEditorWindow ShowWindow()
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            window.target = null;
-            window.minSize = new Vector2(250, 300);
+            window.SetTarget(window.bookmarkGroup);
+
+            return window;
+        }
+
+        public static OnionDataEditorWindow ShowWindow(IQueryableData data)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            //沒有東西的話就指定bookmarkGroup
+            window.SetTarget(data ?? window.bookmarkGroup);
 
             return window;
         }
@@ -80,17 +92,21 @@ namespace OnionCollections.DataEditor.Editor
             Init();
         }
 
+        private void OnDisable()
+        {
+        }
+
         void Init()
         {
             //建構
             var root = this.rootVisualElement;
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "/Editor/Onion.uxml");
-            var cloneTree = visualTree.CloneTree();
+            TemplateContainer cloneTree = visualTree.CloneTree();
             cloneTree.style.flexGrow = 1;
             root.Add(cloneTree);
 
             CreateNeededAsset();
-
+            
             //綁定btn-refresh
             root.Q<Button>("btn-refresh").clickable.clicked += () => { if (tree != null) tree.SetTreeRoot(); };
             root.Q("btn-refresh-icon").style.backgroundImage = EditorGUIUtility.FindTexture("d_Refresh");
@@ -130,9 +146,7 @@ namespace OnionCollections.DataEditor.Editor
                 OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.dataObj));
             };
             root.Q("btn-info-document-icon").style.backgroundImage = EditorGUIUtility.FindTexture("_Help");
-
-
-
+            
             //建構treeview
             VisualElement containerRoot = root.Q("tree-view-container");
             if (treeViewContainer == null)
@@ -143,14 +157,29 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             //target-field設定與綁定
+            ChangeCallback = _ => {
+                target = _.newValue as ScriptableObject;
+            };
+
             root.Q<ObjectField>("target-field").objectType = typeof(ScriptableObject);
-            root.Q<ObjectField>("target-field").RegisterValueChangedCallback(_ => target = _.newValue as ScriptableObject);
-
-
+            root.Q<ObjectField>("target-field").SetValueWithoutNotify(null);
+            root.Q<ObjectField>("target-field").RegisterValueChangedCallback(ChangeCallback);
+            
             var inspectorContainer = new IMGUIContainer(DrawInspector);
             inspectorContainer.AddToClassList("inspect-container");
             root.Q("inspector-scroll").Q("unity-content-container").Add(inspectorContainer);
+            
         }
+
+        EventCallback<ChangeEvent<UnityEngine.Object>> ChangeCallback;
+
+        public void SetTarget(IQueryableData data)
+        {
+            var root = this.rootVisualElement;
+            root.Q<ObjectField>("target-field").value = data as ScriptableObject;
+            //target = data as ScriptableObject;
+        }
+
 
         DataGroup bookmarkGroup = null;
         void CreateNeededAsset()
@@ -244,9 +273,7 @@ namespace OnionCollections.DataEditor.Editor
         public void OnTriggerItem(TreeNode node)
         {
             selectedNode = node;
-
-            DisplayInfo(node);
-
+            
             int selectionId = tree.treeView.GetSelection()[0];
             OnionAction onSelectedAction = tree.treeView.treeQuery[selectionId].onSelectedAction;
             if (onSelectedAction != null)

@@ -10,18 +10,25 @@ namespace OnionCollections.DataEditor.Editor
 {
     public class OnionBookmark : QueryableData
     {
-        [OnionCollections.DataEditor.NodeTitle]
-        string bookmarkName => target.name;
+        [SerializeField]
+        string title;
 
         public ScriptableObject target;
 
-        [NodeOnSelected]
-        void OnSelected()
+        [NodeTitle]
+        string bookmarkName => string.IsNullOrEmpty(title) ? target.name : title;
+
+        [NodeDescription]
+        [TextArea(1,3)]
+        [SerializeField]
+        string description;
+
+        [NodeAction("Open")]
+        [NodeOnDoubleClick]
+        void OpenData()
         {
             var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
-
-            onionWindow.target = target;
-
+            onionWindow.SetTarget(target as IQueryableData);
         }
 
         public override string GetID()

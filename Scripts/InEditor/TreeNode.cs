@@ -32,7 +32,7 @@ namespace OnionCollections.DataEditor.Editor
 
             if (window.treeViewState == null)
                 window.treeViewState = treeView.state;
-
+            
         }
 
         void CreatTree(TreeNode node, int depth)
@@ -50,7 +50,7 @@ namespace OnionCollections.DataEditor.Editor
 
             if (ReferenceCheck(node) == false)
             {
-                EditorWindow.GetWindow<OnionDataEditorWindow>().target = null;
+                EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
                 throw new System.StackOverflowException($"{node.displayName} is a parent of itself.");
             }
             

@@ -12,10 +12,10 @@ public static class OnionDataEditor
     public static void OpenWithOnion()
     {
         ScriptableObject selectObj = Selection.activeObject as ScriptableObject;
-        if (selectObj != null)
+        if (selectObj != null && selectObj is IQueryableData queryableData)
         {
-            var window = OnionDataEditorWindow.ShowWindow();
-            window.target = selectObj;
+            var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
+            window.SetTarget(queryableData);
         }
     }
 

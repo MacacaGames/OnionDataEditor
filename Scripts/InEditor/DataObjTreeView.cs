@@ -157,10 +157,10 @@ namespace OnionCollections.DataEditor.Editor
         TreeViewItem TreeNodeToTreeViewItem(int _id, int _depth, TreeNode node)
         {
             return new TreeViewItem
-            {
+            { 
                 id = _id,
                 depth = _depth,
-                displayName = node.displayName
+                displayName = node.displayName,
             };
         }
 

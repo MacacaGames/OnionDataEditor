@@ -15,21 +15,21 @@ Onion 是一個於 Unity 使用的資料檢視與編輯工具。
 
 ### 基本使用範例 ###
 
-我們先寫兩個 ScriptableObject ，分別為 AreaData 與 MonsterData。
+我們先寫兩個 Script ，分別為 AreaData 與 MonsterData，他們都繼承自QueryableData。
 
 ```
 [CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]
-public class AreaData : ScriptableObject
+public class AreaData : QueryableData
 {
     public string areaName;
 
-    [Onion.NodeElement]
+    [OnionCollections.DataEditor.NodeElement]
     public MonsterData[] monsterDatas;
 }
 ```
 ```
 [CreateAssetMenu(fileName = "MonsterData", menuName = "Custom/MonsterData")]
-public class MonsterData : ScriptableObject
+public class MonsterData : QueryableData
 {
     public string monsterName;
     
@@ -38,9 +38,7 @@ public class MonsterData : ScriptableObject
 }
 ```
 
-可以注意到 AreaData 中包含了數個 MonsterData，在任意 IEnumerable 的 Field 或 Property 上加上 [Onion.NodeElement] 的 Attribute 後，這些內容就會在視窗介面上成為這個 AreaData 的子節點。
-
-注意：一個 ScriptableObject 中，只會承認第一個套上 NodeElement 的 Field/Property 其餘的會被無視。
+可以注意到 AreaData 中包含了數個 MonsterData，在任意 IEnumerable 的 Field 或 Property 上加上 [OnionCollections.DataEditor.NodeElement] 的 Attribute 後，這些內容就會在視窗介面上成為這個 AreaData 的子節點。
 
 ![...](https://i.imgur.com/XPxe2DS.png)
 
