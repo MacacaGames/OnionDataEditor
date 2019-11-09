@@ -35,13 +35,13 @@ public class DirectoryVisitor
         if (path[path.Length - 1] != splitChar)
             throw new System.NotImplementedException("Path is not a folder.");
 
-        path = path.Substring(0, path.LastIndexOf(splitChar, 0, 2));
+        path = path.Substring(0, path.Remove(path.Length - 1).LastIndexOf(splitChar) + 1);
         return this;
     }
 
     public bool HasFolder(string folderName)
     {
-        string checkPath = new DirectoryVisitor(path).Enter(folderName).ToString();
+        string checkPath = new DirectoryVisitor(path).Enter(folderName).GetPathWithoutSplitChar();
         return AssetDatabase.IsValidFolder(checkPath);
     }
 
@@ -49,6 +49,14 @@ public class DirectoryVisitor
     {
         AssetDatabase.CreateFolder(GetPathWithoutSplitChar(), folderName);
         Debug.Log($"Create Folder:{GetPathWithoutSplitChar()} , {folderName}");
+
+        return this;
+    }
+
+    public DirectoryVisitor CreateFolderIfNotExist(string folderName)
+    {
+        if (HasFolder(folderName) == false)
+            Create(folderName);
 
         return this;
     }
