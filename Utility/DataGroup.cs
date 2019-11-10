@@ -16,7 +16,7 @@ public class DataGroup : QueryableData
 
     [OnionCollections.DataEditor.NodeElement]
     [SerializeField]
-    QueryableData[] data;
+    QueryableData[] data = new QueryableData[0];
 
     public QueryableData this[string id] => this.QueryByID(id) as QueryableData;
     public QueryableData this[int index] => data[index];
@@ -48,19 +48,7 @@ public class DataGroup : QueryableData
 
 
 #if (UNITY_EDITOR)
-
-    public QueryableData[] elementData
-    {
-        set
-        {
-            data = value;
-        }
-        get
-        {
-            return data;
-        }
-    }
-
+    
     [OnionCollections.DataEditor.NodeTitle]
     string nodeTitle => string.IsNullOrEmpty(title) ? name : title;
 

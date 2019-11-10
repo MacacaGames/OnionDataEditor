@@ -23,16 +23,17 @@ namespace OnionCollections.DataEditor.Editor
         }
         public void SetData(TreeNode tree)
         {
-            treeQuery = new Dictionary<int, TreeNode>();
 
             this.tree = tree;
-            id = 0;
 
             BuildRoot();
             Reload();
         }
         protected override TreeViewItem BuildRoot()
         {
+            treeQuery = new Dictionary<int, TreeNode>();
+            id = 0;
+
             TreeViewItem root = TreeNodeToTreeViewItem(id, -1, tree);
             id++;
 

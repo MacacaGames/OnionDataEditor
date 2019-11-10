@@ -24,7 +24,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 _target = value;
                                 
-                rootVisualElement.Q<ObjectField>("target-field").SetValueWithoutNotify(value);
+                //rootVisualElement.Q<ObjectField>("target-field").SetValueWithoutNotify(value);
 
                 VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
                 containerRoot.visible = (value != null);
@@ -35,8 +35,11 @@ namespace OnionCollections.DataEditor.Editor
                     tree.SetTreeRoot();
 
                     //選擇Root
-                    selectedNode = tree;                    
-                    tree.treeView.SetSelection(new List<int> { 0 });    
+                    selectedNode = tree;
+
+                    int rootId = tree.treeView.GetRows()[0].id;
+                    tree.treeView.SetSelection(new List<int> { rootId });
+                    tree.treeView.SetExpanded(rootId, true);
 
                     rootVisualElement.Q("btn-add-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
                     rootVisualElement.Q("btn-bookmark").style.display = (value != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
@@ -89,6 +92,7 @@ namespace OnionCollections.DataEditor.Editor
 
         public void OnEnable()
         {
+            titleContent = new GUIContent("OnionDataEditor");
             Init();
         }
 
@@ -106,13 +110,13 @@ namespace OnionCollections.DataEditor.Editor
             root.Add(cloneTree);
 
             CreateNeededAsset();
-            
+
             //綁定btn-refresh
-            root.Q<Button>("btn-refresh").clickable.clicked += () => { if (tree != null) tree.SetTreeRoot(); };
+            root.Q<Button>("btn-refresh").clickable.clicked += OnFresh;
             root.Q("btn-refresh-icon").style.backgroundImage = EditorGUIUtility.FindTexture("d_Refresh");
 
             //綁定btn-bookmark
-            root.Q<Button>("btn-bookmark").clickable.clicked += () => { target = bookmarkGroup as ScriptableObject; };
+            root.Q<Button>("btn-bookmark").clickable.clicked += () => { SetTarget(bookmarkGroup); };
             root.Q("btn-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("FolderFavorite Icon");
 
             //綁定btn-add-bookmark
@@ -128,9 +132,13 @@ namespace OnionCollections.DataEditor.Editor
                         bookmark.target = target;
 
                         AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
-                        var tempList = (bookmarkGroup.elementData == null) ? new List<QueryableData>() : new List<QueryableData>(bookmarkGroup.elementData);
-                        tempList.Add(bookmark);
-                        bookmarkGroup.elementData = tempList.ToArray();
+
+                        SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
+                        SerializedProperty data = serializedObject.FindProperty("data");
+                        data.InsertArrayElementAtIndex(data.arraySize);
+                        SerializedProperty dataItem = data.GetArrayElementAtIndex(data.arraySize-1);
+                        dataItem.objectReferenceValue = bookmark;
+                        serializedObject.ApplyModifiedProperties();
                     }
                     else
                     {
@@ -156,31 +164,33 @@ namespace OnionCollections.DataEditor.Editor
                 containerRoot.Add(treeViewContainer);
             }
 
-            //target-field設定與綁定
-            ChangeCallback = _ => {
-                target = _.newValue as ScriptableObject;
-            };
 
-            root.Q<ObjectField>("target-field").objectType = typeof(ScriptableObject);
-            root.Q<ObjectField>("target-field").SetValueWithoutNotify(null);
-            root.Q<ObjectField>("target-field").RegisterValueChangedCallback(ChangeCallback);
+            //root.Q<ObjectField>("target-field").objectType = typeof(ScriptableObject);
+            //root.Q<ObjectField>("target-field").SetValueWithoutNotify(null);
             
             var inspectorContainer = new IMGUIContainer(DrawInspector);
             inspectorContainer.AddToClassList("inspect-container");
             root.Q("inspector-scroll").Q("unity-content-container").Add(inspectorContainer);
-            
+
         }
 
-        EventCallback<ChangeEvent<UnityEngine.Object>> ChangeCallback;
+        void OnFresh()
+        {
+            //if (rootVisualElement.Q<ObjectField>("target-field").value != target)
+            //    target = rootVisualElement.Q<ObjectField>("target-field").value as ScriptableObject;
 
+            if (tree != null)
+                tree.SetTreeRoot();
+        }
+        
         public void SetTarget(IQueryableData data)
         {
             var root = this.rootVisualElement;
-            root.Q<ObjectField>("target-field").value = data as ScriptableObject;
-            //target = data as ScriptableObject;
+            target = data as ScriptableObject;
+            //root.Q<ObjectField>("target-field").value = data as ScriptableObject;
+
         }
-
-
+        
         DataGroup bookmarkGroup = null;
         void CreateNeededAsset()
         {
@@ -189,7 +199,7 @@ namespace OnionCollections.DataEditor.Editor
             if (bookmarkGroup == null)
             {
                 bookmarkGroup = CreateInstance<DataGroup>();
-                bookmarkGroup.elementData = new QueryableData[0];
+                Debug.Log("Create Bookmark Group");
                 AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
             }
 

@@ -10,7 +10,7 @@
                     <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" />
                 </ui:Button>
                 <ui:VisualElement class="card" style="flex-grow: 1; height: 30px; justify-content: center; flex-direction: column;">
-                    <uie:ObjectField label="Target" allow-scene-objects="false" name="target-field" view-data-key="target" style="margin-left: 10px; margin-right: 10px; margin-top: 0; margin-bottom: 0;">
+                    <uie:ObjectField label="Target" allow-scene-objects="false" name="target-field" view-data-key="target" style="margin-left: 10px; margin-right: 10px; margin-top: 0; margin-bottom: 0; display: none;">
                         <Style path="Assets/OnionDataEditor/Editor/Onion.uss" />
                     </uie:ObjectField>
                 </ui:VisualElement>
