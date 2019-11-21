@@ -10,11 +10,12 @@ public static class OnionDataEditor
     [MenuItem("Assets/Open with Onion Data Editor")]
     public static void OpenWithOnionDataEditor()
     {
+        //NOTE: 可接受非IQueryableData的ScriptableObject
         ScriptableObject selectObj = Selection.activeObject as ScriptableObject;
-        if (selectObj != null && selectObj is IQueryableData queryableData)
+        if (selectObj != null)
         {
             var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
-            window.SetTarget(queryableData);
+            window.SetScriptableObjectTarget(selectObj);
         }
     }
 

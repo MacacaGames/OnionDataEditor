@@ -185,12 +185,15 @@ namespace OnionCollections.DataEditor.Editor
         
         public void SetTarget(IQueryableData data)
         {
-            var root = this.rootVisualElement;
             target = data as ScriptableObject;
-            //root.Q<ObjectField>("target-field").value = data as ScriptableObject;
 
         }
-        
+
+        public void SetScriptableObjectTarget(ScriptableObject data)
+        {
+            target = data;
+        }
+
         DataGroup bookmarkGroup = null;
         void CreateNeededAsset()
         {
