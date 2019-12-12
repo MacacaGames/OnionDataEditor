@@ -38,8 +38,9 @@
 
 #data-info-btn-list .onion-btn {
     min-width: 80px;
-	max-width: 250px;
+    max-width: 250px;
     height: 30px;
+    border-radius: 15px;
 }
 
 .card {
@@ -50,7 +51,8 @@
 
 .onion-btn {
     background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 9999;
+    border-radius: 9999px;
+    border-width: 0;
     background-image: none;
     margin: 5;
     padding: 10;
