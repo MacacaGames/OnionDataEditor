@@ -16,7 +16,7 @@ public class DataGroup : QueryableData
 
     [OnionCollections.DataEditor.NodeElement]
     [SerializeField]
-    QueryableData[] data = new QueryableData[0];
+    protected QueryableData[] data = new QueryableData[0];
 
     public QueryableData this[string id] => this.QueryByID(id) as QueryableData;
     public QueryableData this[int index] => data[index];
