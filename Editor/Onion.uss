@@ -94,3 +94,21 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+.spliter {
+    cursor: split-resize-left-right;
+    background-color: rgba(0, 0, 0, 0.1);
+    opacity: 0.1;
+}
+
+.spliter:hover {
+    opacity: 1;
+}
+
+.spliter-h {
+    cursor: split-resize-left-right;
+}
+
+.spliter-v {
+    cursor: split-resize-up-down;
+}

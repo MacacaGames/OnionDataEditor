@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row;">
         <Style src="Onion.uss" />
-        <ui:VisualElement style="width: 300px;">
+        <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px;">
             <ui:VisualElement style="flex-direction: row;">
                 <ui:Button name="btn-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                     <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
@@ -18,16 +18,18 @@
             </ui:VisualElement>
             <ui:VisualElement name="tree-view-container" style="flex-grow: 1;" />
         </ui:VisualElement>
-        <ui:VisualElement style="background-color: rgba(128, 128, 128, 0.08); flex-grow: 1;">
+        <ui:VisualElement name="Spliter" class="spliter" style="width: 6px;" />
+        <ui:VisualElement name="ContainerB" style="flex-grow: 1;">
             <ui:ScrollView name="inspector-scroll" style="flex-grow: 1;" />
-            <ui:VisualElement name="data-info" class="data-info">
+            <ui:VisualElement name="Spliter" class="spliter" style="height: 6px;" />
+            <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); flex-grow: 1; height: 120px;">
                 <ui:VisualElement style="flex-direction: row;">
                     <ui:Label name="info-title" class="h3" style="height: 30px; margin: 0; -unity-text-align: middle-left; flex-grow: 1;" />
                     <ui:Button name="btn-info-document" class="onion-icon-btn onion-btn" style="width: 30px; height: 30px; margin-left: 0; margin-right: 0; margin-top: 0; margin-bottom: 0;">
                         <ui:VisualElement name="btn-info-document-icon" style="width: 16px; height: 16px;" />
                     </ui:Button>
                 </ui:VisualElement>
-                <ui:Label name="info-description" class="p" style="-unity-text-align: middle-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 5px; padding-bottom: 5px; height: 40px;" />
+                <ui:Label name="info-description" class="p" style="-unity-text-align: upper-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 10px; padding-bottom: 10px; height: 40px; flex-grow: 1;" />
                 <ui:VisualElement name="data-info-btn-list" style="height: 35px; flex-direction: row;" />
             </ui:VisualElement>
         </ui:VisualElement>

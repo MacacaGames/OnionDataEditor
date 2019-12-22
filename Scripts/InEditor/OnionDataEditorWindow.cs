@@ -164,13 +164,20 @@ namespace OnionCollections.DataEditor.Editor
                 containerRoot.Add(treeViewContainer);
             }
 
-
-            //root.Q<ObjectField>("target-field").objectType = typeof(ScriptableObject);
-            //root.Q<ObjectField>("target-field").SetValueWithoutNotify(null);
-            
+            //Inspector
             var inspectorContainer = new IMGUIContainer(DrawInspector);
             inspectorContainer.AddToClassList("inspect-container");
             root.Q("inspector-scroll").Q("unity-content-container").Add(inspectorContainer);
+
+            //Split
+
+            root.Q("Spliter").AddManipulator(new VisualElementResizer(
+                root.Q("ContainerA"), root.Q("ContainerB"), root.Q("Spliter"),
+                VisualElementResizer.Direction.Horizontal));
+
+            root.Q("ContainerB").Q("Spliter").AddManipulator(new VisualElementResizer(
+                root.Q("ContainerB").Q("inspector-scroll"), root.Q("ContainerB").Q("data-info"), root.Q("ContainerB").Q("Spliter"),
+                VisualElementResizer.Direction.Vertical));
 
         }
 
