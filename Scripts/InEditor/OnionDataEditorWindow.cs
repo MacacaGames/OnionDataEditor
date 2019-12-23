@@ -149,12 +149,33 @@ namespace OnionCollections.DataEditor.Editor
             root.Q("btn-add-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("Favorite Icon");
 
             //綁定btn-info-document
-            root.Q<Button>("btn-info-document").clickable.clicked += () => 
+            root.Q<Button>("btn-info-document").clickable.clicked += () =>
             {
                 OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.dataObj));
             };
             root.Q("btn-info-document-icon").style.backgroundImage = EditorGUIUtility.FindTexture("_Help");
-            
+
+            //綁定btn-search-target
+            root.Q<Button>("btn-search-target").clickable.clicked += () =>
+            {
+                int controlID = root.Q<Button>("btn-search-target").GetHashCode();
+                EditorGUIUtility.ShowObjectPicker<ScriptableObject>(null, false, "", controlID);
+            };
+            root.Q("btn-search-target").Add(new IMGUIContainer(() =>
+            {
+                if (Event.current.commandName == "ObjectSelectorClosed" && 
+                    EditorGUIUtility.GetObjectPickerObject() != null &&
+                    EditorGUIUtility.GetObjectPickerControlID() == root.Q<Button>("btn-search-target").GetHashCode())
+                {
+                    ScriptableObject selectObj = EditorGUIUtility.GetObjectPickerObject() as ScriptableObject;
+                
+                    if(selectObj != null)
+                        SetScriptableObjectTarget(selectObj);
+                }
+            }));
+            root.Q("btn-search-target-icon").style.backgroundImage = EditorGUIUtility.FindTexture("Search Icon");
+
+
             //建構treeview
             VisualElement containerRoot = root.Q("tree-view-container");
             if (treeViewContainer == null)

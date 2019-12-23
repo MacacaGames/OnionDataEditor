@@ -101,7 +101,7 @@
     opacity: 0.1;
 }
 
-.spliter:hover {
+.spliter:hover, .spliter:active {
     opacity: 1;
 }
 

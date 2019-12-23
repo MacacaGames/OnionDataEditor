@@ -9,9 +9,10 @@
                 <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                     <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
                 </ui:Button>
-                <ui:VisualElement class="card" style="flex-grow: 1; height: 30px; justify-content: center; flex-direction: column;">
-                    <uie:ObjectField label="Target" allow-scene-objects="false" name="target-field" view-data-key="target" style="margin-left: 10px; margin-right: 10px; margin-top: 0; margin-bottom: 0; display: none;" />
-                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
+                <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                    <ui:VisualElement name="btn-search-target-icon" class="btn-icon" />
+                </ui:Button>
                 <ui:Button name="btn-refresh" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                     <ui:VisualElement name="btn-refresh-icon" class="btn-icon" />
                 </ui:Button>
