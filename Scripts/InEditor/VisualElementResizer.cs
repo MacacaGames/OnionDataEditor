@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace OnionCollections.DataEditor
 {
-    class VisualElementResizer : MouseManipulator
+    public class VisualElementResizer : MouseManipulator
     {
         private Vector2 m_Start;
         protected bool m_Active;
