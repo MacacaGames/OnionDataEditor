@@ -26,7 +26,7 @@ namespace OnionCollections.DataEditor
             m_ContainerB = containerB;
             m_Direction = direction;
 
-            spliter.AddClass(direction == Direction.Horizontal ? "spliter-h" : "spliter-v");
+            spliter.AddToClassList(direction == Direction.Horizontal ? "spliter-h" : "spliter-v");
 
             activators.Add(new ManipulatorActivationFilter { button = MouseButton.LeftMouse });
             m_Active = false;
