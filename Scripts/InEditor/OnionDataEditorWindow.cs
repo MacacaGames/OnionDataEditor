@@ -55,8 +55,10 @@ namespace OnionCollections.DataEditor.Editor
             {
                 _selectedNode = value;
 
-                if (selectedInspectorEditor == null || selectedInspectorEditor.target != value.dataObj)
-                    selectedInspectorEditor = UnityEditor.Editor.CreateEditor(value.dataObj);
+                if (value != null)
+                {
+                    onSelectInspector = value.onInspectorAction;
+                }
 
                 DisplayInfo(value);
 
@@ -251,12 +253,13 @@ namespace OnionCollections.DataEditor.Editor
         }
 
         //Inspector
-        UnityEditor.Editor selectedInspectorEditor;
+        OnionAction onSelectInspector;
         void DrawInspector()
         {
-            if (selectedNode != null && selectedNode.dataObj != null)
+            if (selectedNode != null && onSelectInspector != null)
             {
-                selectedInspectorEditor.OnInspectorGUI();
+                onSelectInspector.action?.Invoke();
+                //selectedInspectorEditor.OnInspectorGUI();
             }
         }
 

@@ -107,6 +107,8 @@ namespace OnionCollections.DataEditor.Editor
         public OnionAction onDoubleClickAction = null;
         public OnionAction onInspectorAction = null;
 
+        UnityEditor.Editor editorCache = null;
+
         [System.Flags]
         public enum NodeFlag
         {
@@ -127,7 +129,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             this.dataObj = dataObj;
             this.nodeFlag = nodeFlag;
-
+            
             if (isPseudo == false)
                 InitSetting();
         }
@@ -136,6 +138,12 @@ namespace OnionCollections.DataEditor.Editor
         {
             displayName = GetTitle();
             icon = GetIcon();
+
+            if (dataObj != null)
+            {
+                editorCache = UnityEditor.Editor.CreateEditor(dataObj);
+                onInspectorAction = GetInspectorDrawer();
+            }
 
             nodeActions = new List<OnionAction>(dataObj.GetNodeActions());
 
@@ -170,6 +178,15 @@ namespace OnionCollections.DataEditor.Editor
                 return EditorGUIUtility.FindTexture("console.erroricon.sml");
             else
                 return dataObj.GetNodeIcon();
+        }
+        public OnionAction GetInspectorDrawer()
+        {
+            if (isPseudo == false && dataObj != null)
+            {
+                return new OnionAction(editorCache.OnInspectorGUI);
+            }
+
+            return null;
         }
     }
         
