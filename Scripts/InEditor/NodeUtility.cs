@@ -72,6 +72,25 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
         
+        public static void GetElementTree(this ScriptableObject dataObj, TreeNode parent)
+        {
+            var node = GetElements(dataObj);
+            parent.nodes.AddRange(node);
+
+            foreach (var el in node)
+            {
+                if (el.dataObj != null)
+                {
+                    el.dataObj.GetElementTree(el);
+                }
+            }
+        }
+
+        public static void GetElementTree(this TreeNode node, TreeNode parent)
+        {
+            node.dataObj.GetElementTree(parent);
+        }
+
         static T TryGetNodeAttrValue<T>(ScriptableObject dataObj, Type attrType) where T : class
         {
             Type type = dataObj.GetType();
