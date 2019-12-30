@@ -26,10 +26,10 @@ namespace OnionCollections.DataEditor.Editor
 
                 var members = dataObj.GetType().GetMembers(defaultBindingFlags);
 
-                var elList =  members.FilterWithAttribute(typeof(OnionCollections.DataEditor.NodeElementAttribute)).ToList();
+                //NodeElement
+                var elList =  members.FilterWithAttribute(typeof(NodeElementAttribute)).ToList();
                 if (elList.Count > 0)
                 {
-
                     foreach (var member in elList)
                     {
                         if (member.TryGetValue(dataObj, out ScriptableObject result_single))
@@ -37,8 +37,37 @@ namespace OnionCollections.DataEditor.Editor
                         else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> result_ienumerable))
                             nodeList.AddRange(result_ienumerable.Select(_ => new TreeNode(_)));
                     }
-
                 }
+
+                //NodeGroupedElement
+                var groupedElList = members.FilterWithAttribute(typeof(NodeGroupedElementAttribute)).ToList();
+                if (groupedElList.Count > 0)
+                {
+                    foreach (var member in groupedElList)
+                    {
+                        NodeGroupedElementAttribute attr = member.GetCustomAttribute<NodeGroupedElementAttribute>(true);
+                        TreeNode groupedNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                        {
+                            displayName = attr.displayName,
+                        };
+
+                        List<TreeNode> node = new List<TreeNode>();
+
+                        if (member.TryGetValue(dataObj, out ScriptableObject singleObj))
+                            node.Add(new TreeNode(singleObj));
+                        else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> ienumerableObj))
+                            node.AddRange(ienumerableObj.Select(_ => new TreeNode(_)));
+
+                        if (attr.findTree)
+                            foreach (var item in node)
+                                item.GetElementTree();
+                        groupedNode.nodes.AddRange(node);
+
+                        nodeList.Add(groupedNode);
+                    }
+                }
+
+                //NodePseudoElement
                 var pseudoList = members.FilterWithAttribute(typeof(NodePseudoElementAttribute)).ToList();
                 if (pseudoList.Count > 0)
                 {
@@ -49,7 +78,7 @@ namespace OnionCollections.DataEditor.Editor
                             if (member.TryGetValue(dataObj, out TreeNode result_pseudo))
                             {
                                 if (result_pseudo.isPseudo == false)
-                                    throw new System.NotImplementedException("This node must be pseudo.");
+                                    throw new NotImplementedException("This node must be pseudo.");
                                 nodeList.Add(result_pseudo);
                             }
                         }
@@ -59,7 +88,7 @@ namespace OnionCollections.DataEditor.Editor
                             {
                                 foreach(var pseudoNode in result_pseudo)
                                     if (pseudoNode.isPseudo == false)
-                                        throw new System.NotImplementedException("This node must be pseudo.");
+                                        throw new NotImplementedException("This node must be pseudo.");
                                 nodeList.AddRange(result_pseudo);
                             }
                         }
@@ -72,25 +101,20 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
         
-        public static void GetElementTree(this ScriptableObject dataObj, TreeNode parent)
+        public static void GetElementTree(this TreeNode tagetNode)
         {
-            var node = GetElements(dataObj);
-            parent.nodes.AddRange(node);
+            var node = GetElements(tagetNode.dataObj);
+            tagetNode.nodes.AddRange(node);
 
             foreach (var el in node)
             {
                 if (el.dataObj != null)
                 {
-                    el.dataObj.GetElementTree(el);
+                    el.GetElementTree();
                 }
             }
         }
-
-        public static void GetElementTree(this TreeNode node, TreeNode parent)
-        {
-            node.dataObj.GetElementTree(parent);
-        }
-
+        
         static T TryGetNodeAttrValue<T>(ScriptableObject dataObj, Type attrType) where T : class
         {
             Type type = dataObj.GetType();
