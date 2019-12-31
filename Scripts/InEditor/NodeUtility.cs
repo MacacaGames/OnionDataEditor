@@ -26,72 +26,21 @@ namespace OnionCollections.DataEditor.Editor
 
                 var members = dataObj.GetType().GetMembers(defaultBindingFlags);
 
-                //NodeElement
-                var elList =  members.FilterWithAttribute(typeof(NodeElementAttribute)).ToList();
-                if (elList.Count > 0)
+                foreach(var member in members)
                 {
-                    foreach (var member in elList)
+                    List<Type> attrTypes = new List<Type>
                     {
-                        if (member.TryGetValue(dataObj, out ScriptableObject result_single))
-                            nodeList.Add(new TreeNode(result_single));
-                        else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> result_ienumerable))
-                            nodeList.AddRange(result_ienumerable.Select(_ => new TreeNode(_)));
-                    }
-                }
+                        typeof(NodeElementAttribute),
+                        typeof(NodeGroupedElementAttribute),
+                        typeof(NodeCustomElementAttribute),
+                        //++
+                    };
 
-                //NodeGroupedElement
-                var groupedElList = members.FilterWithAttribute(typeof(NodeGroupedElementAttribute)).ToList();
-                if (groupedElList.Count > 0)
-                {
-                    foreach (var member in groupedElList)
+                    foreach (var attrType in attrTypes)
                     {
-                        NodeGroupedElementAttribute attr = member.GetCustomAttribute<NodeGroupedElementAttribute>(true);
-                        TreeNode groupedNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
-                        {
-                            displayName = attr.displayName,
-                        };
-
-                        List<TreeNode> node = new List<TreeNode>();
-
-                        if (member.TryGetValue(dataObj, out ScriptableObject singleObj))
-                            node.Add(new TreeNode(singleObj));
-                        else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> ienumerableObj))
-                            node.AddRange(ienumerableObj.Select(_ => new TreeNode(_)));
-
-                        if (attr.findTree)
-                            foreach (var item in node)
-                                item.GetElementTree();
-                        groupedNode.nodes.AddRange(node);
-
-                        nodeList.Add(groupedNode);
-                    }
-                }
-
-                //NodePseudoElement
-                var pseudoList = members.FilterWithAttribute(typeof(NodePseudoElementAttribute)).ToList();
-                if (pseudoList.Count > 0)
-                {
-                    foreach (var member in pseudoList)
-                    {
-                        if (member.GetMemberInfoType() == typeof(TreeNode))
-                        {
-                            if (member.TryGetValue(dataObj, out TreeNode result_pseudo))
-                            {
-                                if (result_pseudo.isPseudo == false)
-                                    throw new NotImplementedException("This node must be pseudo.");
-                                nodeList.Add(result_pseudo);
-                            }
-                        }
-                        else if(member.GetMemberInfoType() == typeof(IEnumerable<TreeNode>))
-                        {
-                            if (member.TryGetValue(dataObj, out IEnumerable<TreeNode> result_pseudo))
-                            {
-                                foreach(var pseudoNode in result_pseudo)
-                                    if (pseudoNode.isPseudo == false)
-                                        throw new NotImplementedException("This node must be pseudo.");
-                                nodeList.AddRange(result_pseudo);
-                            }
-                        }
+                        Attribute attr = member.GetCustomAttribute(attrType);
+                        if (attr != null)
+                            nodeList.AddRange(GetChildNodeWithAttribute(dataObj, member, attr));
                     }
                 }
 
@@ -100,18 +49,96 @@ namespace OnionCollections.DataEditor.Editor
 
             return null;
         }
-        
+
+        static IEnumerable<TreeNode> GetChildNodeWithAttribute(ScriptableObject dataObj, MemberInfo member, Attribute attr)
+        {
+            List<TreeNode> result = new List<TreeNode>();
+
+
+            //NodeElement
+            if (attr.GetType() == typeof(NodeElementAttribute))
+            {
+
+                if (member.TryGetValue(dataObj, out ScriptableObject resultElementSingle))
+                    result.Add(new TreeNode(resultElementSingle));
+                else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> resultElement))
+                    result.AddRange(resultElement.Select(_ => new TreeNode(_)));
+
+            }
+
+            //NodeGroupedElement
+            else if (attr.GetType() == typeof(NodeGroupedElementAttribute))
+            {
+                NodeGroupedElementAttribute groupAttr = attr as NodeGroupedElementAttribute;
+                TreeNode groupedNode = groupAttr.rootNode;
+
+                List<TreeNode> node = new List<TreeNode>();
+
+                if (member.TryGetValue(dataObj, out ScriptableObject singleObj))
+                    node.Add(new TreeNode(singleObj));
+                else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> ienumerableObj))
+                    node.AddRange(ienumerableObj.Select(_ => new TreeNode(_)));
+
+                //若需要FindTree，則遍歷底下節點找
+                if (groupAttr.findTree)
+                    foreach (var item in node)
+                        item.GetElementTree();
+                groupedNode.nodes.AddRange(node);
+
+                result.Add(groupedNode);
+            }
+
+            //NodeCustomElement
+            else if (attr.GetType() == typeof(NodeCustomElementAttribute))
+            {
+                if (member.GetMemberInfoType() == typeof(TreeNode))
+                {
+                    if (member.TryGetValue(dataObj, out TreeNode resultCustomSingle))
+                        result.Add(resultCustomSingle);
+                }
+                else if (member.GetMemberInfoType() == typeof(IEnumerable<TreeNode>))
+                {
+                    if (member.TryGetValue(dataObj, out IEnumerable<TreeNode> resultCustom))
+                        result.AddRange(resultCustom);
+                }
+            }
+
+            return result;
+        }
+
+
+        /// <summary>將特定TreeNode長出其下子節點。</summary>
         public static void GetElementTree(this TreeNode tagetNode)
         {
+            if (ReferenceCheck(tagetNode) == false)
+            {
+                EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
+                throw new System.StackOverflowException($"{tagetNode.displayName} is a parent of itself.");
+            }
+
             var node = GetElements(tagetNode.dataObj);
             tagetNode.nodes.AddRange(node);
 
             foreach (var el in node)
             {
-                if (el.dataObj != null)
+                if (el.dataObj != null && 
+                    el.nodeFlag.HasFlag(TreeNode.NodeFlag.HideElementNodes) == false)
                 {
                     el.GetElementTree();
                 }
+            }
+
+            //檢查是否無限循環參照
+            bool ReferenceCheck(TreeNode n)
+            {
+                TreeNode checkNode = n;
+                while (checkNode.parent != null)
+                {
+                    checkNode = checkNode.parent;
+                    if (n.dataObj == checkNode.dataObj)
+                        return false;
+                }
+                return true;
             }
         }
         

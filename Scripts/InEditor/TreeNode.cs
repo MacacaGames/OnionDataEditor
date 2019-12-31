@@ -20,8 +20,7 @@ namespace OnionCollections.DataEditor.Editor
 
         public void SetTreeRoot()
         {
-            //depth = 0;
-            CreatTree(this, -1);
+            CreatTree(this);
 
             var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
 
@@ -35,55 +34,11 @@ namespace OnionCollections.DataEditor.Editor
             
         }
 
-        void CreatTree(TreeNode node, int depth)
+        void CreatTree(TreeNode node)
         {
             if (node == null) return;
 
-            //深度過深
-            if (depth >= maxDepth)
-            {
-                Debug.LogError("Too depth.");
-                return;
-            }
-
-            //node.depth = depth;
-
-            if (ReferenceCheck(node) == false)
-            {
-                EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
-                throw new System.StackOverflowException($"{node.displayName} is a parent of itself.");
-            }
-            
-            if (node.nodeFlag.HasFlag(NodeFlag.HideElementNodes) == false)
-            {
-                //嘗試抓下一層
-                var els = node.dataObj.GetElements();
-                if (els == null) return;
-
-
-                //加入下一層
-                node.nodes = new List<TreeNode>(els);
-
-
-                //遍歷下一層
-                foreach (var item in node.nodes)
-                {
-                    item.parent = node;
-                    CreatTree(item, depth + 1);
-                }
-            }
-        }
-        
-        bool ReferenceCheck(TreeNode node)
-        {
-            TreeNode checkNode = node;
-            while (checkNode.parent != null)
-            {
-                checkNode = checkNode.parent;
-                if (node.dataObj == checkNode.dataObj)
-                    return false;
-            }
-            return true;
+            node.GetElementTree();
         }
     }
 
