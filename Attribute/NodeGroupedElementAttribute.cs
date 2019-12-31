@@ -8,10 +8,12 @@ namespace OnionCollections.DataEditor.Editor
     {
         public TreeNode rootNode;
         public bool findTree;
-        
-        public NodeGroupedElementAttribute(string displayName, bool findTree = false)
+        public bool hideIfEmpty;
+
+        public NodeGroupedElementAttribute(string displayName, bool findTree = false, bool hideIfEmpty = false)
         {
             this.findTree = findTree;
+            this.hideIfEmpty = hideIfEmpty;
 
             rootNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
             {

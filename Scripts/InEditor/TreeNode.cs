@@ -46,11 +46,9 @@ namespace OnionCollections.DataEditor.Editor
     {
         public ScriptableObject dataObj { get; protected set; }
 
-        protected const int maxDepth = 16;
-        //protected int depth;
-
         public bool isPseudo => nodeFlag.HasFlag(NodeFlag.Pseudo);
         public bool isNull => !isPseudo && dataObj == null;
+        public bool isHideElementNodes => nodeFlag.HasFlag(NodeFlag.HideElementNodes);
 
         public string displayName;
         public Texture icon = null;
@@ -69,7 +67,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             None = 0,
             Pseudo = 1 << 0,
-            HideElementNodes = 1 << 1
+            HideElementNodes = 1 << 1,
         }
         public NodeFlag nodeFlag = NodeFlag.None;
 
@@ -111,7 +109,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             if (isPseudo)
                 return displayName;
-            else if (dataObj == null)
+            else if (isNull)
                 return "NULL";
             else
                 return dataObj.GetNodeTitle() ?? dataObj.name;
@@ -120,7 +118,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             if (isPseudo)
                 return "";
-            else if (dataObj == null)
+            else if (isNull)
                 return "";
             else
                 return dataObj.GetNodeDescription() ?? "";
@@ -128,8 +126,8 @@ namespace OnionCollections.DataEditor.Editor
         public Texture GetIcon()
         {
             if (isPseudo)
-                return null;
-            else if (dataObj == null)
+                return icon;
+            else if (isNull)
                 return EditorGUIUtility.FindTexture("console.erroricon.sml");
             else
                 return dataObj.GetNodeIcon();

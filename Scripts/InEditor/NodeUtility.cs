@@ -58,12 +58,10 @@ namespace OnionCollections.DataEditor.Editor
             //NodeElement
             if (attr.GetType() == typeof(NodeElementAttribute))
             {
-
-                if (member.TryGetValue(dataObj, out ScriptableObject resultElementSingle))
-                    result.Add(new TreeNode(resultElementSingle));
-                else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> resultElement))
-                    result.AddRange(resultElement.Select(_ => new TreeNode(_)));
-
+                result.AddRange(
+                    GetSingleOrMultipleType<ScriptableObject>(dataObj, member)
+                    .Select(_ => new TreeNode(_))
+                    );
             }
 
             //NodeGroupedElement
@@ -74,36 +72,43 @@ namespace OnionCollections.DataEditor.Editor
 
                 List<TreeNode> node = new List<TreeNode>();
 
-                if (member.TryGetValue(dataObj, out ScriptableObject singleObj))
-                    node.Add(new TreeNode(singleObj));
-                else if (member.TryGetValue(dataObj, out IEnumerable<ScriptableObject> ienumerableObj))
-                    node.AddRange(ienumerableObj.Select(_ => new TreeNode(_)));
-
+                node.AddRange(
+                    GetSingleOrMultipleType<ScriptableObject>(dataObj, member)
+                    .Select(_ => new TreeNode(_))
+                    );
+                
+                
                 //若需要FindTree，則遍歷底下節點找
                 if (groupAttr.findTree)
                     foreach (var item in node)
                         item.GetElementTree();
+                        
                 groupedNode.nodes.AddRange(node);
 
-                result.Add(groupedNode);
+                //如果Element是Empty則不加入Group
+                if ((groupAttr.hideIfEmpty == true && groupedNode.nodes.Count == 0) == false)
+                    result.Add(groupedNode);
             }
 
             //NodeCustomElement
             else if (attr.GetType() == typeof(NodeCustomElementAttribute))
             {
-                if (member.GetMemberInfoType() == typeof(TreeNode))
-                {
-                    if (member.TryGetValue(dataObj, out TreeNode resultCustomSingle))
-                        result.Add(resultCustomSingle);
-                }
-                else if (member.GetMemberInfoType() == typeof(IEnumerable<TreeNode>))
-                {
-                    if (member.TryGetValue(dataObj, out IEnumerable<TreeNode> resultCustom))
-                        result.AddRange(resultCustom);
-                }
+                result.AddRange(GetSingleOrMultipleType<TreeNode>(dataObj, member));
             }
 
             return result;
+        }
+
+        static IEnumerable<T> GetSingleOrMultipleType<T>(ScriptableObject dataObj, MemberInfo member) where T: class
+        {
+            if (member.TryGetValue(dataObj, out T resultCustomSingle))
+                return new List<T> { resultCustomSingle };
+
+            else if (member.TryGetValue(dataObj, out IEnumerable<T> resultCustom))
+                return resultCustom;
+
+            else
+                return new List<T> { };
         }
 
 
@@ -122,7 +127,7 @@ namespace OnionCollections.DataEditor.Editor
             foreach (var el in node)
             {
                 if (el.dataObj != null && 
-                    el.nodeFlag.HasFlag(TreeNode.NodeFlag.HideElementNodes) == false)
+                    el.isHideElementNodes == false)
                 {
                     el.GetElementTree();
                 }
