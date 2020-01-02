@@ -1,4 +1,4 @@
-﻿#if(UNITY_EDITOR)
+﻿#if (UNITY_EDITOR)
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -144,4 +144,31 @@ namespace OnionCollections.DataEditor.Editor
     }
         
 }
+
+#else
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System.Linq;
+
+public class TreeNode
+{
+    [System.Flags]
+    public enum NodeFlag
+    {
+        None = 0,
+        Pseudo = 1 << 0,
+        HideElementNodes = 1 << 1,
+    }
+
+    public TreeNode(ScriptableObject dataObj)
+    {
+    }
+
+    public TreeNode(NodeFlag nodeFlag, ScriptableObject dataObj = null)
+    {
+    }
+}
+
 #endif
