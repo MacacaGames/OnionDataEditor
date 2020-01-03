@@ -122,7 +122,8 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             var node = GetElements(tagetNode.dataObj);
-            tagetNode.nodes.AddRange(node);
+
+            tagetNode.nodes = new List<TreeNode>(node);
 
             foreach (var el in node)
             {
