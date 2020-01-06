@@ -3,7 +3,7 @@ using OnionCollections.DataEditor.Editor;
 
 #if (UNITY_EDITOR)
 
-/// <summary>在OnionDataEditor中會被包裹為一個節點，此節點可以是任意自訂節點。</summary>
+/// <summary>在OnionDataEditor中會被包裹到一個自訂節點，只能掛於IEnumerable的ScriptableObject、ScriptableObject上。</summary>
 [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
 public class NodeGroupedElementAttribute : Attribute
 {
