@@ -13,7 +13,7 @@ namespace OnionCollections.DataEditor.Editor
         [SerializeField]
         string title;
 
-        public ScriptableObject target;
+        public Object target;
 
         [NodeTitle]
         string bookmarkName => string.IsNullOrEmpty(title) ? target.name : title;

@@ -11,7 +11,7 @@ public static class OnionDataEditor
     public static void OpenWithOnionDataEditor()
     {
         //NOTE: 可接受非IQueryableData的ScriptableObject
-        ScriptableObject selectObj = Selection.activeObject as ScriptableObject;
+        Object selectObj = Selection.activeObject;
         if (selectObj != null)
         {
             var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
@@ -22,7 +22,7 @@ public static class OnionDataEditor
     [UnityEditor.Callbacks.OnOpenAsset(1)]
     public static bool OnOpenAsset(int instanceID, int line)
     {
-        if (Selection.activeObject is ScriptableObject && Selection.activeObject is IQueryableData)
+        if (Selection.activeObject is IQueryableData)
         {
             OpenWithOnionDataEditor();
             return true; //catch open file

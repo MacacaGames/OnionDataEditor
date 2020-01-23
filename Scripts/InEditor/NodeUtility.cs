@@ -7,18 +7,28 @@ using UnityEngine;
 using UnityEditor;
 using System;
 using System.Linq;
-
 using System.Reflection;
-using OnionCollections;
+
+using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
 {
+
+
 
     public static class NodeUtility
     {
         const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
 
-        public static IEnumerable<TreeNode> GetElements(this ScriptableObject dataObj)
+        readonly static List<Type> nodeAttrTypeList = new List<Type>
+        {
+            typeof(NodeElementAttribute),
+            typeof(NodeGroupedElementAttribute),
+            typeof(NodeCustomElementAttribute),
+            //++
+        };
+
+        public static IEnumerable<TreeNode> GetElements(this Object dataObj)
         {
             if (dataObj != null)
             {
@@ -28,19 +38,13 @@ namespace OnionCollections.DataEditor.Editor
 
                 foreach(var member in members)
                 {
-                    List<Type> attrTypes = new List<Type>
+                    foreach (var attrType in nodeAttrTypeList)
                     {
-                        typeof(NodeElementAttribute),
-                        typeof(NodeGroupedElementAttribute),
-                        typeof(NodeCustomElementAttribute),
-                        //++
-                    };
-
-                    foreach (var attrType in attrTypes)
-                    {
-                        Attribute attr = member.GetCustomAttribute(attrType);
-                        if (attr != null)
-                            nodeList.AddRange(GetChildNodeWithAttribute(dataObj, member, attr));
+                        foreach (Attribute attr in member.GetCustomAttributes(attrType,true))
+                        {
+                            if (attr != null)
+                                nodeList.AddRange(GetChildNodeWithAttribute(dataObj, member, attr));
+                        }
                     }
                 }
 
@@ -50,34 +54,26 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
 
-        static IEnumerable<TreeNode> GetChildNodeWithAttribute(ScriptableObject dataObj, MemberInfo member, Attribute attr)
-        {
-            List<TreeNode> result = new List<TreeNode>();
-
-
+        static IEnumerable<TreeNode> GetChildNodeWithAttribute(Object dataObj, MemberInfo member, Attribute attr)
+        { 
             //NodeElement
             if (attr.GetType() == typeof(NodeElementAttribute))
             {
-                result.AddRange(
-                    GetSingleOrMultipleType<ScriptableObject>(dataObj, member)
-                    .Select(_ => new TreeNode(_))
-                    );
+                return
+                    GetSingleOrMultipleType<Object>()
+                    .Select(_ => new TreeNode(_));
             }
 
             //NodeGroupedElement
-            else if (attr.GetType() == typeof(NodeGroupedElementAttribute))
+            if (attr.GetType() == typeof(NodeGroupedElementAttribute))
             {
                 NodeGroupedElementAttribute groupAttr = attr as NodeGroupedElementAttribute;
                 TreeNode groupedNode = groupAttr.rootNode;
 
-                List<TreeNode> node = new List<TreeNode>();
-
-                node.AddRange(
-                    GetSingleOrMultipleType<ScriptableObject>(dataObj, member)
+                List<TreeNode> node = GetSingleOrMultipleType<Object>()
                     .Select(_ => new TreeNode(_))
-                    );
-                
-                
+                    .ToList();
+
                 //若需要FindTree，則遍歷底下節點找
                 if (groupAttr.findTree)
                     foreach (var item in node)
@@ -87,29 +83,46 @@ namespace OnionCollections.DataEditor.Editor
 
                 //如果Element是Empty則不加入Group
                 if ((groupAttr.hideIfEmpty == true && groupedNode.nodes.Count == 0) == false)
-                    result.Add(groupedNode);
+                    return new List<TreeNode> { groupedNode };
+                
+                return new List<TreeNode> { };
             }
 
             //NodeCustomElement
-            else if (attr.GetType() == typeof(NodeCustomElementAttribute))
+            if (attr.GetType() == typeof(NodeCustomElementAttribute))
             {
-                result.AddRange(GetSingleOrMultipleType<TreeNode>(dataObj, member));
+                return GetSingleOrMultipleType<TreeNode>();
             }
 
-            return result;
-        }
+            throw new Exception($"Unknown Attribute {dataObj.name}.{member.Name}(Attr:{attr.ToString()})");
 
-        static IEnumerable<T> GetSingleOrMultipleType<T>(ScriptableObject dataObj, MemberInfo member) where T: class
-        {
-            if (member.TryGetValue(dataObj, out T resultCustomSingle))
-                return new List<T> { resultCustomSingle };
 
-            else if (member.TryGetValue(dataObj, out IEnumerable<T> resultCustom))
-                return resultCustom;
+            //取得指定型別的T或IEnumerable<T>
+            IEnumerable<T> GetSingleOrMultipleType<T>() where T : class
+            {
+                Type memberType = member.ReflectedType;
 
-            else
+                //Single
+                if (memberType == typeof(T) || memberType.IsSubclassOf(typeof(T)))
+                {
+                    if (member.TryGetValue(dataObj, out T resultCustomSingle))
+                    {
+                        Debug.Log(resultCustomSingle.ToString());
+                        return new List<T> { resultCustomSingle };
+                    }
+                }
+                //Multiple
+                if (typeof(IEnumerable).IsAssignableFrom(memberType))
+                {
+                    if (member.TryGetValue(dataObj, out IEnumerable<T> resultCustom))
+                        return resultCustom;
+                }
+
                 return new List<T> { };
+            }
+
         }
+
 
 
         /// <summary>將特定TreeNode長出其下子節點。</summary>
@@ -147,8 +160,13 @@ namespace OnionCollections.DataEditor.Editor
                 return true;
             }
         }
-        
-        static T TryGetNodeAttrValue<T>(ScriptableObject dataObj, Type attrType) where T : class
+
+
+
+        #region 取得target身上的特定屬性Attribute
+
+        //取得屬性值的通用方法
+        static T TryGetNodeAttrValue<T>(Object dataObj, Type attrType) where T : class
         {
             Type type = dataObj.GetType();
             var members = type.GetMembers(defaultBindingFlags);
@@ -156,7 +174,7 @@ namespace OnionCollections.DataEditor.Editor
             foreach (var member in members)
                 if (member.GetCustomAttribute(attrType, true) != null)
                 {
-                    var result = ReflectionUtility.TryGetValue<T>(member, dataObj);
+                    var result = member.TryGetValue<T>(dataObj);
                     if (result.hasValue)
                         return result.value as T;
                 }
@@ -164,17 +182,17 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
     
-        public static string GetNodeTitle(this ScriptableObject dataObj)
+        public static string GetNodeTitle(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeTitleAttribute));
-            return result as string;
+            return result;
         }
-        public static string GetNodeDescription(this ScriptableObject dataObj)
+        public static string GetNodeDescription(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeDescriptionAttribute));
-            return result as string;
+            return result;
         }
-        public static Texture GetNodeIcon(this ScriptableObject dataObj)
+        public static Texture GetNodeIcon(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<Texture>(dataObj, typeof(NodeIconAttribute));
             if (result == null)
@@ -185,25 +203,21 @@ namespace OnionCollections.DataEditor.Editor
             return result;
         }
 
-        public static IEnumerable<OnionAction> GetNodeActions(this ScriptableObject dataObj)
+        public static IEnumerable<OnionAction> GetNodeActions(this Object dataObj)
         {
             List<OnionAction> result = new List<OnionAction>();
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
-                var methods = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(OnionCollections.DataEditor.NodeActionAttribute)).ToList();
-                foreach (var method in methods)
-                {
-                    if (method.GetGenericArguments().Length == 0)    //只接受沒有參數的Method
-                    {
-                        var attr = method.GetCustomAttribute<OnionCollections.DataEditor.NodeActionAttribute>();
-                        result.Add(new OnionAction(method, dataObj, attr.actionName ?? method.Name));
-                    }
-                }
+                result = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeActionAttribute))
+                    .Where(_ => _.GetGenericArguments().Length == 0)
+                    .Select(_ => new OnionAction(_, dataObj, _.GetCustomAttribute<NodeActionAttribute>().actionName ?? _.Name))
+                    .ToList();
+
             }
             return result;
         }
-        public static OnionAction GetNodeOnSelectedAction(this ScriptableObject dataObj)
+        public static OnionAction GetNodeOnSelectedAction(this Object dataObj)
         {
             if (dataObj != null)
             {
@@ -214,7 +228,7 @@ namespace OnionCollections.DataEditor.Editor
             }
             return null;
         }
-        public static OnionAction GetNodeOnDoubleClickAction(this ScriptableObject dataObj)
+        public static OnionAction GetNodeOnDoubleClickAction(this Object dataObj)
         {
             if (dataObj != null)
             {
@@ -226,6 +240,7 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
 
+        #endregion
     }
 }
 

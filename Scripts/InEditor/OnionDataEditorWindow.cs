@@ -10,14 +10,16 @@ using System;
 using System.Linq;
 using UnityEditor.IMGUI.Controls;
 
+using Object = UnityEngine.Object;
+
 namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDataEditorWindow : EditorWindow
     {
         const string path = "Assets/OnionDataEditor";
-        
-        ScriptableObject _target;
-        ScriptableObject target
+
+        Object _target;
+        Object target
         {
             get => _target;
             set
@@ -215,11 +217,11 @@ namespace OnionCollections.DataEditor.Editor
         
         public void SetTarget(IQueryableData data)
         {
-            target = data as ScriptableObject;
+            target = data as Object;
 
         }
 
-        public void SetScriptableObjectTarget(ScriptableObject data)
+        public void SetScriptableObjectTarget(Object data)
         {
             target = data;
         }

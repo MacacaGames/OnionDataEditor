@@ -12,7 +12,7 @@ namespace OnionCollections.DataEditor.Editor
     {
         public DataObjTreeView treeView;
 
-        public TreeRoot(ScriptableObject _) : base(_)
+        public TreeRoot(Object _) : base(_)
         {
             dataObj = _;
             displayName = GetTitle();
@@ -44,7 +44,7 @@ namespace OnionCollections.DataEditor.Editor
 
     public class TreeNode
     {
-        public ScriptableObject dataObj { get; protected set; }
+        public Object dataObj { get; protected set; }
 
         public bool isPseudo => nodeFlag.HasFlag(NodeFlag.Pseudo);
         public bool isNull => !isPseudo && dataObj == null;
@@ -71,14 +71,14 @@ namespace OnionCollections.DataEditor.Editor
         }
         public NodeFlag nodeFlag = NodeFlag.None;
 
-        public TreeNode(ScriptableObject dataObj)
+        public TreeNode(Object dataObj)
         {
             this.dataObj = dataObj;
 
             InitSetting();
         }
 
-        public TreeNode(NodeFlag nodeFlag, ScriptableObject dataObj = null)
+        public TreeNode(NodeFlag nodeFlag, Object dataObj = null)
         {
             this.dataObj = dataObj;
             this.nodeFlag = nodeFlag;

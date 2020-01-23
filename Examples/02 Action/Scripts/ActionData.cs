@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //[CreateAssetMenu(fileName = "ActionData", menuName = "Custom/ActionData")]    //想要測試時，可以使用這行來創造新的資料
-public class ActionData : QueryableData
+public class ActionData : DataGroup
 {
     [SerializeField]
     string speaker;
@@ -42,12 +42,12 @@ public class ActionData : QueryableData
      * 因為這個資料不需要再往下查找，就不用這麼做了
      */
 
-    public override IEnumerable<IQueryableData> GetData()
+    public IEnumerable<IQueryableData> GetData()
     {
         throw new System.NotImplementedException();
     }
 
-    public override string GetID()
+    public string GetID()
     {
         throw new System.NotImplementedException();
     }

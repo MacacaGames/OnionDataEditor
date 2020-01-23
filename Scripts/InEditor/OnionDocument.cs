@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Reflection;
-using System.Text;
+
+using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -13,7 +14,7 @@ namespace OnionCollections.DataEditor.Editor
     {
         const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
-        public static DocumentObject GetDocument(ScriptableObject dataObj)
+        public static DocumentObject GetDocument(Object dataObj)
         {
             if (dataObj == null)
                 return null;
@@ -23,7 +24,7 @@ namespace OnionCollections.DataEditor.Editor
             List<DocumentObject.ElementFieldData> elData = new List<DocumentObject.ElementFieldData>();
             foreach (var el in type.GetMembers(defaultBindingFlags))
             {
-                var attr = el.GetCustomAttribute<OnionCollections.DataEditor.FieldDescriptionAttribute>();
+                var attr = el.GetCustomAttribute<FieldDescriptionAttribute>();
                 if (attr != null)
                 {
                     elData.Add(new DocumentObject.ElementFieldData
