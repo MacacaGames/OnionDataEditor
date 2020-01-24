@@ -182,7 +182,7 @@ namespace OnionCollections.DataEditor.Editor
         protected override void DoubleClickedItem(int id)
         {
             base.DoubleClickedItem(id);
-            EditorWindow.GetWindow<OnionDataEditorWindow>().OnDoubleClick(treeQuery[id]);
+            EditorWindow.GetWindow<OnionDataEditorWindow>().OnDoubleClickItem(treeQuery[id]);
         }
         protected override void SelectionChanged(IList<int> selectedIds)
         {

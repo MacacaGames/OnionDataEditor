@@ -15,7 +15,7 @@ public static class OnionDataEditor
         if (selectObj != null)
         {
             var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
-            window.SetScriptableObjectTarget(selectObj);
+            window.SetTarget(selectObj);
         }
     }
 

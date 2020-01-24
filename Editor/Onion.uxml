@@ -1,23 +1,27 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row;">
         <Style src="Onion.uss" />
-        <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px;">
-            <ui:VisualElement style="flex-direction: row;">
-                <ui:Button name="btn-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                    <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
-                </ui:Button>
-                <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                    <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
-                </ui:Button>
-                <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
+        <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
+            <ui:VisualElement name="TabContainer" style="width: 40px; background-color: rgba(128, 128, 128, 0.31);">
                 <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                     <ui:VisualElement name="btn-search-target-icon" class="btn-icon" />
                 </ui:Button>
-                <ui:Button name="btn-refresh" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                    <ui:VisualElement name="btn-refresh-icon" class="btn-icon" />
+                <ui:Button name="btn-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                    <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
                 </ui:Button>
             </ui:VisualElement>
-            <ui:VisualElement name="tree-view-container" style="flex-grow: 1;" />
+            <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1;">
+                <ui:VisualElement style="flex-direction: row;">
+                    <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
+                    <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                        <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
+                    </ui:Button>
+                    <ui:Button name="btn-refresh" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                        <ui:VisualElement name="btn-refresh-icon" class="btn-icon" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement name="tree-view-container" style="flex-grow: 1;" />
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="Spliter" class="spliter" style="width: 6px;" />
         <ui:VisualElement name="ContainerB" style="flex-grow: 1;">
