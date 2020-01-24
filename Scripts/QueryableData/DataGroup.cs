@@ -17,11 +17,6 @@ public class DataGroup : QueryableData
     [SerializeField]
     protected QueryableData[] data = new QueryableData[0];
 
-
-    public QueryableData this[string id] => this.QueryByID<QueryableData>(id);
-    public QueryableData this[int index] => data[index];
-
-
     public override string GetID()
     {
         throw new NotImplementedException();
@@ -32,14 +27,16 @@ public class DataGroup : QueryableData
         return data;
     }
 
+    public QueryableData this[string id] => this.QueryByID<QueryableData>(id);
+    public QueryableData this[int index] => this.GetDataAt<QueryableData>(index);
 
 
 #if (UNITY_EDITOR)
-    
-    [OnionCollections.DataEditor.NodeTitle]
+
+    [NodeTitle]
     string nodeTitle => string.IsNullOrEmpty(title) ? name : title;
 
-    [OnionCollections.DataEditor.NodeDescription]
+    [NodeDescription]
     string nodeDescription => description;
 
 #endif
