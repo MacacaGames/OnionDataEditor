@@ -1,15 +1,19 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
     <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row;">
         <Style src="Onion.uss" />
+        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.08); flex-direction: column; width: 40px;">
+            <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                <ui:VisualElement name="btn-search-target-icon" class="btn-icon" />
+            </ui:Button>
+            <ui:Button name="btn-opened" text="Open" class="btn-tab" style="flex-grow: 0;">
+                <ui:VisualElement name="btn-opened-icon" class="btn-icon" style="width: 24px; height: 24px;" />
+            </ui:Button>
+            <ui:Button name="btn-bookmark" class="btn-tab" style="flex-grow: 0;">
+                <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
+            </ui:Button>
+            <ui:VisualElement style="flex-grow: 1;" />
+        </ui:VisualElement>
         <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
-            <ui:VisualElement name="TabContainer" style="width: 40px; background-color: rgba(128, 128, 128, 0.31);">
-                <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                    <ui:VisualElement name="btn-search-target-icon" class="btn-icon" />
-                </ui:Button>
-                <ui:Button name="btn-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                    <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
-                </ui:Button>
-            </ui:VisualElement>
             <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1;">
                 <ui:VisualElement style="flex-direction: row;">
                     <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />

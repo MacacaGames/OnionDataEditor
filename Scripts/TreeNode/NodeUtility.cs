@@ -79,10 +79,10 @@ namespace OnionCollections.DataEditor.Editor
                     foreach (var item in node)
                         item.GetElementTree();
                         
-                groupedNode.nodes.AddRange(node);
+                groupedNode.AddChildren(node);
 
                 //如果Element是Empty則不加入Group
-                if ((groupAttr.hideIfEmpty == true && groupedNode.nodes.Count == 0) == false)
+                if ((groupAttr.hideIfEmpty == true && groupedNode.childCount == 0) == false)
                     return new List<TreeNode> { groupedNode };
                 
                 return new List<TreeNode> { };
@@ -124,19 +124,19 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-
         /// <summary>將特定TreeNode長出其下子節點。</summary>
         public static void GetElementTree(this TreeNode tagetNode)
         {
             if (ReferenceCheck(tagetNode) == false)
             {
                 EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
-                throw new System.StackOverflowException($"{tagetNode.displayName} is a parent of itself.");
+                throw new StackOverflowException($"{tagetNode.displayName} is a parent of itself.");
             }
+
 
             var node = GetElements(tagetNode.dataObj);
 
-            tagetNode.nodes = new List<TreeNode>(node);
+            tagetNode.AddChildren(new List<TreeNode>(node));
 
             foreach (var el in node)
             {
@@ -159,6 +159,7 @@ namespace OnionCollections.DataEditor.Editor
                 }
                 return true;
             }
+
         }
 
 

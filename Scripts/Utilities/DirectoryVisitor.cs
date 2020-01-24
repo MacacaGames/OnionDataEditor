@@ -24,7 +24,7 @@ public class DirectoryVisitor
     public DirectoryVisitor Enter(string folderName)
     {
         if (IsFolder(path) == false)
-            throw new System.NotImplementedException("Path is not a folder.");
+            throw new System.Exception("Path is not a folder.");
 
         path += folderName + splitChar;
         return this;
@@ -33,7 +33,7 @@ public class DirectoryVisitor
     public DirectoryVisitor Back()
     {
         if (path[path.Length - 1] != splitChar)
-            throw new System.NotImplementedException("Path is not a folder.");
+            throw new System.Exception("Path is not a folder.");
 
         path = path.Substring(0, path.Remove(path.Length - 1).LastIndexOf(splitChar) + 1);
         return this;
@@ -45,7 +45,7 @@ public class DirectoryVisitor
         return AssetDatabase.IsValidFolder(checkPath);
     }
 
-    public DirectoryVisitor Create(string folderName)
+    public DirectoryVisitor CreateFolder(string folderName)
     {
         AssetDatabase.CreateFolder(GetPathWithoutSplitChar(), folderName);
         Debug.Log($"Create Folder:{GetPathWithoutSplitChar()} , {folderName}");
@@ -56,7 +56,7 @@ public class DirectoryVisitor
     public DirectoryVisitor CreateFolderIfNotExist(string folderName)
     {
         if (HasFolder(folderName) == false)
-            Create(folderName);
+            CreateFolder(folderName);
 
         return this;
     }

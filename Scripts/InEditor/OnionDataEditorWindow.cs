@@ -6,7 +6,6 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
-using System;
 using System.Linq;
 using UnityEditor.IMGUI.Controls;
 
@@ -16,7 +15,10 @@ namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDataEditorWindow : EditorWindow
     {
+
         const string path = "Assets/OnionDataEditor";
+
+
 
         Object _target;
         Object target
@@ -24,11 +26,8 @@ namespace OnionCollections.DataEditor.Editor
             get => _target;
             set
             {
-                if (value != _target)
-                    OnTargetChange(value);
+                OnTargetChange(value);
 
-
-                Debug.Log(value);
                 _target = value;
             }
         }
@@ -45,9 +44,19 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        public TreeViewState treeViewState;
-        TreeRoot tree;
+        enum Tab 
+        {
+            None,
+            Opened,
+            Bookmark,
+            Recent,
+        }
+        Tab currentTab = Tab.None;
+        Object openedTarget;
 
+        public TreeViewState treeViewState;
+
+        TreeRoot treeRoot;
         IMGUIContainer treeViewContainer;
 
 
@@ -82,13 +91,20 @@ namespace OnionCollections.DataEditor.Editor
 
             CreateNeededAsset();
 
+            //Tab
+            //綁定btn-bookmark
+            root.Q<Button>("btn-bookmark").clickable.clicked += ChangeTabToBookmark;
+            root.Q("btn-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("FolderFavorite Icon");
+
+            //綁定btn-opened
+            root.Q<Button>("btn-opened").clickable.clicked += ChangeTabToOpened;
+            root.Q("btn-opened-icon").style.backgroundImage = EditorGUIUtility.FindTexture("????");
+
+
+
             //綁定btn-refresh
             root.Q<Button>("btn-refresh").clickable.clicked += OnFresh;
             root.Q("btn-refresh-icon").style.backgroundImage = EditorGUIUtility.FindTexture("d_Refresh");
-
-            //綁定btn-bookmark
-            root.Q<Button>("btn-bookmark").clickable.clicked += () => { SetTarget((Object)bookmarkGroup); };
-            root.Q("btn-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("FolderFavorite Icon");
 
             //綁定btn-add-bookmark
             root.Q<Button>("btn-add-bookmark").clickable.clicked += OnAddBookmark;
@@ -116,8 +132,67 @@ namespace OnionCollections.DataEditor.Editor
 
         void OnFresh()
         {
-            if (tree != null)
-                tree.SetTreeRoot();
+            if (treeRoot != null)
+            {
+                treeRoot.CreateTreeView();
+                if (treeViewState == null)
+                    treeViewState = treeRoot.treeView.state;
+            }
+        }
+
+        void SwitchTab(Tab tab)
+        {
+            currentTab = tab;
+
+            Dictionary<Tab, string> elQuery = new Dictionary<Tab, string>
+            {
+                [Tab.Bookmark] = "btn-bookmark",
+                [Tab.Opened] = "btn-opened",
+                [Tab.Recent] = "btn-recent",
+            };
+            const string className = "active-tab";
+            foreach (var p in elQuery)
+            {
+                if (p.Key != tab)
+                    rootVisualElement.Q(p.Value)?.RemoveFromClassList(className);
+                else
+                    rootVisualElement.Q(p.Value)?.AddToClassList(className);
+            }
+
+
+            //Opened 依照openedTarget來顯示
+            rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (openedTarget != null) ? DisplayStyle.Flex : DisplayStyle.None;
+
+            switch (tab)
+            {
+                case Tab.Opened:
+                    break;
+
+                case Tab.Bookmark:
+                    break;
+
+                case Tab.Recent:
+                    break;
+            }
+        }
+
+        void ChangeTabToBookmark()
+        {
+            SetTarget((Object)bookmarkGroup);
+            SwitchTab(Tab.Bookmark);
+        }
+
+        void ChangeTabToOpened()
+        {
+            if(openedTarget != null)
+            {
+                SetTarget(openedTarget);
+                SwitchTab(Tab.Opened);
+            }
+            else
+            {
+                Debug.Log("Opened target is null.");
+            }
         }
 
         //Bind & Build
@@ -162,9 +237,9 @@ namespace OnionCollections.DataEditor.Editor
         }
         void DrawTreeView()
         {
-            if (tree != null && target != null)
+            if (treeRoot != null && target != null)
             {
-                tree.treeView.OnGUI(treeViewContainer.layout);
+                treeRoot.treeView.OnGUI(treeViewContainer.layout);
             }
         }
 
@@ -172,11 +247,11 @@ namespace OnionCollections.DataEditor.Editor
         void CreateNeededAsset()
         {
             //bookmark group
-            bookmarkGroup = AssetDatabase.LoadAssetAtPath<DataGroup>(path + "/OnionBookmarkGroup.asset");
+            bookmarkGroup = AssetDatabase.LoadAssetAtPath<DataGroup>($"{path}/OnionBookmarkGroup.asset");
             if (bookmarkGroup == null)
             {
                 bookmarkGroup = CreateInstance<DataGroup>();
-                Debug.Log("Create Bookmark Group");
+                Debug.Log("Auto create bookmark group.");
                 AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
             }
 
@@ -185,6 +260,8 @@ namespace OnionCollections.DataEditor.Editor
                 AssetDatabase.CreateFolder(path, "Bookmark");
 
         }
+
+
 
         public void SetTarget(IQueryableData newTarget)
         {
@@ -204,7 +281,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 IEnumerable<OnionBookmark> bookmarks = bookmarkGroup.GetData<OnionBookmark>();
 
-                if (bookmarks == null || bookmarks.Select(_ => _.target).Contains(target) == false)
+                if (bookmarks.Select(_ => _.target).Contains(target) == false)
                 {
                     var bookmark = CreateInstance<OnionBookmark>();
                     bookmark.target = target;
@@ -213,10 +290,14 @@ namespace OnionCollections.DataEditor.Editor
 
                     SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
                     SerializedProperty data = serializedObject.FindProperty("data");
-                    data.InsertArrayElementAtIndex(data.arraySize);
-                    SerializedProperty dataItem = data.GetArrayElementAtIndex(data.arraySize - 1);
-                    dataItem.objectReferenceValue = bookmark;
+
+                    int index = data.arraySize;
+                    data.InsertArrayElementAtIndex(index);
+                    data.GetArrayElementAtIndex(index).objectReferenceValue = bookmark;
+
                     serializedObject.ApplyModifiedProperties();
+
+                    AssetDatabase.SaveAssets();
                 }
                 else
                 {
@@ -255,17 +336,31 @@ namespace OnionCollections.DataEditor.Editor
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
             containerRoot.visible = (newTarget != null);
 
+            if(newTarget != bookmarkGroup)
+            {
+                openedTarget = newTarget;
+                SwitchTab(Tab.Opened);
+            }
+            else
+            {
+                SwitchTab(Tab.Bookmark);
+            }
+
             if (newTarget != null)
             {
-                tree = new TreeRoot(newTarget);
-                tree.SetTreeRoot();
+                treeRoot = new TreeRoot(newTarget);
+                treeRoot.CreateTreeView();
+
+                if(treeViewState == null)
+                    treeViewState = treeRoot.treeView.state;
 
                 //選擇Root
-                selectedNode = tree;
+                selectedNode = treeRoot;
 
-                int rootId = tree.treeView.GetRows()[0].id;
-                tree.treeView.SetSelection(new List<int> { rootId });
-                tree.treeView.SetExpanded(rootId, true);
+                //選擇Root並展開
+                int rootId = treeRoot.treeView.GetRows()[0].id;
+                treeRoot.treeView.SetSelection(new List<int> { rootId });
+                treeRoot.treeView.SetExpanded(rootId, true);
 
                 rootVisualElement.Q("btn-add-bookmark").style.display = (newTarget != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
             }
@@ -283,6 +378,8 @@ namespace OnionCollections.DataEditor.Editor
             var root = rootVisualElement;
             root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
         }
+
+
 
         //Inspector
         OnionAction onSelectInspector;
@@ -347,24 +444,24 @@ namespace OnionCollections.DataEditor.Editor
         {
             selectedNode = node;
             
-            int selectionId = tree.treeView.GetSelection()[0];
-            OnionAction onSelectedAction = tree.treeView.treeQuery[selectionId].onSelectedAction;
+            int selectionId = treeRoot.treeView.GetSelection()[0];
+            OnionAction onSelectedAction = treeRoot.treeView.treeQuery[selectionId].onSelectedAction;
             if (onSelectedAction != null)
                 onSelectedAction.action.Invoke();
 
         }
         public void OnDoubleClickItem(TreeNode node)
         {
-            int selectionId = tree.treeView.GetSelection()[0];
+            int selectionId = treeRoot.treeView.GetSelection()[0];
 
-            OnionAction onDoubleClickAction = tree.treeView.treeQuery[selectionId].onDoubleClickAction;
+            OnionAction onDoubleClickAction = treeRoot.treeView.treeQuery[selectionId].onDoubleClickAction;
             if (onDoubleClickAction != null)
             {
                 onDoubleClickAction.action.Invoke();
             }
             else
             {
-                var selectionObject = tree.treeView.treeQuery[selectionId].dataObj;
+                var selectionObject = treeRoot.treeView.treeQuery[selectionId].dataObj;
                 EditorGUIUtility.PingObject(selectionObject);   //Ping
             }
         }

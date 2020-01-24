@@ -18,7 +18,7 @@ namespace OnionCollections.DataEditor.Editor
             displayName = GetTitle();
         }
 
-        public void SetTreeRoot()
+        public void CreateTreeView()
         {
             CreatTree(this);
 
@@ -28,9 +28,6 @@ namespace OnionCollections.DataEditor.Editor
                 treeView = new DataObjTreeView(this, new TreeViewState());
             else
                 treeView = new DataObjTreeView(this, window.treeViewState);
-
-            if (window.treeViewState == null)
-                window.treeViewState = treeView.state;
             
         }
 
@@ -52,8 +49,9 @@ namespace OnionCollections.DataEditor.Editor
 
         public string displayName;
         public Texture icon = null;
-        public TreeNode parent = null;
-        public List<TreeNode> nodes = new List<TreeNode>();
+        List<TreeNode> children = new List<TreeNode>();
+        public TreeNode parent;
+        public int childCount => children.Count;
 
         public List<OnionAction> nodeActions;
         public OnionAction onSelectedAction = null;
@@ -104,6 +102,18 @@ namespace OnionCollections.DataEditor.Editor
             onDoubleClickAction = dataObj.GetNodeOnDoubleClickAction();
 
         }
+
+        public void AddChildren(IEnumerable<TreeNode> children)
+        {
+            this.children.AddRange(children);
+            foreach (var child in children)
+                child.parent = this;
+        }
+        public IEnumerable<TreeNode> GetChildren()
+        {
+            return children;
+        }
+
 
         public string GetTitle()
         {

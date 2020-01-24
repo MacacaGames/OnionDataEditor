@@ -12,7 +12,8 @@ namespace OnionCollections.DataEditor.Editor
     {
         public Dictionary<int, TreeNode> treeQuery;
         TreeNode tree;
-        List<TreeViewItem> result;
+        TreeViewItem rootViewItem;
+        List<TreeViewItem> rowList;
 
         public DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
         {
@@ -23,10 +24,10 @@ namespace OnionCollections.DataEditor.Editor
         }
         public void SetData(TreeNode tree)
         {
-
             this.tree = tree;
 
             BuildRoot();
+
             Reload();
         }
         protected override TreeViewItem BuildRoot()
@@ -34,16 +35,25 @@ namespace OnionCollections.DataEditor.Editor
             treeQuery = new Dictionary<int, TreeNode>();
             id = 0;
 
-            TreeViewItem root = TreeNodeToTreeViewItem(id, -1, tree);
+            rootViewItem = TreeNodeToTreeViewItem(id, -1, tree);
             id++;
 
-            result = new List<TreeViewItem>();
+            BuildTree();
 
-            Build(0, tree, result);
+            return rootViewItem;
+        }
 
-            SetupParentsAndChildrenFromDepths(root, result);
+        void BuildTree()
+        {
+            rowList = new List<TreeViewItem>();
 
-            return root;
+            Build(tree, rootViewItem);
+            //Build(0, tree, result);
+
+
+            SetupDepthsFromParentsAndChildren(rootViewItem);
+
+            //SetupParentsAndChildrenFromDepths(root, result);
         }
 
         enum RowState { Normal, Pseudo, Error };
@@ -110,7 +120,7 @@ namespace OnionCollections.DataEditor.Editor
 
             //child count
             bool isHideElementNodes = node.nodeFlag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
-            if (treeQuery[args.item.id].nodes.Count > 0 || isHideElementNodes)
+            if (treeQuery[args.item.id].childCount > 0 || isHideElementNodes)
             {
                 const float tagWidth = 150F;
                 Rect rightRect = new Rect(args.rowRect.width - tagWidth, args.rowRect.y, tagWidth, args.rowRect.height);
@@ -123,7 +133,7 @@ namespace OnionCollections.DataEditor.Editor
                 if (isHideElementNodes)
                     displayTag = "H";
                 else
-                    displayTag = treeQuery[args.item.id].nodes.Count.ToString();
+                    displayTag = treeQuery[args.item.id].childCount.ToString();
 
                 GUI.Label(rightRect, $"[{displayTag}]", labelStyle);
             }
@@ -137,30 +147,41 @@ namespace OnionCollections.DataEditor.Editor
         }
         public override IList<TreeViewItem> GetRows()
         {
-            return result;
+            return rowList;
         }
 
         int id = 0;
-        TreeViewItem Build(int _depth, TreeNode node, List<TreeViewItem> list)
+        TreeViewItem Build(TreeNode node, TreeViewItem parentViewItem)
         {
-            TreeViewItem viewItem = TreeNodeToTreeViewItem(id, _depth, node);
-            list.Add(viewItem);
+            TreeViewItem nodeViewItem = TreeNodeToTreeViewItem(id, node);
+            rowList.Add(nodeViewItem);
             treeQuery.Add(id, node);
+
+            parentViewItem.AddChild(nodeViewItem);
 
             id++;
 
-            foreach (var item in node.nodes)
-                Build(_depth + 1, item, list);
+            foreach (var item in node.GetChildren())
+            {
+                Build(item, nodeViewItem);
+            }
 
-            return viewItem;
+            return nodeViewItem;
         }
-
         TreeViewItem TreeNodeToTreeViewItem(int _id, int _depth, TreeNode node)
         {
             return new TreeViewItem
-            { 
+            {
                 id = _id,
                 depth = _depth,
+                displayName = node.displayName,
+            };
+        }
+        TreeViewItem TreeNodeToTreeViewItem(int _id, TreeNode node)
+        {
+            return new TreeViewItem
+            {
+                id = _id,
                 displayName = node.displayName,
             };
         }

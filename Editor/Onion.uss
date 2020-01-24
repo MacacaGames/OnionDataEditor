@@ -50,7 +50,7 @@
 }
 
 .onion-btn {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.04);
     border-radius: 9999px;
     border-width: 0;
     background-image: none;
@@ -59,7 +59,7 @@
 }
 
 .onion-btn:hover {
-    background-color: rgba(2, 106, 167, 0.5);
+    background-color: rgba(2, 106, 167, 0.25);
 }
 
 .onion-btn:active {
@@ -115,4 +115,38 @@
 
 .spliter-v {
     cursor: split-resize-up-down;
+}
+
+.btn-tab {
+    margin-left: 4px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-right: 0;
+    margin-top: 2px;
+    margin-bottom: 2px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+    background-color: rgba(0, 0, 0, 0);
+    height: 40px;
+    width: 36px;
+}
+
+.btn-tab:hover {
+    background-color: rgba(255, 255, 255, 0.16);
+}
+
+.active-tab {
+    opacity: 1;
+    background-color: rgba(255, 255, 255, 0.16);
 }
