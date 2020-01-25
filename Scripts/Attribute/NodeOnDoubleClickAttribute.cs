@@ -6,6 +6,6 @@ namespace OnionCollections.DataEditor.Editor
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class NodeOnDoubleClickAttribute : Attribute
     {
-
+        public string[] userTags = new string[0];
     }
 }

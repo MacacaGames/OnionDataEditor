@@ -13,11 +13,12 @@ using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
 {
-
-
-
     public static class NodeUtility
     {
+        static OnionSetting setting => OnionDataEditorWindow.setting;
+
+
+
         const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
 
         readonly static List<Type> nodeAttrTypeList = new List<Type>
@@ -213,7 +214,9 @@ namespace OnionCollections.DataEditor.Editor
                 var type = dataObj.GetType();
                 result = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeActionAttribute))
                     .Where(_ => _.GetGenericArguments().Length == 0)
-                    .Select(_ => new OnionAction(_, dataObj, _.GetCustomAttribute<NodeActionAttribute>().actionName ?? _.Name))
+                    .Select(_ =>(methodInfo: _, attr:_.GetCustomAttribute<NodeActionAttribute>()))
+                    .Where(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(setting.userTags).Any())
+                    .Select(_ => new OnionAction(_.methodInfo, dataObj, _.attr.actionName ?? _.methodInfo.Name))
                     .ToList();
 
             }
@@ -224,7 +227,12 @@ namespace OnionCollections.DataEditor.Editor
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
-                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnSelectedAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
+                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnSelectedAttribute))
+                    .Where(_ => _.GetGenericArguments().Length == 0)
+                    .Select(_ => (methodInfo: _, attr: _.GetCustomAttribute<NodeOnSelectedAttribute>()))
+                    .SingleOrDefault(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(setting.userTags).Any())
+                    .methodInfo;
+
                 if (method != null)
                     return new OnionAction(method, dataObj, method.Name);
             }
@@ -235,7 +243,12 @@ namespace OnionCollections.DataEditor.Editor
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
-                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnDoubleClickAttribute)).SingleOrDefault(_ => _.GetGenericArguments().Length == 0);
+                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnDoubleClickAttribute))
+                    .Where(_ => _.GetGenericArguments().Length == 0)
+                    .Select(_ => (methodInfo: _, attr: _.GetCustomAttribute<NodeOnDoubleClickAttribute>()))
+                    .SingleOrDefault(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(setting.userTags).Any())
+                    .methodInfo;
+
                 if (method != null)
                     return new OnionAction(method, dataObj, method.Name);
             }

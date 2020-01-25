@@ -19,6 +19,18 @@ namespace OnionCollections.DataEditor.Editor
         const string path = "Assets/OnionDataEditor";
 
 
+        static OnionSetting _setting;
+        public static OnionSetting setting
+        {
+            get
+            {
+                if (_setting == null)
+                {
+                    _setting = AssetDatabase.LoadAssetAtPath<OnionSetting>($"{path}/Setting.asset");
+                }
+                return _setting;
+            }
+        }
 
         Object _target;
         Object target
@@ -49,6 +61,7 @@ namespace OnionCollections.DataEditor.Editor
             None,
             Opened,
             Bookmark,
+            Setting,
             Recent,
         }
         Tab currentTab = Tab.None;
@@ -63,10 +76,13 @@ namespace OnionCollections.DataEditor.Editor
         [MenuItem("Window/Onion Data Editor &#E")]
         public static OnionDataEditorWindow ShowWindow()
         {
-            //預設開null，使其打開bookmarkGroup
-            return ShowWindow(null);
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            ShowWindow(window.openedTarget);    //預設開null，使其打開bookmarkGroup；有target的話就開target
+
+            return window;
         }
-        public static OnionDataEditorWindow ShowWindow(IQueryableData data)
+        public static OnionDataEditorWindow ShowWindow(Object data)
         {
             var window = GetWindow<OnionDataEditorWindow>();
             window.SetTarget(data ?? window.bookmarkGroup);     //沒有東西的話就指定bookmarkGroup
@@ -76,7 +92,7 @@ namespace OnionCollections.DataEditor.Editor
 
         public void OnEnable()
         {
-            titleContent = new GUIContent("OnionDataEditor");
+            titleContent = new GUIContent("Onion Data Editor");
             Init();
         }
 
@@ -92,13 +108,19 @@ namespace OnionCollections.DataEditor.Editor
             CreateNeededAsset();
 
             //Tab
-            //綁定btn-bookmark
-            root.Q<Button>("btn-bookmark").clickable.clicked += ChangeTabToBookmark;
-            SetIcon(root.Q("btn-bookmark-icon"), "Heart_Fill");
 
             //綁定btn-opened
             root.Q<Button>("btn-opened").clickable.clicked += ChangeTabToOpened;
             SetIcon(root.Q("btn-opened-icon"), "Edit");
+
+            //綁定btn-bookmark
+            root.Q<Button>("btn-bookmark").clickable.clicked += ChangeTabToBookmark;
+            SetIcon(root.Q("btn-bookmark-icon"), "Bookmark_Fill");
+
+
+            //綁定btn-setting
+            root.Q<Button>("btn-setting").clickable.clicked += ChangeTabToSetting;
+            SetIcon(root.Q("btn-setting-icon"), "Settings");
 
 
 
@@ -108,7 +130,7 @@ namespace OnionCollections.DataEditor.Editor
 
             //綁定btn-add-bookmark
             root.Q<Button>("btn-add-bookmark").clickable.clicked += OnToggleBookmark;
-            SetIcon(root.Q("btn-add-bookmark-icon"), "Heart");
+            //SetIcon(root.Q("btn-add-bookmark-icon"), "Heart");
 
             //綁定btn-info-document
             root.Q<Button>("btn-info-document").clickable.clicked += OpenDocument;
@@ -138,6 +160,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 [Tab.Bookmark] = "btn-bookmark",
                 [Tab.Opened] = "btn-opened",
+                [Tab.Setting] = "btn-setting",
                 [Tab.Recent] = "btn-recent",
             };
             const string className = "active-tab";
@@ -153,23 +176,18 @@ namespace OnionCollections.DataEditor.Editor
             //Opened 依照openedTarget來顯示
             rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (openedTarget != null) ? DisplayStyle.Flex : DisplayStyle.None;
 
-            switch (tab)
-            {
-                case Tab.Opened:
-                    break;
-
-                case Tab.Bookmark:
-                    break;
-
-                case Tab.Recent:
-                    break;
-            }
         }
 
         void ChangeTabToBookmark()
         {
             SetTarget((Object)bookmarkGroup);
             SwitchTab(Tab.Bookmark);
+        }
+
+        void ChangeTabToSetting()
+        {
+            SetTarget((Object)setting);
+            SwitchTab(Tab.Setting);
         }
 
         void ChangeTabToOpened()
@@ -187,9 +205,7 @@ namespace OnionCollections.DataEditor.Editor
 
         void FreshBookmarkView(Object newTarget)
         {
-            const string activeClassName = "active-bookmark";
-            const string deactiveClassName = "btn-bookmark";
-            SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Heart");
+            SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark");
 
             VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
 
@@ -197,17 +213,12 @@ namespace OnionCollections.DataEditor.Editor
 
             if (newTarget != bookmarkGroup)
             {
-                viewElement.RemoveFromClassList(activeClassName);
-                viewElement.AddToClassList(deactiveClassName);
-
                 if (bookmarkGroup != null)
                 {
                     int index = bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(newTarget);
                     if (index >= 0)
                     {
-                        viewElement.RemoveFromClassList(deactiveClassName);
-                        viewElement.AddToClassList(activeClassName);
-                        SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Heart_Fill");
+                        SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark_Fill");
                     }
                 }
             }
@@ -264,12 +275,21 @@ namespace OnionCollections.DataEditor.Editor
         DataGroup bookmarkGroup = null;
         void CreateNeededAsset()
         {
+            //setting
+            if (setting == null)
+            {
+                var settingIns = CreateInstance<OnionSetting>();
+                Debug.Log("Auto create setting asset.");
+                AssetDatabase.CreateAsset(settingIns, $"{path}/Setting.asset");
+            }
+
+
             //bookmark group
             bookmarkGroup = AssetDatabase.LoadAssetAtPath<DataGroup>($"{path}/OnionBookmarkGroup.asset");
             if (bookmarkGroup == null)
             {
                 bookmarkGroup = CreateInstance<DataGroup>();
-                Debug.Log("Auto create bookmark group.");
+                Debug.Log("Auto create bookmark group asset.");
                 AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
             }
 
@@ -384,15 +404,21 @@ namespace OnionCollections.DataEditor.Editor
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
             containerRoot.visible = (newTarget != null);
 
-            if(newTarget != bookmarkGroup)
+
+            if(newTarget == bookmarkGroup)
+            {
+                SwitchTab(Tab.Bookmark);
+            }
+            else if(newTarget == setting)
+            {
+                SwitchTab(Tab.Setting);
+            }
+            else
             {
                 openedTarget = newTarget;
                 SwitchTab(Tab.Opened);
             }
-            else
-            {
-                SwitchTab(Tab.Bookmark);
-            }
+
 
             if (newTarget != null)
             {
@@ -411,6 +437,8 @@ namespace OnionCollections.DataEditor.Editor
                 treeRoot.treeView.SetExpanded(rootId, true);
 
                 FreshBookmarkView(newTarget);
+
+
             }
         }
 
@@ -432,7 +460,6 @@ namespace OnionCollections.DataEditor.Editor
         {
             el.style.backgroundImage = new StyleBackground(AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png"));
         }
-
 
         //Inspector
         OnionAction onSelectInspector;
@@ -496,7 +523,7 @@ namespace OnionCollections.DataEditor.Editor
         public void OnTriggerItem(TreeNode node)
         {
             selectedNode = node;
-            
+
             int selectionId = treeRoot.treeView.GetSelection()[0];
             OnionAction onSelectedAction = treeRoot.treeView.treeQuery[selectionId].onSelectedAction;
             if (onSelectedAction != null)

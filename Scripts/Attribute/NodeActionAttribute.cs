@@ -7,6 +7,9 @@ namespace OnionCollections.DataEditor
     public class NodeActionAttribute : Attribute
     {
         public string actionName = null;
+
+        public string[] userTags = new string[0];
+
         public NodeActionAttribute() { }
         public NodeActionAttribute(string actionName)
         {
