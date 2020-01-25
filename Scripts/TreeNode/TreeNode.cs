@@ -109,6 +109,10 @@ namespace OnionCollections.DataEditor.Editor
             foreach (var child in children)
                 child.parent = this;
         }
+        public void ClearChildren()
+        {
+            children.Clear();
+        }
         public IEnumerable<TreeNode> GetChildren()
         {
             return children;

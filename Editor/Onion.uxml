@@ -5,11 +5,11 @@
             <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                 <ui:VisualElement name="btn-search-target-icon" class="btn-icon" />
             </ui:Button>
-            <ui:Button name="btn-opened" text="Open" class="btn-tab" style="flex-grow: 0;">
-                <ui:VisualElement name="btn-opened-icon" class="btn-icon" style="width: 24px; height: 24px;" />
+            <ui:Button name="btn-opened" class="btn-tab" style="flex-grow: 0;">
+                <ui:VisualElement name="btn-opened-icon" class="btn-icon" style="width: 20px; height: 20px;" />
             </ui:Button>
             <ui:Button name="btn-bookmark" class="btn-tab" style="flex-grow: 0;">
-                <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
+                <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" style="width: 20px; height: 20px;" />
             </ui:Button>
             <ui:VisualElement style="flex-grow: 1;" />
         </ui:VisualElement>
@@ -17,8 +17,8 @@
             <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1;">
                 <ui:VisualElement style="flex-direction: row;">
                     <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
-                    <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                        <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 24px; height: 24px;" />
+                    <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn btn-bookmark" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                        <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 16px; height: 16px;" />
                     </ui:Button>
                     <ui:Button name="btn-refresh" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                         <ui:VisualElement name="btn-refresh-icon" class="btn-icon" />

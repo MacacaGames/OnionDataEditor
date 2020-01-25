@@ -136,6 +136,7 @@ namespace OnionCollections.DataEditor.Editor
 
             var node = GetElements(tagetNode.dataObj);
 
+            tagetNode.ClearChildren();
             tagetNode.AddChildren(new List<TreeNode>(node));
 
             foreach (var el in node)

@@ -60,7 +60,7 @@ namespace OnionCollections.DataEditor.Editor
         IMGUIContainer treeViewContainer;
 
 
-        [MenuItem("Window/Onion Data Editor")]
+        [MenuItem("Window/Onion Data Editor &#E")]
         public static OnionDataEditorWindow ShowWindow()
         {
             //預設開null，使其打開bookmarkGroup
@@ -94,30 +94,30 @@ namespace OnionCollections.DataEditor.Editor
             //Tab
             //綁定btn-bookmark
             root.Q<Button>("btn-bookmark").clickable.clicked += ChangeTabToBookmark;
-            root.Q("btn-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("FolderFavorite Icon");
+            SetIcon(root.Q("btn-bookmark-icon"), "Heart_Fill");
 
             //綁定btn-opened
             root.Q<Button>("btn-opened").clickable.clicked += ChangeTabToOpened;
-            root.Q("btn-opened-icon").style.backgroundImage = EditorGUIUtility.FindTexture("????");
+            SetIcon(root.Q("btn-opened-icon"), "Edit");
 
 
 
             //綁定btn-refresh
             root.Q<Button>("btn-refresh").clickable.clicked += OnFresh;
-            root.Q("btn-refresh-icon").style.backgroundImage = EditorGUIUtility.FindTexture("d_Refresh");
+            SetIcon(root.Q("btn-refresh-icon"), "Refresh");
 
             //綁定btn-add-bookmark
-            root.Q<Button>("btn-add-bookmark").clickable.clicked += OnAddBookmark;
-            root.Q("btn-add-bookmark-icon").style.backgroundImage = EditorGUIUtility.FindTexture("Favorite Icon");
+            root.Q<Button>("btn-add-bookmark").clickable.clicked += OnToggleBookmark;
+            SetIcon(root.Q("btn-add-bookmark-icon"), "Heart");
 
             //綁定btn-info-document
             root.Q<Button>("btn-info-document").clickable.clicked += OpenDocument;
-            root.Q("btn-info-document-icon").style.backgroundImage = EditorGUIUtility.FindTexture("_Help");
+            SetIcon(root.Q("btn-info-document-icon"), "Help");
 
             //綁定btn-search-target
             root.Q<Button>("btn-search-target").clickable.clicked += OnSearchTarget;
             root.Q("btn-search-target").Add(new IMGUIContainer(OnSearchTargetListener));
-            root.Q("btn-search-target-icon").style.backgroundImage = EditorGUIUtility.FindTexture("Search Icon");
+            SetIcon(root.Q("btn-search-target-icon"), "Search");
 
 
             //建構treeview
@@ -128,16 +128,6 @@ namespace OnionCollections.DataEditor.Editor
 
             //Split
             BindSpliter();
-        }
-
-        void OnFresh()
-        {
-            if (treeRoot != null)
-            {
-                treeRoot.CreateTreeView();
-                if (treeViewState == null)
-                    treeViewState = treeRoot.treeView.state;
-            }
         }
 
         void SwitchTab(Tab tab)
@@ -192,6 +182,34 @@ namespace OnionCollections.DataEditor.Editor
             else
             {
                 Debug.Log("Opened target is null.");
+            }
+        }
+
+        void FreshBookmarkView(Object newTarget)
+        {
+            const string activeClassName = "active-bookmark";
+            const string deactiveClassName = "btn-bookmark";
+            SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Heart");
+
+            VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
+
+            viewElement.style.display = (newTarget != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (newTarget != bookmarkGroup)
+            {
+                viewElement.RemoveFromClassList(activeClassName);
+                viewElement.AddToClassList(deactiveClassName);
+
+                if (bookmarkGroup != null)
+                {
+                    int index = bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(newTarget);
+                    if (index >= 0)
+                    {
+                        viewElement.RemoveFromClassList(deactiveClassName);
+                        viewElement.AddToClassList(activeClassName);
+                        SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Heart_Fill");
+                    }
+                }
             }
         }
 
@@ -262,7 +280,6 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-
         public void SetTarget(IQueryableData newTarget)
         {
             SetTarget(newTarget as Object);
@@ -274,36 +291,67 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-
-        void OnAddBookmark()
+        void OnFresh()
         {
+            if (treeRoot != null)
+            {
+                treeRoot.CreateTreeView();
+                if (treeViewState == null)
+                    treeViewState = treeRoot.treeView.state;
+            }
+        }
+
+        void OnToggleBookmark()
+        {
+            int index = -1;
             if (bookmarkGroup != null && target != bookmarkGroup)
             {
-                IEnumerable<OnionBookmark> bookmarks = bookmarkGroup.GetData<OnionBookmark>();
+                index = bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(target);
 
-                if (bookmarks.Select(_ => _.target).Contains(target) == false)
-                {
-                    var bookmark = CreateInstance<OnionBookmark>();
-                    bookmark.target = target;
-
-                    AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
-
-                    SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
-                    SerializedProperty data = serializedObject.FindProperty("data");
-
-                    int index = data.arraySize;
-                    data.InsertArrayElementAtIndex(index);
-                    data.GetArrayElementAtIndex(index).objectReferenceValue = bookmark;
-
-                    serializedObject.ApplyModifiedProperties();
-
-                    AssetDatabase.SaveAssets();
-                }
+                if (index >= 0)
+                    OnRemoveBookmark();
                 else
-                {
-                    Debug.LogError("This bookmark already exists.");
-                }
+                    OnAddBookmark();
+
+                FreshBookmarkView(target);
             }
+
+            void OnRemoveBookmark()
+            {
+                SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
+                SerializedProperty data = serializedObject.FindProperty("data");
+
+                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(data.GetArrayElementAtIndex(index).objectReferenceValue));
+
+                data.MoveArrayElement(index, data.arraySize - 1);
+                data.arraySize = data.arraySize - 1;
+
+                serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(bookmarkGroup);
+                AssetDatabase.SaveAssets();
+
+            }
+
+            void OnAddBookmark()
+            {
+                var bookmark = CreateInstance<OnionBookmark>();
+                bookmark.target = target;
+
+                AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
+
+                SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
+                SerializedProperty data = serializedObject.FindProperty("data");
+
+                int arraySize = data.arraySize;
+                data.InsertArrayElementAtIndex(arraySize);
+                data.GetArrayElementAtIndex(arraySize).objectReferenceValue = bookmark;
+
+                serializedObject.ApplyModifiedProperties();
+                EditorUtility.SetDirty(bookmarkGroup);
+                AssetDatabase.SaveAssets();
+
+            }
+
         }
 
         void OpenDocument()
@@ -362,7 +410,7 @@ namespace OnionCollections.DataEditor.Editor
                 treeRoot.treeView.SetSelection(new List<int> { rootId });
                 treeRoot.treeView.SetExpanded(rootId, true);
 
-                rootVisualElement.Q("btn-add-bookmark").style.display = (newTarget != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
+                FreshBookmarkView(newTarget);
             }
         }
 
@@ -379,6 +427,11 @@ namespace OnionCollections.DataEditor.Editor
             root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
         }
 
+
+        void SetIcon(VisualElement el, string iconName)
+        {
+            el.style.backgroundImage = new StyleBackground(AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png"));
+        }
 
 
         //Inspector

@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using OnionCollections.DataEditor;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -16,7 +15,20 @@ namespace OnionCollections.DataEditor.Editor
         public Object target;
 
         [NodeTitle]
-        string bookmarkName => string.IsNullOrEmpty(title) ? target.name : title;
+        string bookmarkName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(title))
+                {
+                    if (TargetIsNull() == false)
+                        return target.name;
+                    return "<Object is null>";
+                }
+
+                return title;
+            }
+        }
 
         [NodeDescription]
         [TextArea(1,3)]
@@ -27,9 +39,18 @@ namespace OnionCollections.DataEditor.Editor
         [NodeOnDoubleClick]
         void OpenData()
         {
-            var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
-            onionWindow.SetTarget(target as IQueryableData);
+            if (TargetIsNull())
+            {
+                EditorUtility.DisplayDialog("Oh no!", "Target is null. Can not be opened.", "Ok");
+            }
+            else
+            {
+                var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
+                onionWindow.SetTarget(target);
+            }
         }
+
+        bool TargetIsNull() { return target == null; }
 
         public override string GetID()
         {
@@ -38,7 +59,10 @@ namespace OnionCollections.DataEditor.Editor
 
         public override IEnumerable<IQueryableData> GetData()
         {
-            throw new System.NotImplementedException();
+            if(target is IQueryableData queryableTarget)
+                return new List<IQueryableData> { queryableTarget };
+
+            return new List<IQueryableData> { };
         }
     }
 }
