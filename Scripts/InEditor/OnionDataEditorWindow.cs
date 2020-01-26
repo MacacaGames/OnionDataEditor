@@ -15,22 +15,7 @@ namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDataEditorWindow : EditorWindow
     {
-
-        const string path = "Assets/OnionDataEditor";
-
-
-        static OnionSetting _setting;
-        public static OnionSetting setting
-        {
-            get
-            {
-                if (_setting == null)
-                {
-                    _setting = AssetDatabase.LoadAssetAtPath<OnionSetting>($"{path}/Setting.asset");
-                }
-                return _setting;
-            }
-        }
+        static string path => OnionDataEditor.path;
 
         Object _target;
         Object target
@@ -85,7 +70,7 @@ namespace OnionCollections.DataEditor.Editor
         public static OnionDataEditorWindow ShowWindow(Object data)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            window.SetTarget(data ?? window.bookmarkGroup);     //沒有東西的話就指定bookmarkGroup
+            window.SetTarget(data ?? OnionDataEditor.bookmarkGroup);     //沒有東西的話就指定bookmarkGroup
 
             return window;
         }
@@ -180,13 +165,13 @@ namespace OnionCollections.DataEditor.Editor
 
         void ChangeTabToBookmark()
         {
-            SetTarget((Object)bookmarkGroup);
+            SetTarget((Object)OnionDataEditor.bookmarkGroup);
             SwitchTab(Tab.Bookmark);
         }
 
         void ChangeTabToSetting()
         {
-            SetTarget((Object)setting);
+            SetTarget((Object)OnionDataEditor.setting);
             SwitchTab(Tab.Setting);
         }
 
@@ -209,17 +194,14 @@ namespace OnionCollections.DataEditor.Editor
 
             VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
 
-            viewElement.style.display = (newTarget != bookmarkGroup) ? DisplayStyle.Flex : DisplayStyle.None;
+            viewElement.style.display = (IsSystemTarget(newTarget) == false) ? DisplayStyle.Flex : DisplayStyle.None;
 
-            if (newTarget != bookmarkGroup)
+            if (IsSystemTarget(newTarget) == false)
             {
-                if (bookmarkGroup != null)
+                int index = OnionDataEditor.bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(newTarget);
+                if (index >= 0)
                 {
-                    int index = bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(newTarget);
-                    if (index >= 0)
-                    {
-                        SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark_Fill");
-                    }
+                    SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark_Fill");
                 }
             }
         }
@@ -272,27 +254,8 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        DataGroup bookmarkGroup = null;
         void CreateNeededAsset()
         {
-            //setting
-            if (setting == null)
-            {
-                var settingIns = CreateInstance<OnionSetting>();
-                Debug.Log("Auto create setting asset.");
-                AssetDatabase.CreateAsset(settingIns, $"{path}/Setting.asset");
-            }
-
-
-            //bookmark group
-            bookmarkGroup = AssetDatabase.LoadAssetAtPath<DataGroup>($"{path}/OnionBookmarkGroup.asset");
-            if (bookmarkGroup == null)
-            {
-                bookmarkGroup = CreateInstance<DataGroup>();
-                Debug.Log("Auto create bookmark group asset.");
-                AssetDatabase.CreateAsset(bookmarkGroup, $"{path}/OnionBookmarkGroup.asset");
-            }
-
             //bookmark folder
             if (AssetDatabase.IsValidFolder($"{path}/Bookmark") == false)
                 AssetDatabase.CreateFolder(path, "Bookmark");
@@ -324,9 +287,9 @@ namespace OnionCollections.DataEditor.Editor
         void OnToggleBookmark()
         {
             int index = -1;
-            if (bookmarkGroup != null && target != bookmarkGroup)
+            if (IsSystemTarget(target)==false)
             {
-                index = bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(target);
+                index = OnionDataEditor.bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(target);
 
                 if (index >= 0)
                     OnRemoveBookmark();
@@ -335,10 +298,14 @@ namespace OnionCollections.DataEditor.Editor
 
                 FreshBookmarkView(target);
             }
+            else
+            {
+                Debug.Log("Can not add this object.");
+            }
 
             void OnRemoveBookmark()
             {
-                SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
+                SerializedObject serializedObject = new SerializedObject(OnionDataEditor.bookmarkGroup);
                 SerializedProperty data = serializedObject.FindProperty("data");
 
                 AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(data.GetArrayElementAtIndex(index).objectReferenceValue));
@@ -347,7 +314,7 @@ namespace OnionCollections.DataEditor.Editor
                 data.arraySize = data.arraySize - 1;
 
                 serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(bookmarkGroup);
+                EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
                 AssetDatabase.SaveAssets();
 
             }
@@ -357,9 +324,9 @@ namespace OnionCollections.DataEditor.Editor
                 var bookmark = CreateInstance<OnionBookmark>();
                 bookmark.target = target;
 
-                AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/B_{target.name}.asset");
+                AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/Bookmark_{target.name}_{System.Guid.NewGuid()}.asset");
 
-                SerializedObject serializedObject = new SerializedObject(bookmarkGroup);
+                SerializedObject serializedObject = new SerializedObject(OnionDataEditor.bookmarkGroup);
                 SerializedProperty data = serializedObject.FindProperty("data");
 
                 int arraySize = data.arraySize;
@@ -367,7 +334,7 @@ namespace OnionCollections.DataEditor.Editor
                 data.GetArrayElementAtIndex(arraySize).objectReferenceValue = bookmark;
 
                 serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(bookmarkGroup);
+                EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
                 AssetDatabase.SaveAssets();
 
             }
@@ -405,11 +372,11 @@ namespace OnionCollections.DataEditor.Editor
             containerRoot.visible = (newTarget != null);
 
 
-            if(newTarget == bookmarkGroup)
+            if(newTarget == OnionDataEditor.bookmarkGroup)
             {
                 SwitchTab(Tab.Bookmark);
             }
-            else if(newTarget == setting)
+            else if(newTarget == OnionDataEditor.setting)
             {
                 SwitchTab(Tab.Setting);
             }
@@ -456,10 +423,22 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        void SetIcon(VisualElement el, string iconName)
+        bool IsSystemTarget(Object compareTarget)
         {
-            el.style.backgroundImage = new StyleBackground(AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png"));
+            return 
+                compareTarget == OnionDataEditor.bookmarkGroup ||
+                compareTarget == OnionDataEditor.setting;
         }
+
+        static void SetIcon(VisualElement el, string iconName)
+        {
+            el.style.backgroundImage = new StyleBackground(GetIconTexture(iconName));
+        }
+        public static Texture2D GetIconTexture(string iconName)
+        {
+            return AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png");
+        }
+
 
         //Inspector
         OnionAction onSelectInspector;

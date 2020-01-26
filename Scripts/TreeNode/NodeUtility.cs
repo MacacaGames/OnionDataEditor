@@ -15,7 +15,7 @@ namespace OnionCollections.DataEditor.Editor
 {
     public static class NodeUtility
     {
-        static OnionSetting setting => OnionDataEditorWindow.setting;
+        static OnionSetting setting => OnionDataEditor.setting;
 
 
 
@@ -101,14 +101,13 @@ namespace OnionCollections.DataEditor.Editor
             //取得指定型別的T或IEnumerable<T>
             IEnumerable<T> GetSingleOrMultipleType<T>() where T : class
             {
-                Type memberType = member.ReflectedType;
+                Type memberType = member.GetMemberInfoType();
 
                 //Single
                 if (memberType == typeof(T) || memberType.IsSubclassOf(typeof(T)))
                 {
                     if (member.TryGetValue(dataObj, out T resultCustomSingle))
                     {
-                        Debug.Log(resultCustomSingle.ToString());
                         return new List<T> { resultCustomSingle };
                     }
                 }

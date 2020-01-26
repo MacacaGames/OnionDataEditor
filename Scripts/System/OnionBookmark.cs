@@ -9,10 +9,10 @@ namespace OnionCollections.DataEditor.Editor
 {
     public class OnionBookmark : QueryableData
     {
+        public Object target;
+
         [SerializeField]
         string title;
-
-        public Object target;
 
         [NodeTitle]
         string bookmarkName
@@ -31,7 +31,7 @@ namespace OnionCollections.DataEditor.Editor
         }
 
         [NodeDescription]
-        [TextArea(1,3)]
+        [TextArea(1,5)]
         [SerializeField]
         string description;
 
