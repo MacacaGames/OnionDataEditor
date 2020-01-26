@@ -17,5 +17,7 @@
 !*.*.meta
 
 /Bookmark/*
-/OnionBookmarkGroup.asset
-/OnionBookmarkGroup.asset.meta
+/BookmarkGroup.asset
+/BookmarkGroup.asset.meta
+/Setting.asset
+/Setting.asset.meta
