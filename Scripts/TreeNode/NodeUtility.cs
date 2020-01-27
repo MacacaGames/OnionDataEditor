@@ -29,13 +29,22 @@ namespace OnionCollections.DataEditor.Editor
             //++
         };
 
+        static Dictionary<Type, MemberInfo[]> memberCache = new Dictionary<Type, MemberInfo[]>();
+        static Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool> attrResultCache = new Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool>();
+
         public static IEnumerable<TreeNode> GetElements(this Object dataObj)
         {
             if (dataObj != null)
             {
                 List<TreeNode> nodeList = new List<TreeNode>();
 
-                var members = dataObj.GetType().GetMembers(defaultBindingFlags);
+                Type dataObjType = dataObj.GetType();
+
+                if (memberCache.TryGetValue(dataObjType,out MemberInfo[] members) == false)
+                {
+                    members = dataObjType.GetMembers(defaultBindingFlags);
+                    memberCache.Add(dataObjType, members);
+                }
 
                 foreach(var member in members)
                 {
@@ -164,22 +173,41 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-
         #region 取得target身上的特定屬性Attribute
 
         //取得屬性值的通用方法
         static T TryGetNodeAttrValue<T>(Object dataObj, Type attrType) where T : class
         {
-            Type type = dataObj.GetType();
-            var members = type.GetMembers(defaultBindingFlags);
+            Type dataObjType = dataObj.GetType();
+
+            if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
+            {
+                members = dataObjType.GetMembers(defaultBindingFlags);
+                memberCache.Add(dataObjType, members);
+            }
 
             foreach (var member in members)
-                if (member.GetCustomAttribute(attrType, true) != null)
+            {
+                var key = (dataObjType, member.ReflectedType, member.Name, attrType);
+                if (attrResultCache.TryGetValue(key, out bool attrResult) == false)
                 {
-                    var result = member.TryGetValue<T>(dataObj);
-                    if (result.hasValue)
-                        return result.value as T;
+                    //Debug.Log(key);
+                    //重找一次這個member有沒有這個attribut，並記錄結果
+                    if (member.GetCustomAttribute(attrType, true) != null)
+                        attrResult = true;
+                    else
+                        attrResult = false;
+
+                    attrResultCache.Add(key, attrResult);
                 }
+
+                if (attrResult == true)
+                {
+                    var r = member.TryGetValue<T>(dataObj);
+                    if (r.hasValue)
+                        return r.value as T;
+                }
+            }
 
             return null;
         }
@@ -245,6 +273,7 @@ namespace OnionCollections.DataEditor.Editor
                 var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnDoubleClickAttribute))
                     .Where(_ => _.GetGenericArguments().Length == 0)
                     .Select(_ => (methodInfo: _, attr: _.GetCustomAttribute<NodeOnDoubleClickAttribute>()))
+
                     .SingleOrDefault(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(setting.userTags).Any())
                     .methodInfo;
 
