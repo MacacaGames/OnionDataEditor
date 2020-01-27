@@ -1,60 +1,66 @@
-﻿using UnityEditor;
+﻿#if(UNITY_EDITOR)
+
+using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 
-public class OnionReorderableList: ReorderableList
+namespace OnionCollections.DataEditor.Editor
 {
-    ReorderableList rList;
-
-    SerializedObject serializedObject;
-    SerializedProperty elements;
-    string title;
-
-    public OnionReorderableList(SerializedProperty elements, string title) : base(elements.serializedObject, elements)
+    public class OnionReorderableList : ReorderableList
     {
-        Init(elements.serializedObject, elements, title);
-    }
-    public OnionReorderableList(SerializedObject serializedObject, SerializedProperty elements, string title) : base(serializedObject, elements)
-    {
-        Init(serializedObject, elements, title);
-    }
+        ReorderableList rList;
 
-    void Init(SerializedObject serializedObject, SerializedProperty elements, string title)
-    {
-        this.serializedObject = serializedObject;
-        this.elements = elements;
-        this.title = title;
+        SerializedObject serializedObject;
+        SerializedProperty elements;
+        string title;
 
-        rList = new ReorderableList(serializedObject, elements, true, true, true, true)
+        public OnionReorderableList(SerializedProperty elements, string title) : base(elements.serializedObject, elements)
         {
-            drawHeaderCallback = DrawListHeader,
-            drawElementCallback = DrawListElement
-        };
-    }
+            Init(elements.serializedObject, elements, title);
+        }
+        public OnionReorderableList(SerializedObject serializedObject, SerializedProperty elements, string title) : base(serializedObject, elements)
+        {
+            Init(serializedObject, elements, title);
+        }
 
-    void DrawListHeader(Rect rect)
-    {
-        var arect = rect;
-        arect.height = EditorGUIUtility.singleLineHeight;
-        EditorGUI.LabelField(arect, title);
-    }
+        void Init(SerializedObject serializedObject, SerializedProperty elements, string title)
+        {
+            this.serializedObject = serializedObject;
+            this.elements = elements;
+            this.title = title;
+
+            rList = new ReorderableList(serializedObject, elements, true, true, true, true)
+            {
+                drawHeaderCallback = DrawListHeader,
+                drawElementCallback = DrawListElement
+            };
+        }
+
+        void DrawListHeader(Rect rect)
+        {
+            var arect = rect;
+            arect.height = EditorGUIUtility.singleLineHeight;
+            EditorGUI.LabelField(arect, title);
+        }
 
 
-    void DrawListElement(Rect rect, int currentIndex, bool isActive, bool isFocused)
-    {
-        var arect = rect;
-        var serElem = rList.serializedProperty.GetArrayElementAtIndex(currentIndex);
-        arect.height = EditorGUIUtility.singleLineHeight;
+        void DrawListElement(Rect rect, int currentIndex, bool isActive, bool isFocused)
+        {
+            var arect = rect;
+            var serElem = rList.serializedProperty.GetArrayElementAtIndex(currentIndex);
+            arect.height = EditorGUIUtility.singleLineHeight;
 
-        EditorGUI.PropertyField(arect, serElem, GUIContent.none);
-    }
+            EditorGUI.PropertyField(arect, serElem, GUIContent.none);
+        }
 
-    public void OnInspectorGUI()
-    {
-        serializedObject.Update();
+        public void OnInspectorGUI()
+        {
+            serializedObject.Update();
 
-        rList.DoLayoutList();
+            rList.DoLayoutList();
 
-        serializedObject.ApplyModifiedProperties();
+            serializedObject.ApplyModifiedProperties();
+        }
     }
 }
+#endif
