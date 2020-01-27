@@ -4,13 +4,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UIElements;
 
 namespace OnionCollections.DataEditor.Editor
 {
     public class OnionSetting : QueryableData
     {
+        const string nodeName = "Settings";
+
         [NodeTitle]
-        string title => "Settings";
+        string title => nodeName;
+
+        [NodeDescription]
+        string description => "Onion data editor settings.";
 
         [NodeIcon]
         Texture2D icon => OnionDataEditorWindow.GetIconTexture("Settings");
@@ -23,7 +29,10 @@ namespace OnionCollections.DataEditor.Editor
 
         public override IEnumerable<IQueryableData> GetData()
         {
-            throw new System.NotImplementedException();
+            return new List<TreeNode>
+            {
+                userTagsNode,
+            };
         }
 
 
@@ -60,6 +69,29 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
+    }
+
+    [CustomEditor(typeof(OnionSetting))]
+    public class OnionSettingEditor: UnityEditor.Editor
+    {
+        List<TreeNode> nodes;
+        private void OnEnable()
+        {
+            nodes = new List<TreeNode>((target as QueryableData).GetData<TreeNode>());
+        }
+
+
+        public override VisualElement CreateInspectorGUI()
+        {
+            var ve = new VisualElement();
+
+            foreach(var node in nodes)
+            {
+                ve.Add(new IMGUIContainer(node.onInspectorAction.action));
+            }
+
+            return ve;
+        }
 
     }
 }

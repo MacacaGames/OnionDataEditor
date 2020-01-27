@@ -226,9 +226,20 @@ namespace OnionCollections.DataEditor.Editor
         {
             var root = rootVisualElement;
 
-            var inspectorContainer = new IMGUIContainer(DrawInspector);
+            var inspectorContainer = new IMGUIContainer(()=> 
+            {
+                selectedNode?.onInspectorAction?.action?.Invoke();
+            });
             inspectorContainer.AddToClassList("inspect-container");
-            root.Q("inspector-scroll").Q("unity-content-container").Add(inspectorContainer);
+            inspectorContainer.name = "inspect-container-imgui";
+
+            var inspectorContainerVisualElement = new VisualElement();
+            inspectorContainerVisualElement.AddToClassList("inspect-container");
+            inspectorContainerVisualElement.name = "inspect-container-ve";
+
+            var inspectorRoot = root.Q("inspector-scroll").Q("unity-content-container");
+            inspectorRoot.Add(inspectorContainer);
+            inspectorRoot.Add(inspectorContainerVisualElement);
 
         }
         void BuildTreeView()
@@ -413,7 +424,26 @@ namespace OnionCollections.DataEditor.Editor
         {
             if (newNode != null)
             {
-                onSelectInspector = newNode.onInspectorAction;
+                var parentVisualElement = rootVisualElement.Q("inspect-container-ve");
+                var inspectContainer = rootVisualElement.Q("inspect-container-imgui");
+
+                //清掉原本的visual element node
+                foreach (var child in parentVisualElement.Children().ToArray())
+                {
+                    parentVisualElement.Remove(child);
+                }
+
+
+                if (newNode.onInspectorVisualElementRoot != null)
+                {
+                    inspectContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                    parentVisualElement.Add(newNode.onInspectorVisualElementRoot);
+                }
+                else
+                {
+                    inspectContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                }
+
             }
 
             DisplayInfo(newNode);
@@ -437,17 +467,6 @@ namespace OnionCollections.DataEditor.Editor
         public static Texture2D GetIconTexture(string iconName)
         {
             return AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png");
-        }
-
-
-        //Inspector
-        OnionAction onSelectInspector;
-        void DrawInspector()
-        {
-            if (selectedNode != null && onSelectInspector != null)
-            {
-                onSelectInspector.action?.Invoke();
-            }
         }
 
         List<Button> actionBtns = new List<Button>();

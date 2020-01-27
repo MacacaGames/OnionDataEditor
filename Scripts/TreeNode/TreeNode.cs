@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using System.Linq;
+using UnityEngine.UIElements;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -39,7 +40,7 @@ namespace OnionCollections.DataEditor.Editor
         }
     }
 
-    public class TreeNode
+    public class TreeNode: IQueryableData
     {
         public Object dataObj { get; protected set; }
 
@@ -53,12 +54,36 @@ namespace OnionCollections.DataEditor.Editor
         public TreeNode parent;
         public int childCount => children.Count;
 
-        public List<OnionAction> nodeActions;
-        public OnionAction onSelectedAction = null;
-        public OnionAction onDoubleClickAction = null;
-        public OnionAction onInspectorAction = null;
 
-        UnityEditor.Editor editorCache = null;
+        public OnionAction onSelectedAction;
+        public OnionAction onDoubleClickAction;
+
+        public List<OnionAction> nodeActions;
+
+        public OnionAction _onInspectorAction;
+        public OnionAction onInspectorAction
+        {
+            get => _onInspectorAction ?? (_onInspectorAction = GetInspectorDrawer());
+            set => _onInspectorAction = value;
+        }
+
+        public VisualElement _onInspectorVisualElementRoot;
+        public VisualElement onInspectorVisualElementRoot
+        {
+            get =>_onInspectorVisualElementRoot ?? (_onInspectorVisualElementRoot = editorCache?.CreateInspectorGUI());
+            set => _onInspectorVisualElementRoot = value;
+        }
+
+        UnityEditor.Editor _editorCache;
+        UnityEditor.Editor editorCache
+        {
+            get
+            {
+                if (dataObj != null)
+                    return _editorCache ?? (_editorCache = UnityEditor.Editor.CreateEditor(dataObj));
+                return null;
+            }
+        }
 
         [System.Flags]
         public enum NodeFlag
@@ -92,14 +117,11 @@ namespace OnionCollections.DataEditor.Editor
 
             if (dataObj != null)
             {
-                editorCache = UnityEditor.Editor.CreateEditor(dataObj);
-                onInspectorAction = GetInspectorDrawer();
+                nodeActions = new List<OnionAction>(dataObj.GetNodeActions());
+
+                onSelectedAction = dataObj.GetNodeOnSelectedAction();
+                onDoubleClickAction = dataObj.GetNodeOnDoubleClickAction();
             }
-
-            nodeActions = new List<OnionAction>(dataObj.GetNodeActions());
-
-            onSelectedAction = dataObj.GetNodeOnSelectedAction();
-            onDoubleClickAction = dataObj.GetNodeOnDoubleClickAction();
 
         }
 
@@ -155,8 +177,26 @@ namespace OnionCollections.DataEditor.Editor
 
             return null;
         }
+
+        public string GetID()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public IEnumerator<IQueryableData> GetEnumerator()
+        {
+            foreach (var child in children)
+                yield return child;
+
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            foreach (var child in children)
+                yield return child;
+        }
     }
-        
+
 }
 
 #else
