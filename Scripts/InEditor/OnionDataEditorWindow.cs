@@ -194,9 +194,11 @@ namespace OnionCollections.DataEditor.Editor
 
             VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
 
-            viewElement.style.display = (IsSystemTarget(newTarget) == false) ? DisplayStyle.Flex : DisplayStyle.None;
+            bool isShow = (IsSystemTarget(newTarget) == false && AssetDatabase.IsNativeAsset(newTarget) == true);
 
-            if (IsSystemTarget(newTarget) == false)
+            viewElement.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
+
+            if (isShow)
             {
                 int index = OnionDataEditor.bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(newTarget);
                 if (index >= 0)
@@ -298,7 +300,7 @@ namespace OnionCollections.DataEditor.Editor
         void OnToggleBookmark()
         {
             int index = -1;
-            if (IsSystemTarget(target)==false)
+            if (IsSystemTarget(target) == false || AssetDatabase.IsNativeAsset(target) == false)
             {
                 index = OnionDataEditor.bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(target);
 
@@ -332,6 +334,13 @@ namespace OnionCollections.DataEditor.Editor
 
             void OnAddBookmark()
             {
+                if(AssetDatabase.IsNativeAsset(target) == false)
+                {
+                    Debug.Log("Can not add this object. Because target is not an native asset.");
+                    return;
+                }
+
+
                 var bookmark = CreateInstance<OnionBookmark>();
                 bookmark.target = target;
 

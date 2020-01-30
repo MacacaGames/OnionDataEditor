@@ -78,7 +78,10 @@ namespace OnionCollections.DataEditor.Editor
             if (attr.GetType() == typeof(NodeGroupedElementAttribute))
             {
                 NodeGroupedElementAttribute groupAttr = attr as NodeGroupedElementAttribute;
-                TreeNode groupedNode = groupAttr.rootNode;
+                TreeNode groupedNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                {
+                    displayName = groupAttr.displayName,
+                };
 
                 List<TreeNode> node = GetSingleOrMultipleType<Object>()
                     .Select(_ => new TreeNode(_))
