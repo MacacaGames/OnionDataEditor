@@ -69,7 +69,8 @@ public static class OnionDataEditor
     [UnityEditor.Callbacks.OnOpenAsset(1)]
     public static bool OnOpenAsset(int instanceID, int line)
     {
-        if (Selection.activeObject is IQueryableData)
+        Object target = EditorUtility.InstanceIDToObject(instanceID);
+        if (target is IQueryableData)
         {
             OpenWithOnionDataEditor();
             return true; //catch open file
