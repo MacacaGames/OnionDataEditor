@@ -13,6 +13,8 @@ namespace OnionCollections.DataEditor
         public NodeGroupedElementAttribute(string displayName, bool findTree = false, bool hideIfEmpty = false)
         {
             this.displayName = displayName;
+            this.findTree = findTree;
+            this.hideIfEmpty = hideIfEmpty;
         }
 
     }

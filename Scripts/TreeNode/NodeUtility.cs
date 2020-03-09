@@ -137,19 +137,19 @@ namespace OnionCollections.DataEditor.Editor
 
 
         /// <summary>將特定TreeNode長出其下子節點。</summary>
-        public static void GetElementTree(this TreeNode tagetNode)
+        public static void GetElementTree(this TreeNode targetNode)
         {
-            if (ReferenceCheck(tagetNode) == false)
+            if (ReferenceCheck(targetNode) == false)
             {
                 EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
-                throw new StackOverflowException($"{tagetNode.displayName} is a parent of itself.");
+                throw new StackOverflowException($"{targetNode.displayName} is a parent of itself.");
             }
 
 
-            var node = GetElements(tagetNode.dataObj);
+            var node = GetElements(targetNode.dataObj);
 
-            tagetNode.ClearChildren();
-            tagetNode.AddChildren(new List<TreeNode>(node));
+            targetNode.ClearChildren();
+            targetNode.AddChildren(new List<TreeNode>(node));
 
             foreach (var el in node)
             {
