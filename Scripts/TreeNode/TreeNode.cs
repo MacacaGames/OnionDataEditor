@@ -148,7 +148,7 @@ namespace OnionCollections.DataEditor.Editor
             else if (isNull)
                 return "NULL";
             else
-                return dataObj.GetNodeTitle() ?? dataObj.name;
+                return string.IsNullOrEmpty(dataObj.GetNodeTitle()) ? dataObj.name: dataObj.GetNodeTitle();
         }
         public string GetDescription()
         {
