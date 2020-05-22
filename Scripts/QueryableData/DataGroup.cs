@@ -2,7 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Linq;
 using OnionCollections.DataEditor;
+
+#if(ODIN_INSPECTOR)
+using Sirenix.OdinInspector;
+#endif
 
 [CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
 public class DataGroup : QueryableData
@@ -13,6 +18,12 @@ public class DataGroup : QueryableData
     [SerializeField]
     string description;
 
+#if (ODIN_INSPECTOR)
+
+    bool dataHaveNull() => GetData().Any(_ => _ == null);
+
+    [InfoBox("Data have null element!", "dataHaveNull", InfoMessageType = InfoMessageType.Error)]
+#endif
     [NodeElement]
     [SerializeField]
     protected QueryableData[] data = new QueryableData[0];
