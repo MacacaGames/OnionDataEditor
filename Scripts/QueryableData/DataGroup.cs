@@ -20,8 +20,10 @@ public class DataGroup : QueryableData
 
 #if (ODIN_INSPECTOR)
 
+    bool dataHaveRepeatId() => GetData().GroupBy(_ => _.GetID()).Any(_ => _.Count() > 1);
     bool dataHaveNull() => GetData().Any(_ => _ == null);
 
+    [InfoBox("Data have repeat id!", "dataHaveRepeatId", InfoMessageType = InfoMessageType.Error)]
     [InfoBox("Data have null element!", "dataHaveNull", InfoMessageType = InfoMessageType.Error)]
 #endif
     [NodeElement]

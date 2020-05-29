@@ -21,7 +21,12 @@ public static class QueryableDataExtensions
 
     public static T QueryByID<T>(this IQueryableData target, string id) where T : IQueryableData
     {
-        return (T)target.SingleOrDefault(_ => _.GetID() == id);
+        T result = (T)target.SingleOrDefault(_ => _.GetID() == id);
+        if(result == null)
+        {
+            UnityEngine.Debug.LogError("QueryableData在查找id時，找到的結果為null，可能是id重複或資料本身為null");
+        }
+        return result;
     }
 
 
