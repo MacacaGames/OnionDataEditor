@@ -40,20 +40,47 @@ namespace OnionCollections.DataEditor.Editor
 
                 Type dataObjType = dataObj.GetType();
 
-                if (memberCache.TryGetValue(dataObjType,out MemberInfo[] members) == false)
+                if (dataObj is GameObject go)
                 {
-                    members = dataObjType.GetMembers(defaultBindingFlags);
-                    memberCache.Add(dataObjType, members);
-                }
-
-                foreach(var member in members)
-                {
-                    foreach (var attrType in nodeAttrTypeList)
-                    {
-                        foreach (Attribute attr in member.GetCustomAttributes(attrType,true))
+                    var comps = go
+                        .GetComponents<Component>()
+                        .Select(c =>
                         {
-                            if (attr != null)
-                                nodeList.AddRange(GetChildNodeWithAttribute(dataObj, member, attr));
+                            if(c is IQueryableData q)
+                            {
+                                return new TreeNode(c)
+                                {
+                                    displayName = q.GetID()
+                                };
+                            }
+                            else
+                            {
+                                return new TreeNode(c)
+                                {
+                                    displayName = c.GetType().Name
+                                };
+                            }
+                        });
+
+                    nodeList.AddRange(comps);
+                }
+                else
+                {
+                    if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
+                    {
+                        members = dataObjType.GetMembers(defaultBindingFlags);
+                        memberCache.Add(dataObjType, members);
+                    }
+
+                    foreach (var member in members)
+                    {
+                        foreach (var attrType in nodeAttrTypeList)
+                        {
+                            foreach (Attribute attr in member.GetCustomAttributes(attrType, true))
+                            {
+                                if (attr != null)
+                                    nodeList.AddRange(GetChildNodeWithAttribute(dataObj, member, attr));
+                            }
                         }
                     }
                 }
