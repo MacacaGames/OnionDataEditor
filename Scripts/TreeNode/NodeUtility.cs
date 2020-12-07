@@ -42,27 +42,28 @@ namespace OnionCollections.DataEditor.Editor
 
                 if (dataObj is GameObject go)
                 {
-                    var comps = go
-                        .GetComponents<Component>()
+                    IEnumerable<Component> comps;
+                    if (go.TryGetComponent(out OnionDataEditorComponentFilter filter) == true)
+                    {
+                        comps = filter.GetComponents(go);
+                    }
+                    else
+                    {
+                        comps = go.GetComponents<Component>();
+                    }
+
+                    var nodes = comps
                         .Select(c =>
                         {
-                            if(c is IQueryableData q)
+                            string displayName = (c is IQueryableData q) ? q.GetID() : c.GetType().Name;
+
+                            return new TreeNode(c)
                             {
-                                return new TreeNode(c)
-                                {
-                                    displayName = q.GetID()
-                                };
-                            }
-                            else
-                            {
-                                return new TreeNode(c)
-                                {
-                                    displayName = c.GetType().Name
-                                };
-                            }
+                                displayName = displayName
+                            };
                         });
 
-                    nodeList.AddRange(comps);
+                    nodeList.AddRange(nodes);
                 }
                 else
                 {
