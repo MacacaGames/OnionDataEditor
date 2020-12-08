@@ -17,7 +17,7 @@ namespace OnionCollections.DataEditor.Editor
 
         public DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
         {
-            rowHeight = 20F;
+            rowHeight = 22F;
             isSelectChange = false;
 
             SetData(tree);
@@ -69,7 +69,7 @@ namespace OnionCollections.DataEditor.Editor
                     break;
                 //偽
                 case RowState.Pseudo:
-                    style.normal.textColor = new Color(0.5F, 0.5F, 0.5F);
+                    style.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.9F);
                     break;
                 //警告
                 case RowState.Error:
@@ -113,7 +113,7 @@ namespace OnionCollections.DataEditor.Editor
 
             //text
             Rect labelRect = args.rowRect;
-            labelRect.x += GetContentIndent(args.item) + (hasIcon ? (args.rowRect.height + 3F) : 0F);
+            labelRect.x += GetContentIndent(args.item) + (hasIcon ? (args.rowRect.height + 4F) : 2F);
             labelRect.width = args.rowRect.width;
             GUI.Label(labelRect, node.displayName, style);
 
@@ -125,8 +125,9 @@ namespace OnionCollections.DataEditor.Editor
                 const float tagWidth = 150F;
                 Rect rightRect = new Rect(args.rowRect.width - tagWidth, args.rowRect.y, tagWidth, args.rowRect.height);
                 GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-                labelStyle.normal.textColor = new Color(0.5F, 0.5F, 0.5F);
+                labelStyle.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.5F);
                 labelStyle.alignment = TextAnchor.MiddleRight;
+                labelStyle.fontSize = 10;
                 labelStyle.padding = new RectOffset(0, 8, 0, 3);
 
                 string displayTag = "";
@@ -135,7 +136,7 @@ namespace OnionCollections.DataEditor.Editor
                 else
                     displayTag = treeQuery[args.item.id].childCount.ToString();
 
-                GUI.Label(rightRect, $"[{displayTag}]", labelStyle);
+                GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
             }
 
             //Line
@@ -143,7 +144,7 @@ namespace OnionCollections.DataEditor.Editor
             lineRect.x += GetContentIndent(args.item);
             lineRect.y += lineRect.height - 1;
             lineRect.height = 1;
-            EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 0.1F));      //線
+            EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 0.05F));      //線
         }
         public override IList<TreeViewItem> GetRows()
         {

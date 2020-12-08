@@ -60,14 +60,14 @@ namespace OnionCollections.DataEditor.Editor
 
         public List<OnionAction> nodeActions;
 
-        public OnionAction _onInspectorAction;
+        OnionAction _onInspectorAction;
         public OnionAction onInspectorAction
         {
             get => _onInspectorAction ?? (_onInspectorAction = GetInspectorDrawer());
             set => _onInspectorAction = value;
         }
 
-        public VisualElement _onInspectorVisualElementRoot;
+        VisualElement _onInspectorVisualElementRoot;
         public VisualElement onInspectorVisualElementRoot
         {
             get =>_onInspectorVisualElementRoot ?? (_onInspectorVisualElementRoot = editorCache?.CreateInspectorGUI());
@@ -144,11 +144,29 @@ namespace OnionCollections.DataEditor.Editor
         public string GetTitle()
         {
             if (isPseudo)
+            {
                 return displayName;
+            }
             else if (isNull)
+            {
                 return "NULL";
+            }
             else
-                return string.IsNullOrEmpty(dataObj.GetNodeTitle()) ? dataObj.name: dataObj.GetNodeTitle();
+            {
+                string nodeTitle = dataObj.GetNodeTitle();
+                if (string.IsNullOrEmpty(nodeTitle) == false)
+                {
+                    return nodeTitle;
+                }
+                else if (string.IsNullOrEmpty(displayName) == false)
+                {
+                    return displayName;
+                }
+                else
+                {
+                    return dataObj.name;
+                }
+            }
         }
         public string GetDescription()
         {
@@ -157,7 +175,17 @@ namespace OnionCollections.DataEditor.Editor
             else if (isNull)
                 return "";
             else
-                return dataObj.GetNodeDescription() ?? "";
+            {
+                string des = dataObj.GetNodeDescription();
+                if (string.IsNullOrEmpty(des) == true)
+                {
+                    return "";
+                }
+                else
+                {
+                    return des;
+                }
+            }
         }
         public Texture GetIcon()
         {

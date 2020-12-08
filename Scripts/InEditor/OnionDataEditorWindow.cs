@@ -41,13 +41,13 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        enum Tab 
+        enum Tab
         {
-            None,
-            Opened,
-            Bookmark,
-            Setting,
-            Recent,
+            None = 0,
+            Opened = 1,
+            Bookmark = 2,
+            Setting = 3,
+            Recent = 4,
         }
         Tab currentTab = Tab.None;
         Object openedTarget;
@@ -135,6 +135,197 @@ namespace OnionCollections.DataEditor.Editor
 
             //Split
             BindSpliter();
+
+
+            //
+
+            void BindSpliter()
+            {
+                //左右分割
+                root.Q("Spliter").AddManipulator(new VisualElementResizer(
+                    root.Q("ContainerA"), root.Q("ContainerB"), root.Q("Spliter"),
+                    VisualElementResizer.Direction.Horizontal));
+
+                //右側上下分割
+                //root.Q("ContainerB").Q("Spliter").AddManipulator(new VisualElementResizer(
+                //    root.Q("ContainerB").Q("inspector-scroll"), root.Q("ContainerB").Q("data-info"), root.Q("ContainerB").Q("Spliter"),
+                //    VisualElementResizer.Direction.Vertical));
+
+            }
+
+            void BindInspector()
+            {
+                var inspectorContainer = new IMGUIContainer(() =>
+                {
+                    selectedNode?.onInspectorAction?.action?.Invoke();
+                });
+                inspectorContainer.AddToClassList("inspect-container");
+                inspectorContainer.name = "inspect-container-imgui";
+
+                var inspectorContainerVisualElement = new VisualElement();
+                inspectorContainerVisualElement.AddToClassList("inspect-container");
+                inspectorContainerVisualElement.name = "inspect-container-ve";
+
+                var inspectorRoot = root.Q("inspector-scroll").Q("unity-content-container");
+                inspectorRoot.Add(inspectorContainer);
+                inspectorRoot.Add(inspectorContainerVisualElement);
+
+            }
+
+            void BuildTreeView()
+            {
+                VisualElement containerRoot = root.Q("tree-view-container");
+                if (treeViewContainer == null)
+                {
+                    treeViewContainer = new IMGUIContainer(DrawTreeView)
+                    {
+                        name = "tree-view",
+                        style = { flexGrow = 1 },
+                    };
+                    containerRoot.Add(treeViewContainer);
+                }
+
+                void DrawTreeView()
+                {
+                    if (treeRoot != null && target != null)
+                    {
+                        treeRoot.treeView.OnGUI(treeViewContainer.layout);
+                    }
+                }
+            }
+
+            //
+
+            void ChangeTabToBookmark()
+            {
+                SetTarget((Object)OnionDataEditor.bookmarkGroup);
+                SwitchTab(Tab.Bookmark);
+            }
+
+            void ChangeTabToSetting()
+            {
+                SetTarget((Object)OnionDataEditor.setting);
+                SwitchTab(Tab.Setting);
+            }
+
+            void ChangeTabToOpened()
+            {
+                if (openedTarget != null)
+                {
+                    SetTarget(openedTarget);
+                    SwitchTab(Tab.Opened);
+                }
+                else
+                {
+                    Debug.Log("Opened target is null.");
+                }
+            }
+
+            void CreateNeededAsset()
+            {
+                //bookmark folder
+                if (AssetDatabase.IsValidFolder($"{path}/Bookmark") == false)
+                    AssetDatabase.CreateFolder(path, "Bookmark");
+
+            }
+
+            //
+            
+            void OnFresh()
+            {
+                FreshTreeView();
+            }
+
+            void OnToggleBookmark()
+            {
+                int index = -1;
+                if (BookmarkObjectValid(target))
+                {
+                    index = OnionDataEditor.bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(target);
+
+                    if (index >= 0)
+                        OnRemoveBookmark();
+                    else
+                        OnAddBookmark();
+
+                    FreshBookmarkView(target);
+                }
+                else
+                {
+                    Debug.Log("Can not add this object in bookmark.");
+                }
+
+                void OnRemoveBookmark()
+                {
+                    SerializedObject serializedObject = new SerializedObject(OnionDataEditor.bookmarkGroup);
+                    SerializedProperty data = serializedObject.FindProperty("data");
+
+                    AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(data.GetArrayElementAtIndex(index).objectReferenceValue));
+
+                    data.DeleteArrayElementAtIndex(index);
+                    //data.MoveArrayElement(index, data.arraySize - 1);
+                    //data.arraySize = data.arraySize - 1;
+
+                    serializedObject.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
+                    AssetDatabase.SaveAssets();
+
+                }
+
+                void OnAddBookmark()
+                {
+                    if (BookmarkObjectValid(target) == false)
+                    {
+                        Debug.Log("Can not add this object in bookmark.");
+                        return;
+                    }
+
+
+                    var bookmark = CreateInstance<OnionBookmark>();
+                    bookmark.target = target;
+
+                    AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/Bookmark_{target.name}_{System.Guid.NewGuid()}.asset");
+
+                    SerializedObject serializedObject = new SerializedObject(OnionDataEditor.bookmarkGroup);
+                    SerializedProperty data = serializedObject.FindProperty("data");
+
+                    int arraySize = data.arraySize;
+                    data.InsertArrayElementAtIndex(arraySize);
+                    data.GetArrayElementAtIndex(arraySize).objectReferenceValue = bookmark;
+
+                    serializedObject.ApplyModifiedProperties();
+                    EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
+                    AssetDatabase.SaveAssets();
+
+                }
+
+            }
+
+            void OpenDocument()
+            {
+                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.dataObj));
+            }
+
+            void OnSearchTarget()
+            {
+                int controlID = rootVisualElement.Q<Button>("btn-search-target").GetHashCode();
+                EditorGUIUtility.ShowObjectPicker<ScriptableObject>(null, false, "", controlID);
+            }
+
+            void OnSearchTargetListener()
+            {
+                //作為監聽器
+                if (Event.current.commandName == "ObjectSelectorClosed" &&
+                    EditorGUIUtility.GetObjectPickerObject() != null &&
+                    EditorGUIUtility.GetObjectPickerControlID() == rootVisualElement.Q<Button>("btn-search-target").GetHashCode())
+                {
+                    Object selectObj = EditorGUIUtility.GetObjectPickerObject();
+
+                    if (selectObj != null)
+                        SetTarget(selectObj);
+                }
+            }
+
         }
 
         void SwitchTab(Tab tab)
@@ -163,38 +354,13 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
-        void ChangeTabToBookmark()
-        {
-            SetTarget((Object)OnionDataEditor.bookmarkGroup);
-            SwitchTab(Tab.Bookmark);
-        }
-
-        void ChangeTabToSetting()
-        {
-            SetTarget((Object)OnionDataEditor.setting);
-            SwitchTab(Tab.Setting);
-        }
-
-        void ChangeTabToOpened()
-        {
-            if(openedTarget != null)
-            {
-                SetTarget(openedTarget);
-                SwitchTab(Tab.Opened);
-            }
-            else
-            {
-                Debug.Log("Opened target is null.");
-            }
-        }
-
         void FreshBookmarkView(Object newTarget)
         {
             SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark");
 
             VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
 
-            bool isShow = (IsSystemTarget(newTarget) == false && AssetDatabase.IsNativeAsset(newTarget) == true);
+            bool isShow = BookmarkObjectValid(newTarget);
 
             viewElement.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
 
@@ -208,73 +374,23 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        //Bind & Build
-        void BindSpliter()
+        bool BookmarkObjectValid(Object target)
         {
-            var root = rootVisualElement;
+            bool result = IsSystemTarget(target) == false &&    //非系統Object
+                ((target is GameObject && AssetDatabase.IsMainAsset(target)) || AssetDatabase.IsNativeAsset(target) == true);   //Prefab 或 ScriptableObject
 
-            //左右分割
-            root.Q("Spliter").AddManipulator(new VisualElementResizer(
-                root.Q("ContainerA"), root.Q("ContainerB"), root.Q("Spliter"),
-                VisualElementResizer.Direction.Horizontal));
-
-            //右側上下分割
-            root.Q("ContainerB").Q("Spliter").AddManipulator(new VisualElementResizer(
-                root.Q("ContainerB").Q("inspector-scroll"), root.Q("ContainerB").Q("data-info"), root.Q("ContainerB").Q("Spliter"),
-                VisualElementResizer.Direction.Vertical));
-
+            return result;
         }
-        void BindInspector()
+
+        public void FreshTreeView()
         {
-            var root = rootVisualElement;
-
-            var inspectorContainer = new IMGUIContainer(()=> 
+            if (treeRoot != null)
             {
-                selectedNode?.onInspectorAction?.action?.Invoke();
-            });
-            inspectorContainer.AddToClassList("inspect-container");
-            inspectorContainer.name = "inspect-container-imgui";
-
-            var inspectorContainerVisualElement = new VisualElement();
-            inspectorContainerVisualElement.AddToClassList("inspect-container");
-            inspectorContainerVisualElement.name = "inspect-container-ve";
-
-            var inspectorRoot = root.Q("inspector-scroll").Q("unity-content-container");
-            inspectorRoot.Add(inspectorContainer);
-            inspectorRoot.Add(inspectorContainerVisualElement);
-
-        }
-        void BuildTreeView()
-        {
-            var root = rootVisualElement;
-
-            VisualElement containerRoot = root.Q("tree-view-container");
-            if (treeViewContainer == null)
-            {
-                treeViewContainer = new IMGUIContainer(DrawTreeView)
-                {
-                    name = "tree-view",
-                    style = { flexGrow = 1 },
-                };
-                containerRoot.Add(treeViewContainer);
+                treeRoot.CreateTreeView();
+                if (treeViewState == null)
+                    treeViewState = treeRoot.treeView.state;
             }
         }
-        void DrawTreeView()
-        {
-            if (treeRoot != null && target != null)
-            {
-                treeRoot.treeView.OnGUI(treeViewContainer.layout);
-            }
-        }
-
-        void CreateNeededAsset()
-        {
-            //bookmark folder
-            if (AssetDatabase.IsValidFolder($"{path}/Bookmark") == false)
-                AssetDatabase.CreateFolder(path, "Bookmark");
-
-        }
-
 
         public void SetTarget(IQueryableData newTarget)
         {
@@ -285,107 +401,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             target = newTarget;
         }
-
-
-        void OnFresh()
-        {
-            if (treeRoot != null)
-            {
-                treeRoot.CreateTreeView();
-                if (treeViewState == null)
-                    treeViewState = treeRoot.treeView.state;
-            }
-        }
-
-        void OnToggleBookmark()
-        {
-            int index = -1;
-            if (IsSystemTarget(target) == false || AssetDatabase.IsNativeAsset(target) == false)
-            {
-                index = OnionDataEditor.bookmarkGroup.OfType<OnionBookmark>().Select(_ => _.target).ToList().IndexOf(target);
-
-                if (index >= 0)
-                    OnRemoveBookmark();
-                else
-                    OnAddBookmark();
-
-                FreshBookmarkView(target);
-            }
-            else
-            {
-                Debug.Log("Can not add this object.");
-            }
-
-            void OnRemoveBookmark()
-            {
-                SerializedObject serializedObject = new SerializedObject(OnionDataEditor.bookmarkGroup);
-                SerializedProperty data = serializedObject.FindProperty("data");
-
-                AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(data.GetArrayElementAtIndex(index).objectReferenceValue));
-
-                data.MoveArrayElement(index, data.arraySize - 1);
-                data.arraySize = data.arraySize - 1;
-
-                serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
-                AssetDatabase.SaveAssets();
-
-            }
-
-            void OnAddBookmark()
-            {
-                if(AssetDatabase.IsNativeAsset(target) == false)
-                {
-                    Debug.Log("Can not add this object. Because target is not an native asset.");
-                    return;
-                }
-
-
-                var bookmark = CreateInstance<OnionBookmark>();
-                bookmark.target = target;
-
-                AssetDatabase.CreateAsset(bookmark, $"{path}/Bookmark/Bookmark_{target.name}_{System.Guid.NewGuid()}.asset");
-
-                SerializedObject serializedObject = new SerializedObject(OnionDataEditor.bookmarkGroup);
-                SerializedProperty data = serializedObject.FindProperty("data");
-
-                int arraySize = data.arraySize;
-                data.InsertArrayElementAtIndex(arraySize);
-                data.GetArrayElementAtIndex(arraySize).objectReferenceValue = bookmark;
-
-                serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
-                AssetDatabase.SaveAssets();
-
-            }
-
-        }
-
-        void OpenDocument()
-        {
-            OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.dataObj));
-        }
-
-        void OnSearchTarget()
-        {
-            int controlID = rootVisualElement.Q<Button>("btn-search-target").GetHashCode();
-            EditorGUIUtility.ShowObjectPicker<ScriptableObject>(null, false, "", controlID);
-        }
-
-        void OnSearchTargetListener()
-        {
-            //作為監聽器
-            if (Event.current.commandName == "ObjectSelectorClosed" &&
-                EditorGUIUtility.GetObjectPickerObject() != null &&
-                EditorGUIUtility.GetObjectPickerControlID() == rootVisualElement.Q<Button>("btn-search-target").GetHashCode())
-            {
-                Object selectObj = EditorGUIUtility.GetObjectPickerObject();
-
-                if (selectObj != null)
-                    SetTarget(selectObj);
-            }
-        }
-
+               
         void OnTargetChange(Object newTarget)
         {
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
@@ -425,7 +441,6 @@ namespace OnionCollections.DataEditor.Editor
 
                 FreshBookmarkView(newTarget);
 
-
             }
         }
 
@@ -460,8 +475,7 @@ namespace OnionCollections.DataEditor.Editor
             var root = rootVisualElement;
             root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
         }
-
-
+        
         bool IsSystemTarget(Object compareTarget)
         {
             return 
@@ -483,46 +497,77 @@ namespace OnionCollections.DataEditor.Editor
         {
             rootVisualElement.Q("btn-info-document").style.display = (node.dataObj != null) ? DisplayStyle.Flex : DisplayStyle.None;
 
+            if (node != null && node.nodeActions != null && node.nodeActions.Count == 0)
+            {
+                rootVisualElement.Q("data-info").style.display = DisplayStyle.None;
+            }
+            else
+            {
+                rootVisualElement.Q("data-info").style.display = DisplayStyle.Flex;
+            }
+
+
             DisplayTextInfo(node);
             DisplayActionButtonInfo(node);
-        }
-        void DisplayTextInfo(TreeNode node)
-        {
-            var root = this.rootVisualElement;
 
-            //text info
-            string nodeTitle = node.GetTitle();
-            string nodeDescription = node.GetDescription();
-
-            root.Q<Label>("info-title").text = nodeTitle;
-            root.Q<Label>("info-description").text = nodeDescription;
-
-        }
-        void DisplayActionButtonInfo(TreeNode node)
-        {
-            var root = this.rootVisualElement;
-
-            var container = root.Q("data-info-btn-list");
-            foreach (var actionBtn in actionBtns)
-                container.Remove(actionBtn);
-            actionBtns = new List<Button>();
-
-
-            if (node.nodeActions != null)
+            void DisplayTextInfo(TreeNode n)
             {
-                foreach (var action in node.nodeActions)
-                {
-                    Button actionBtn = new Button()
-                    {
-                        text = action.actionName,
-                    };
-                    actionBtn.clickable.clicked += () => action.action();
-                    actionBtn.AddToClassList("onion-btn");
-                    actionBtns.Add(actionBtn);
+                var root = this.rootVisualElement;
 
-                    container.Add(actionBtn);
+                //text info
+                string nodeTitle = n.GetTitle();
+                string nodeDescription = n.GetDescription();
+
+                root.Q<Label>("info-title").text = nodeTitle;
+                root.Q<Label>("info-description").text = nodeDescription;
+
+                if (node != null && string.IsNullOrEmpty(node.GetDescription()) == true)
+                {
+                    root.Q<Label>("info-description").style.display = DisplayStyle.None;
+                }
+                else
+                {
+                    root.Q<Label>("info-description").style.display = DisplayStyle.Flex;
+                }
+
+            }
+
+            void DisplayActionButtonInfo(TreeNode n)
+            {
+                var root = this.rootVisualElement;
+
+                var container = root.Q("data-info-btn-list");
+                if (node != null && node.nodeActions != null && node.nodeActions.Count == 0)
+                {
+                    container.style.display = DisplayStyle.None;
+                }
+                else
+                {
+                    container.style.display = DisplayStyle.Flex;
+                }
+
+                foreach (var actionBtn in actionBtns)
+                    container.Remove(actionBtn);
+                actionBtns = new List<Button>();
+
+
+                if (n.nodeActions != null)
+                {
+                    foreach (var action in n.nodeActions)
+                    {
+                        Button actionBtn = new Button()
+                        {
+                            text = action.actionName,
+                        };
+                        actionBtn.clickable.clicked += () => action.action();
+                        actionBtn.AddToClassList("onion-btn");
+                        actionBtns.Add(actionBtn);
+
+                        container.Add(actionBtn);
+                    }
                 }
             }
+
         }
 
 
@@ -552,7 +597,6 @@ namespace OnionCollections.DataEditor.Editor
                 EditorGUIUtility.PingObject(selectionObject);   //Ping
             }
         }
-
 
     }
 
