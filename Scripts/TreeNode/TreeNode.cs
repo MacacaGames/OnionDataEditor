@@ -1,13 +1,16 @@
-﻿#if (UNITY_EDITOR)
+﻿
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if (UNITY_EDITOR)
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
-using System.Linq;
 using UnityEngine.UIElements;
+using OnionCollections.DataEditor.Editor;
 
-namespace OnionCollections.DataEditor.Editor
+namespace OnionCollections.DataEditor
 {
     public class TreeRoot : TreeNode
     {
@@ -228,11 +231,6 @@ namespace OnionCollections.DataEditor.Editor
 }
 
 #else
-
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
 
 public class TreeNode
 {

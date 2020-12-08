@@ -42,26 +42,24 @@ namespace OnionCollections.DataEditor.Editor
 
                 if (dataObj is GameObject go)
                 {
-                    IEnumerable<Component> comps;
-                    if (go.TryGetComponent(out OnionDataEditorComponentFilter filter) == true)
+                    IEnumerable<TreeNode> nodes;
+                    if (go.TryGetComponent(out OnionDataEditorGameObjectAgent gameobjectAgent) == true)
                     {
-                        comps = filter.GetComponents(go);
+                        nodes = gameobjectAgent.GetNodes(go);
                     }
                     else
                     {
-                        comps = go.GetComponents<Component>();
-                    }
-
-                    var nodes = comps
-                        .Select(c =>
-                        {
-                            string displayName = (c is IQueryableData q) ? q.GetID() : c.GetType().Name;
-
-                            return new TreeNode(c)
+                        nodes = go.GetComponents<Component>()
+                            .Select(c =>
                             {
-                                displayName = displayName
-                            };
-                        });
+                                string displayName = (c is IQueryableData q) ? q.GetID() : c.GetType().Name;
+
+                                return new TreeNode(c)
+                                {
+                                    displayName = displayName
+                                };
+                            });
+                    }
 
                     nodeList.AddRange(nodes);
                 }
@@ -135,7 +133,7 @@ namespace OnionCollections.DataEditor.Editor
                 return GetSingleOrMultipleType<TreeNode>();
             }
 
-            throw new Exception($"Unknown Attribute {dataObj.name}.{member.Name}(Attr:{attr.ToString()})");
+            throw new Exception($"Unknown Attribute {dataObj.name}.{member.Name}(Attr:{attr})");
 
 
             //取得指定型別的T或IEnumerable<T>
