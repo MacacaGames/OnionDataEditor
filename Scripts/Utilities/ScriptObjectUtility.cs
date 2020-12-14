@@ -12,15 +12,15 @@ namespace OnionCollections.DataEditor.Editor
     public static class ScriptObjectUtility
     {
 
-        public static T CreateAndAddData<T>(QueryableData parentData, string dataPropertyName, string assetName = "", string assetPath = "") where T : ScriptableObject, IQueryableData
+        public static T CreateAndAddData<T>(QueryableData parentData, string dataPropertyName, string assetName, string assetPath = null) where T : ScriptableObject, IQueryableData
         {
-            if (assetPath == "")
+            if (assetPath == null)
             {
                 string assetPathAndName = AssetDatabase.GetAssetPath(parentData);
                 assetPath = assetPathAndName.Substring(0, assetPathAndName.LastIndexOf('/'));
             }
 
-            assetName = (assetName == "") ? $"Data{parentData.GetData().Count().ToString("D2")}" : assetName;
+            assetName = string.IsNullOrEmpty(assetName) ? $"Data {parentData}" : assetName;
 
             T data = CreateScriptObject<T>(assetPath, assetName);
 

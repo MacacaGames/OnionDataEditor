@@ -264,16 +264,15 @@ namespace OnionCollections.DataEditor.Editor
 
         public static IEnumerable<OnionAction> GetNodeActions(this Object dataObj)
         {
-            List<OnionAction> result = new List<OnionAction>();
+            IEnumerable<OnionAction> result = null;
             if (dataObj != null)
             {
                 var type = dataObj.GetType();
                 result = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeActionAttribute))
                     .Where(_ => _.GetGenericArguments().Length == 0)
-                    .Select(_ =>(methodInfo: _, attr:_.GetCustomAttribute<NodeActionAttribute>()))
+                    .Select(_ => (methodInfo: _, attr: _.GetCustomAttribute<NodeActionAttribute>()))
                     .Where(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(setting.userTags).Any())
-                    .Select(_ => new OnionAction(_.methodInfo, dataObj, _.attr.actionName ?? _.methodInfo.Name))
-                    .ToList();
+                    .Select(_ => new OnionAction(_.methodInfo, dataObj, _.attr.actionName ?? _.methodInfo.Name));
 
             }
             return result;

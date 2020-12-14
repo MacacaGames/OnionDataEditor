@@ -7,21 +7,19 @@ public abstract class QueryableData : ScriptableObject, IQueryableData
 {
     public abstract string GetID();
 
-    public abstract IEnumerable<IQueryableData> GetData();
+    //public abstract IEnumerable<IQueryableData> GetData();
 
-    public IEnumerable<T> GetData<T>() where T : IQueryableData
-    {
-        return GetData()?.OfType<T>();
-    }
+    //public IEnumerable<T> GetData<T>() where T : IQueryableData
+    //{
+    //    if (this is IEnumerable<IQueryableData> q)
+    //    {
+
+    //        return q.OfType<T>();
+    //    }
+    //    else
+    //    {
+    //        throw new System.NotImplementedException();
+    //    }
+    //}
     
-    IEnumerator<IQueryableData>  IEnumerable<IQueryableData>.GetEnumerator()
-    {
-        foreach (var item in GetData())
-            yield return item;
-    }
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        foreach (var item in GetData())
-            yield return item;
-    }
 }

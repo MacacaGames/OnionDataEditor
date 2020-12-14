@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class OnionBookmarkGroup : QueryableData
+    public class OnionBookmarkGroup : QueryableData, IEnumerable<IQueryableData>
     {
         const string nodeName = "Bookmarks";
 
@@ -27,9 +27,16 @@ namespace OnionCollections.DataEditor.Editor
             return nodeName;
         }
 
-        public override IEnumerable<IQueryableData> GetData()
+        public IEnumerator<IQueryableData> GetEnumerator()
         {
-            return data;
+            foreach (var item in data)
+                yield return item;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            foreach (var item in data)
+                yield return item;
         }
     }
 

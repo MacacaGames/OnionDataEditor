@@ -57,13 +57,6 @@ namespace OnionCollections.DataEditor.Editor
             throw new System.NotImplementedException();
         }
 
-        public override IEnumerable<IQueryableData> GetData()
-        {
-            if(target is IQueryableData queryableTarget)
-                return new List<IQueryableData> { queryableTarget };
-
-            return new List<IQueryableData> { };
-        }
     }
 }
 

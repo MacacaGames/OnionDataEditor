@@ -43,7 +43,7 @@ namespace OnionCollections.DataEditor
         }
     }
 
-    public class TreeNode: IQueryableData
+    public class TreeNode: IQueryableData, IEnumerable<TreeNode>
     {
         public Object dataObj { get; protected set; }
 
@@ -54,26 +54,48 @@ namespace OnionCollections.DataEditor
         public string displayName;
         public Texture icon = null;
         List<TreeNode> children = new List<TreeNode>();
-        public TreeNode parent;
+        public TreeNode parent { get; private set; }
         public int childCount => children.Count;
 
 
         public OnionAction onSelectedAction;
         public OnionAction onDoubleClickAction;
 
-        public List<OnionAction> nodeActions;
+        public IEnumerable<OnionAction> nodeActions;
 
         OnionAction _onInspectorAction;
         public OnionAction onInspectorAction
         {
-            get => _onInspectorAction ?? (_onInspectorAction = GetInspectorDrawer());
+            get
+            {
+                if (isPseudo == false && dataObj != null)
+                {
+                    if (_onInspectorAction == null)
+                    {
+                        _onInspectorAction = new OnionAction(editorCache.OnInspectorGUI);
+                    }
+                }
+
+                return _onInspectorAction;                
+            }
             set => _onInspectorAction = value;
         }
 
         VisualElement _onInspectorVisualElementRoot;
         public VisualElement onInspectorVisualElementRoot
         {
-            get =>_onInspectorVisualElementRoot ?? (_onInspectorVisualElementRoot = editorCache?.CreateInspectorGUI());
+            get
+            {
+                if (isPseudo == false && dataObj != null)
+                {
+                    if (_onInspectorVisualElementRoot == null)
+                    {
+                        _onInspectorVisualElementRoot = editorCache.CreateInspectorGUI();
+                    }
+                }
+
+                return _onInspectorVisualElementRoot;
+            }
             set => _onInspectorVisualElementRoot = value;
         }
 
@@ -83,8 +105,17 @@ namespace OnionCollections.DataEditor
             get
             {
                 if (dataObj != null)
-                    return _editorCache ?? (_editorCache = UnityEditor.Editor.CreateEditor(dataObj));
-                return null;
+                {
+                    if (_editorCache == null)
+                    {
+                        _editorCache = UnityEditor.Editor.CreateEditor(dataObj);
+                    }
+                    return _editorCache;
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -120,8 +151,7 @@ namespace OnionCollections.DataEditor
 
             if (dataObj != null)
             {
-                nodeActions = new List<OnionAction>(dataObj.GetNodeActions());
-
+                nodeActions = dataObj.GetNodeActions();
                 onSelectedAction = dataObj.GetNodeOnSelectedAction();
                 onDoubleClickAction = dataObj.GetNodeOnDoubleClickAction();
             }
@@ -199,29 +229,21 @@ namespace OnionCollections.DataEditor
             else
                 return dataObj.GetNodeIcon();
         }
-        public OnionAction GetInspectorDrawer()
-        {
-            if (isPseudo == false && dataObj != null)
-            {
-                return new OnionAction(editorCache.OnInspectorGUI);
-            }
-
-            return null;
-        }
-
+        
+      
         public string GetID()
         {
             throw new System.NotImplementedException();
         }
 
-        public IEnumerator<IQueryableData> GetEnumerator()
+
+        IEnumerator IEnumerable.GetEnumerator()
         {
             foreach (var child in children)
                 yield return child;
-
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        IEnumerator<TreeNode> IEnumerable<TreeNode>.GetEnumerator()
         {
             foreach (var child in children)
                 yield return child;

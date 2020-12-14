@@ -59,9 +59,11 @@ namespace OnionCollections.DataEditor.Editor
         enum RowState { Normal, Pseudo, Error };
         GUIStyle GetStateGUIStyle(RowState state, TreeViewItem item)
         {
-            GUIStyle style = new GUIStyle(GUI.skin.label);
-            style.alignment = TextAnchor.MiddleLeft;
-            style.padding = new RectOffset(0, 0, 0, 3);
+            GUIStyle style = new GUIStyle(GUI.skin.label)
+            {
+                alignment = TextAnchor.MiddleLeft,
+                padding = new RectOffset(0, 0, 0, 3)
+            };
             switch (state)
             {
                 //一般
@@ -130,7 +132,7 @@ namespace OnionCollections.DataEditor.Editor
                 labelStyle.fontSize = 10;
                 labelStyle.padding = new RectOffset(0, 8, 0, 3);
 
-                string displayTag = "";
+                string displayTag;
                 if (isHideElementNodes)
                     displayTag = "H";
                 else

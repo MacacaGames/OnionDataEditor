@@ -10,7 +10,7 @@ using Sirenix.OdinInspector;
 #endif
 
 [CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
-public class DataGroup : QueryableData
+public class DataGroup : QueryableData, IEnumerable<IQueryableData>
 {
     [SerializeField]
     string title;
@@ -20,8 +20,8 @@ public class DataGroup : QueryableData
 
 #if (ODIN_INSPECTOR)
 
-    bool dataHaveRepeatId() => GetData().GroupBy(_ => _.GetID()).Any(_ => _.Count() > 1);
-    bool dataHaveNull() => GetData().Any(_ => _ == null);
+    bool dataHaveRepeatId() => this.GroupBy(_ => _.GetID()).Any(_ => _.Count() > 1);
+    bool dataHaveNull() => this.Any(_ => _ == null);
 
     [InfoBox("Data have repeat id!", "dataHaveRepeatId", InfoMessageType = InfoMessageType.Error)]
     [InfoBox("Data have null element!", "dataHaveNull", InfoMessageType = InfoMessageType.Error)]
@@ -35,9 +35,17 @@ public class DataGroup : QueryableData
         throw new NotImplementedException();
     }
 
-    public override IEnumerable<IQueryableData> GetData()
+
+    public IEnumerator<IQueryableData> GetEnumerator()
     {
-        return data;
+        foreach(var item in data)
+            yield return item;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        foreach (var item in data)
+            yield return item;
     }
 
     public QueryableData this[string id] => this.QueryByID<QueryableData>(id);

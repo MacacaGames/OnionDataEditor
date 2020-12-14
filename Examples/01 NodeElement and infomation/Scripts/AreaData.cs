@@ -1,48 +1,34 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using OnionCollections.DataEditor;  // Using namespace to use attribute easily.
 
-//[CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]    //想要測試時，可以使用這行來創造新的資料
+//[CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]    //If you want to test, uncomment this line and create asset.
 public class AreaData : QueryableData
 {
     /*
-     * 掛上NodeTitle的Field、Property，型別須為string，
-     * 加入後即可成為節點的標題，因為可以允許Property，所以也可以有一些特殊變化。
+     * The attribute 'NodeTitle' can attach on field and property.
+     * Field or property type must be string.
      */
 
-    [OnionCollections.DataEditor.NodeTitle]
+    [NodeTitle]
     public string areaName;
 
     /*
-    [Onion.NodeTitle]
-    public string areaName => $"Area [{this.name}]";
-    */
-
-
+     * [NodeTitle]
+     * public string areaName => $"Area [{this.name}]";
+     */
 
 
     /*
-     * 掛上NodeElement的Field、Property，型別須為IEnumerable<ScriptableObject>，
-     * 加入後即可成為子節點，是最核心的功能。
+     * The attribut 'NodeElement' can attach on field and property.
+     * Field or property type must be IEnumerable<IQueryableData>.
      */
 
-    [OnionCollections.DataEditor.NodeElement]
+    [NodeElement]
     public MonsterData[] monsterDatas;
 
 
-
-    /*
-     * 因為這個資料不需要再往下查找，就不用這麼做了
-     */
-
-    public override IEnumerable<IQueryableData> GetData()
-    {
-        throw new System.NotImplementedException();
-    }
-
-    public override string GetID()
-    {
-        throw new System.NotImplementedException();
-    }
+    public override string GetID() => areaName;
 }
 

@@ -70,7 +70,12 @@ namespace OnionCollections.DataEditor.Editor
         public static OnionDataEditorWindow ShowWindow(Object data)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            window.SetTarget(data ?? OnionDataEditor.bookmarkGroup);     //沒有東西的話就指定bookmarkGroup
+
+            //沒有東西的話就指定bookmarkGroup
+            if (data == null)
+                data = OnionDataEditor.bookmarkGroup;
+
+            window.SetTarget(data);     
 
             return window;
         }
@@ -309,7 +314,7 @@ namespace OnionCollections.DataEditor.Editor
             void OnSearchTarget()
             {
                 int controlID = rootVisualElement.Q<Button>("btn-search-target").GetHashCode();
-                EditorGUIUtility.ShowObjectPicker<ScriptableObject>(null, false, "", controlID);
+                EditorGUIUtility.ShowObjectPicker<Object>(null, false, "", controlID);
             }
 
             void OnSearchTargetListener()
@@ -497,7 +502,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             rootVisualElement.Q("btn-info-document").style.display = (node.dataObj != null) ? DisplayStyle.Flex : DisplayStyle.None;
 
-            if (node != null && node.nodeActions != null && node.nodeActions.Count == 0)
+            if (node != null && node.nodeActions != null && node.nodeActions.Any() == false)
             {
                 rootVisualElement.Q("data-info").style.display = DisplayStyle.None;
             }
@@ -537,7 +542,7 @@ namespace OnionCollections.DataEditor.Editor
                 var root = this.rootVisualElement;
 
                 var container = root.Q("data-info-btn-list");
-                if (node != null && node.nodeActions != null && node.nodeActions.Count == 0)
+                if (node != null && node.nodeActions != null && node.nodeActions.Any() == false)
                 {
                     container.style.display = DisplayStyle.None;
                 }

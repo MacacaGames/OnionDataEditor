@@ -5,10 +5,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
+using System.Linq;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class OnionSetting : QueryableData
+    public class OnionSetting : QueryableData, IEnumerable<TreeNode>
     {
         const string nodeName = "Settings";
 
@@ -27,15 +28,15 @@ namespace OnionCollections.DataEditor.Editor
             throw new System.NotImplementedException();
         }
 
-        public override IEnumerable<IQueryableData> GetData()
+        public IEnumerator<TreeNode> GetEnumerator()
         {
-            return new List<TreeNode>
-            {
-                userTagsNode,
-            };
+            yield return userTagsNode;
         }
 
-
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            yield return userTagsNode;
+        }
 
         public string[] userTags = new string[0];
 
@@ -69,6 +70,8 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
+        
+
     }
 
     [CustomEditor(typeof(OnionSetting))]
@@ -77,7 +80,7 @@ namespace OnionCollections.DataEditor.Editor
         List<TreeNode> nodes;
         private void OnEnable()
         {
-            nodes = new List<TreeNode>((target as QueryableData).GetData<TreeNode>());
+            nodes = (target as OnionSetting).ToList();
         }
 
 
