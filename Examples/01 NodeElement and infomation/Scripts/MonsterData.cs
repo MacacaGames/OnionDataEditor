@@ -13,12 +13,7 @@ public class MonsterData : QueryableData
 
     [NodeTitle]
     public string monsterName;
-
-    /*
-     * 掛上NodeDescription的Field、Property，型別須為string，
-     * 加入後即可成為節點的描述，在選擇節點時會顯示在資訊區塊，同樣你也可以用Property做一些處理。
-     */
-
+    
     /*
      * The attribute 'NodeDescription' can attach on field and property.
      * Field or property type must be string.
@@ -29,7 +24,7 @@ public class MonsterData : QueryableData
     public string monsterDescription;
     
 
-    //[Onion.NodeDescription]
+    //[NodeDescription]
     //public string monsterDescription => $"HP = {hp}\nATK = {atk}";
     
 

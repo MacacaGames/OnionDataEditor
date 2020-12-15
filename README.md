@@ -18,9 +18,11 @@ Onion 是一個於 Unity 使用的資料檢視與編輯工具。
 我們先寫兩個 Script ，分別為 AreaData 與 MonsterData，他們都繼承自QueryableData。
 
 ```
-[CreateAssetMenu(fileName = "AreaData", menuName = "Custom/AreaData")]
+using OnionCollections.DataEditor;
+
 public class AreaData : QueryableData
 {
+    [NodeTitle]
     public string areaName;
 
     [OnionCollections.DataEditor.NodeElement]
@@ -28,9 +30,11 @@ public class AreaData : QueryableData
 }
 ```
 ```
-[CreateAssetMenu(fileName = "MonsterData", menuName = "Custom/MonsterData")]
+using OnionCollections.DataEditor;
+
 public class MonsterData : QueryableData
 {
+    [NodeTitle]
     public string monsterName;
     
     public int hp;
@@ -47,6 +51,4 @@ public class MonsterData : QueryableData
 
 ### 進階使用範例 ###
 
-開啟專案中的 Examples ，依照實用度、難易度，將功能範例分成數份，若有需要可以參閱。
-
-因為，我...沒辦法掰出更多字了。
+若有需要，請參閱專案中的 Examples。

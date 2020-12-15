@@ -13,11 +13,8 @@ public class AreaData : QueryableData
 
     [NodeTitle]
     public string areaName;
-
-    /*
-     * [NodeTitle]
-     * public string areaName => $"Area [{this.name}]";
-     */
+    //public string areaName => $"Area [{this.name}]";
+     
 
 
     /*
