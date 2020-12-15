@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.UIElements;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -22,10 +21,7 @@ namespace OnionCollections.DataEditor.Editor
         [NodeElement]
         OnionBookmark[] data = new OnionBookmark[0];
 
-        public override string GetID()
-        {
-            return nodeName;
-        }
+        public override string GetID() => nodeName;
 
         public IEnumerator<IQueryableData> GetEnumerator()
         {

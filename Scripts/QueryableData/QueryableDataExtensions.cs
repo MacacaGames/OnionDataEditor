@@ -4,6 +4,14 @@ using System.Linq;
 
 public static class QueryableDataExtensions
 {
+    /// <summary>
+    /// Try to get compare target by id.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="target"></param>
+    /// <param name="id"></param>
+    /// <param name="result"></param>
+    /// <returns>If get compare target success, return true.</returns>
     public static bool TryQueryByID<T>(this IEnumerable<IQueryableData> target, string id, out T result) where T : IQueryableData
     {
         foreach (var item in target)
@@ -19,6 +27,13 @@ public static class QueryableDataExtensions
         return false;
     }
 
+    /// <summary>
+    /// Get compare target by id.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="target"></param>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public static T QueryByID<T>(this IEnumerable<IQueryableData> target, string id) where T : IQueryableData
     {
         T result = (T)target.SingleOrDefault(_ => _.GetID() == id);
@@ -29,20 +44,12 @@ public static class QueryableDataExtensions
         return result;
     }
 
-
+    /// <summary>
+    /// Get element at index.
+    /// </summary>
+    [System.Obsolete("Use Linq.ElementAt")]
     public static T GetDataAt<T>(this IEnumerable<IQueryableData> target, int index) where T : IQueryableData
     {
         return (T)target.ElementAt(index);
     }
-
-    //public static int IndexOf(this IEnumerable<IQueryableData> target, IQueryableData item)
-    //{
-    //    return target.IndexOf(item);
-    //}
-
-    //public static int Count(this IEnumerable<IQueryableData> target)
-    //{
-    //    return target.Count();
-    //}
-
 }

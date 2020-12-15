@@ -32,7 +32,7 @@ namespace OnionCollections.DataEditor.Editor
         static Dictionary<Type, MemberInfo[]> memberCache = new Dictionary<Type, MemberInfo[]>();
         static Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool> attrResultCache = new Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool>();
 
-        public static IEnumerable<TreeNode> GetElements(this Object dataObj)
+        internal static IEnumerable<TreeNode> GetElements(this Object dataObj)
         {
             if (dataObj != null)
             {
@@ -162,7 +162,9 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        /// <summary>將特定TreeNode長出其下子節點。</summary>
+        /// <summary>
+        /// Auto create nodes tree under the target node.
+        /// </summary>
         public static void GetElementTree(this TreeNode targetNode)
         {
             if (ReferenceCheck(targetNode) == false)
@@ -241,17 +243,17 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
     
-        public static string GetNodeTitle(this Object dataObj)
+        internal static string GetNodeTitle(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeTitleAttribute));
             return result;
         }
-        public static string GetNodeDescription(this Object dataObj)
+        internal static string GetNodeDescription(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeDescriptionAttribute));
             return result;
         }
-        public static Texture GetNodeIcon(this Object dataObj)
+        internal static Texture GetNodeIcon(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<Texture>(dataObj, typeof(NodeIconAttribute));
             if (result == null)
@@ -262,7 +264,7 @@ namespace OnionCollections.DataEditor.Editor
             return result;
         }
 
-        public static IEnumerable<OnionAction> GetNodeActions(this Object dataObj)
+        internal static IEnumerable<OnionAction> GetNodeActions(this Object dataObj)
         {
             IEnumerable<OnionAction> result = null;
             if (dataObj != null)
@@ -277,7 +279,7 @@ namespace OnionCollections.DataEditor.Editor
             }
             return result;
         }
-        public static OnionAction GetNodeOnSelectedAction(this Object dataObj)
+        internal static OnionAction GetNodeOnSelectedAction(this Object dataObj)
         {
             if (dataObj != null)
             {
@@ -293,7 +295,7 @@ namespace OnionCollections.DataEditor.Editor
             }
             return null;
         }
-        public static OnionAction GetNodeOnDoubleClickAction(this Object dataObj)
+        internal static OnionAction GetNodeOnDoubleClickAction(this Object dataObj)
         {
             if (dataObj != null)
             {

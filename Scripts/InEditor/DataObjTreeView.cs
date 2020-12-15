@@ -8,21 +8,21 @@ using UnityEditor.IMGUI.Controls;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class DataObjTreeView : TreeView
+    internal class DataObjTreeView : TreeView
     {
-        public Dictionary<int, TreeNode> treeQuery;
+        internal Dictionary<int, TreeNode> treeQuery;
         TreeNode tree;
         TreeViewItem rootViewItem;
         List<TreeViewItem> rowList;
 
-        public DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
+        internal DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
         {
             rowHeight = 22F;
             isSelectChange = false;
 
             SetData(tree);
         }
-        public void SetData(TreeNode tree)
+        internal void SetData(TreeNode tree)
         {
             this.tree = tree;
 

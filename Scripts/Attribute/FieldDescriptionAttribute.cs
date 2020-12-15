@@ -2,7 +2,10 @@
 
 namespace OnionCollections.DataEditor
 {
-    /// <summary>說明欄位功能。</summary>
+    /// <summary>
+    /// Display custom field description in data editor.
+    /// </summary>
+    [Obsolete]
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class FieldDescriptionAttribute : Attribute
     {

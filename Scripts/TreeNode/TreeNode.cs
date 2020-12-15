@@ -14,7 +14,7 @@ namespace OnionCollections.DataEditor
 {
     public class TreeRoot : TreeNode
     {
-        public DataObjTreeView treeView;
+        internal DataObjTreeView treeView;
 
         public TreeRoot(Object _) : base(_)
         {
@@ -22,6 +22,7 @@ namespace OnionCollections.DataEditor
             displayName = GetTitle();
         }
 
+        /// <summary>Use this root to create tree view.</summary>
         public void CreateTreeView()
         {
             CreatTree(this);
@@ -43,27 +44,44 @@ namespace OnionCollections.DataEditor
         }
     }
 
-    public class TreeNode: IQueryableData, IEnumerable<TreeNode>
+    public class TreeNode: IEnumerable<TreeNode>
     {
+        /// <summary>Target object of this node.</summary>
         public Object dataObj { get; protected set; }
 
+        /// <summary>Return true if this node is pseudo.</summary>
         public bool isPseudo => nodeFlag.HasFlag(NodeFlag.Pseudo);
+        /// <summary>Return true if this node target is null, or node is pseudo.</summary>
         public bool isNull => !isPseudo && dataObj == null;
+        /// <summary>Return true if this node hide children nodes.</summary>
         public bool isHideElementNodes => nodeFlag.HasFlag(NodeFlag.HideElementNodes);
 
-        public string displayName;
-        public Texture icon = null;
+
         List<TreeNode> children = new List<TreeNode>();
+
+        internal int childCount => children.Count;
+
+        /// <summary>Return this node's parent node.</summary>
         public TreeNode parent { get; private set; }
-        public int childCount => children.Count;
 
 
+        /// <summary>Display name of this node.</summary>
+        public string displayName;
+        /// <summary>Description of this node.</summary>
+        public string description;
+        /// <summary>Display icon of this node.</summary>
+        public Texture icon = null;
+
+        /// <summary>Action will be executed when node be selected.</summary>
         public OnionAction onSelectedAction;
+        /// <summary>Action will be executed when node be double clicked.</summary>
         public OnionAction onDoubleClickAction;
 
+        /// <summary>Actions of this node. Will display as button in data editor.</summary>
         public IEnumerable<OnionAction> nodeActions;
 
         OnionAction _onInspectorAction;
+        /// <summary>Inspector action of this node.</summary>
         public OnionAction onInspectorAction
         {
             get
@@ -82,6 +100,7 @@ namespace OnionCollections.DataEditor
         }
 
         VisualElement _onInspectorVisualElementRoot;
+        /// <summary>Inspector visual element of this node.</summary>
         public VisualElement onInspectorVisualElementRoot
         {
             get
@@ -126,7 +145,7 @@ namespace OnionCollections.DataEditor
             Pseudo = 1 << 0,
             HideElementNodes = 1 << 1,
         }
-        public NodeFlag nodeFlag = NodeFlag.None;
+        internal NodeFlag nodeFlag = NodeFlag.None;
 
         public TreeNode(Object dataObj)
         {
@@ -147,6 +166,7 @@ namespace OnionCollections.DataEditor
         void InitSetting()
         {
             displayName = GetTitle();
+            description = GetDescription();
             icon = GetIcon();
 
             if (dataObj != null)
@@ -158,23 +178,26 @@ namespace OnionCollections.DataEditor
 
         }
 
+        /// <summary>Add children in this node.</summary>
         public void AddChildren(IEnumerable<TreeNode> children)
         {
             this.children.AddRange(children);
             foreach (var child in children)
                 child.parent = this;
         }
+        /// <summary>Clear all children.</summary>
         public void ClearChildren()
         {
             children.Clear();
         }
+        /// <summary>Get all children.</summary>
         public IEnumerable<TreeNode> GetChildren()
         {
             return children;
         }
 
 
-        public string GetTitle()
+        protected string GetTitle()
         {
             if (isPseudo)
             {
@@ -201,7 +224,7 @@ namespace OnionCollections.DataEditor
                 }
             }
         }
-        public string GetDescription()
+        string GetDescription()
         {
             if (isPseudo)
                 return "";
@@ -220,7 +243,7 @@ namespace OnionCollections.DataEditor
                 }
             }
         }
-        public Texture GetIcon()
+        Texture GetIcon()
         {
             if (isPseudo)
                 return icon;
@@ -231,12 +254,6 @@ namespace OnionCollections.DataEditor
         }
         
       
-        public string GetID()
-        {
-            throw new System.NotImplementedException();
-        }
-
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             foreach (var child in children)

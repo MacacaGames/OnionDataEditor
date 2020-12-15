@@ -2,12 +2,17 @@
 
 namespace OnionCollections.DataEditor
 {
-    /// <summary>在OnionDataEditor中作為選擇資料時可執行的快捷動作按鈕，只能掛於void的Method上。</summary>
+    /// <summary>
+    /// Display button that could execute custom function in data editor.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class NodeActionAttribute : Attribute
     {
         public string actionName = null;
 
+        /// <summary>
+        /// NodeActionAttribute enable function for users by user tags.
+        /// </summary>
         public string[] userTags = new string[0];
 
         public NodeActionAttribute() { }

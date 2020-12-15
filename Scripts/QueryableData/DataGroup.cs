@@ -10,7 +10,7 @@ using Sirenix.OdinInspector;
 #endif
 
 [CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
-public class DataGroup : QueryableData, IEnumerable<IQueryableData>
+public class DataGroup : ScriptableObject, IEnumerable<IQueryableData>
 {
     [SerializeField]
     string title;
@@ -29,13 +29,7 @@ public class DataGroup : QueryableData, IEnumerable<IQueryableData>
     [NodeElement]
     [SerializeField]
     protected QueryableData[] data = new QueryableData[0];
-
-    public override string GetID()
-    {
-        throw new NotImplementedException();
-    }
-
-
+    
     public IEnumerator<IQueryableData> GetEnumerator()
     {
         foreach(var item in data)

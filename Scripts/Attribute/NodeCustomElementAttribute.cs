@@ -2,7 +2,7 @@
 
 namespace OnionCollections.DataEditor.Editor
 {
-    /// <summary>在OnionDataEditor中定義此節點底下任意自訂節點，只能掛於IEnumerable&lt;TreeNode&gt;、TreeNode上。</summary>
+    /// <summary>Define custom node in data editor. Only can attach on IEnumerable&lt;TreeNode&gt; and TreeNode.</summary>
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false)]
     public class NodeCustomElementAttribute : Attribute
     {

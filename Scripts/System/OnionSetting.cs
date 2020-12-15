@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class OnionSetting : QueryableData, IEnumerable<TreeNode>
+    internal class OnionSetting : QueryableData, IEnumerable<TreeNode>
     {
         const string nodeName = "Settings";
 
@@ -23,10 +23,7 @@ namespace OnionCollections.DataEditor.Editor
         Texture2D icon => OnionDataEditorWindow.GetIconTexture("Settings");
 
 
-        public override string GetID()
-        {
-            throw new System.NotImplementedException();
-        }
+        public override string GetID() => nodeName;
 
         public IEnumerator<TreeNode> GetEnumerator()
         {

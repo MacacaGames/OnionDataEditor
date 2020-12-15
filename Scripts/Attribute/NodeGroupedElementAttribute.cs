@@ -2,7 +2,11 @@
 
 namespace OnionCollections.DataEditor
 {
-    /// <summary>在OnionDataEditor中會被包裹到一個自訂節點，只能掛於IEnumerable&lt;UnityEngine.Object&gt;、UnityEngine.Object上。</summary>
+    /// <summary>
+    /// Define nodes in data editor.
+    /// Nodes will be grouped in a pseudo node.
+    /// Only can attach on IEnumerable&lt;UnityEngine.Object&gt; and UnityEngine.Object.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class NodeGroupedElementAttribute : Attribute
     {

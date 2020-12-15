@@ -11,7 +11,7 @@ public static class OnionDataEditor
     public const string path = "Assets/OnionDataEditor";
 
     static OnionSetting _setting;
-    public static OnionSetting setting
+    internal static OnionSetting setting
     {
         get
         {
@@ -25,7 +25,7 @@ public static class OnionDataEditor
     }
 
     static OnionBookmarkGroup _bookmarkGroup;
-    public static OnionBookmarkGroup bookmarkGroup
+    internal static OnionBookmarkGroup bookmarkGroup
     {
         get
         {

@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-public interface IQueryableData //: IEnumerable, IEnumerable<IQueryableData>
-{
+public interface IQueryableData
+{ 
     string GetID();
 }

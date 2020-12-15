@@ -520,13 +520,13 @@ namespace OnionCollections.DataEditor.Editor
                 var root = this.rootVisualElement;
 
                 //text info
-                string nodeTitle = n.GetTitle();
-                string nodeDescription = n.GetDescription();
+                string nodeTitle = n.displayName;
+                string nodeDescription = n.description;
 
                 root.Q<Label>("info-title").text = nodeTitle;
                 root.Q<Label>("info-description").text = nodeDescription;
 
-                if (node != null && string.IsNullOrEmpty(node.GetDescription()) == true)
+                if (node != null && string.IsNullOrEmpty(node.description) == true)
                 {
                     root.Q<Label>("info-description").style.display = DisplayStyle.None;
                 }

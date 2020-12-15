@@ -11,7 +11,16 @@ namespace OnionCollections.DataEditor.Editor
 
     public static class ScriptObjectUtility
     {
-
+        /// <summary>
+        /// Create script object via asset data base.
+        /// And add data in scriptable object target property.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="parentData"></param>
+        /// <param name="dataPropertyName"></param>
+        /// <param name="assetName"></param>
+        /// <param name="assetPath"></param>
+        /// <returns></returns>
         public static T CreateAndAddData<T>(QueryableData parentData, string dataPropertyName, string assetName, string assetPath = null) where T : ScriptableObject, IQueryableData
         {
             if (assetPath == null)
@@ -22,15 +31,21 @@ namespace OnionCollections.DataEditor.Editor
 
             assetName = string.IsNullOrEmpty(assetName) ? $"Data {parentData}" : assetName;
 
-            T data = CreateScriptObject<T>(assetPath, assetName);
+            T data = CreateScriptableObject<T>(assetPath, assetName);
 
             AddData(parentData, dataPropertyName, data);
 
             return data;
         }
 
-
-        public static T CreateScriptObject<T>(string path, string name) where T : ScriptableObject
+        /// <summary>
+        /// Create script object via asset data base.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="path"></param>
+        /// <param name="name">Scriptable object's name.</param>
+        /// <returns></returns>
+        public static T CreateScriptableObject<T>(string path, string name) where T : ScriptableObject
         {
             T scriptableObject = ScriptableObject.CreateInstance<T>();
             scriptableObject.name = name;
@@ -41,7 +56,12 @@ namespace OnionCollections.DataEditor.Editor
             return AssetDatabase.LoadAssetAtPath<T>(assetNamePath);
         }
 
-
+        /// <summary>
+        /// Add data in scriptable object target property.
+        /// </summary>
+        /// <param name="parentData"></param>
+        /// <param name="dataPropertyName"></param>
+        /// <param name="data"></param>
         public static void AddData(ScriptableObject parentData, string dataPropertyName, ScriptableObject data)
         {
             SerializedObject serializedObject = new SerializedObject(parentData);

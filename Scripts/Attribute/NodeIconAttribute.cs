@@ -2,7 +2,10 @@
 
 namespace OnionCollections.DataEditor
 {
-    /// <summary>在OnionDataEditor中標記為此節點的圖示，一個class中只能有一個。</summary>
+    /// <summary>
+    /// Define this node's icon in data editor.
+    /// Only can attach on UnityEngine.Texture and UnityEngine.Sprite.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Field | AttributeTargets.Property, AllowMultiple = false)]
     public class NodeIconAttribute : Attribute
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class OnionReorderableList : ReorderableList
+    internal class OnionReorderableList : ReorderableList
     {
         ReorderableList rList;
 
@@ -14,11 +14,11 @@ namespace OnionCollections.DataEditor.Editor
         SerializedProperty elements;
         string title;
 
-        public OnionReorderableList(SerializedProperty elements, string title) : base(elements.serializedObject, elements)
+        internal OnionReorderableList(SerializedProperty elements, string title) : base(elements.serializedObject, elements)
         {
             Init(elements.serializedObject, elements, title);
         }
-        public OnionReorderableList(SerializedObject serializedObject, SerializedProperty elements, string title) : base(serializedObject, elements)
+        internal OnionReorderableList(SerializedObject serializedObject, SerializedProperty elements, string title) : base(serializedObject, elements)
         {
             Init(serializedObject, elements, title);
         }
