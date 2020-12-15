@@ -15,11 +15,11 @@ public class DataGroup : ScriptableObject, IEnumerable<IQueryableData>
     [SerializeField]
     string title;
 
+    [Multiline(3)]
     [SerializeField]
     string description;
 
 #if (ODIN_INSPECTOR)
-
     bool dataHaveRepeatId() => this.GroupBy(_ => _.GetID()).Any(_ => _.Count() > 1);
     bool dataHaveNull() => this.Any(_ => _ == null);
 
@@ -43,7 +43,7 @@ public class DataGroup : ScriptableObject, IEnumerable<IQueryableData>
     }
 
     public QueryableData this[string id] => this.QueryByID<QueryableData>(id);
-    public QueryableData this[int index] => this.GetDataAt<QueryableData>(index);
+    public QueryableData this[int index] => this.ElementAt(index) as QueryableData;
 
 
 #if (UNITY_EDITOR)

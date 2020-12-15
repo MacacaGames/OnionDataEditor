@@ -70,13 +70,14 @@ public static class OnionDataEditor
     public static bool OnOpenAsset(int instanceID, int line)
     {
         Object target = EditorUtility.InstanceIDToObject(instanceID);
-        if (target is IQueryableData)
+        if (target is IQueryableData ||
+            target is DataGroup)
         {
             OpenWithOnionDataEditor();
-            return true; //catch open file
+            return true;
         }
 
-        return false; // let unity open the file
+        return false;
     }
 
 }

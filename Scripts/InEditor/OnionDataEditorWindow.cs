@@ -238,7 +238,7 @@ namespace OnionCollections.DataEditor.Editor
             
             void OnFresh()
             {
-                FreshTreeView();
+                OnTargetChange(target);
             }
 
             void OnToggleBookmark()
@@ -268,8 +268,6 @@ namespace OnionCollections.DataEditor.Editor
                     AssetDatabase.DeleteAsset(AssetDatabase.GetAssetPath(data.GetArrayElementAtIndex(index).objectReferenceValue));
 
                     data.DeleteArrayElementAtIndex(index);
-                    //data.MoveArrayElement(index, data.arraySize - 1);
-                    //data.arraySize = data.arraySize - 1;
 
                     serializedObject.ApplyModifiedProperties();
                     EditorUtility.SetDirty(OnionDataEditor.bookmarkGroup);
