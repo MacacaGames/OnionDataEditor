@@ -193,6 +193,14 @@ namespace OnionCollections.DataEditor
             foreach (var child in children)
                 child.parent = this;
         }
+
+        /// <summary>Add single child in this node.</summary>
+        public void AddSingleChild(TreeNode child)
+        {
+            this.children.Add(child);
+            child.parent = this;
+        }
+
         /// <summary>Clear all children.</summary>
         public void ClearChildren()
         {
