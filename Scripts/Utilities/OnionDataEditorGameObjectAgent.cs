@@ -38,6 +38,7 @@ namespace OnionCollections.DataEditor
     {
         public IEnumerable<TreeNode> GetNodes(GameObject go)
         {
+#if(UNITY_EDITOR)
             var nodes = go.GetComponents<Component>()
                 .Where(c => c is Transform == false)
                 .Select(c => new TreeNode(c)
@@ -46,6 +47,9 @@ namespace OnionCollections.DataEditor
                 });
 
             return nodes;
+#else
+            return Enumerable.Empty<TreeNode>();
+#endif
         }
 
         const float iconSize = 24F;
@@ -55,6 +59,9 @@ namespace OnionCollections.DataEditor
 
         public void OnInspectorGUI(TreeNode rootNode)
         {
+
+#if (UNITY_EDITOR)
+
             if (go == null)
                 go = (rootNode.dataObj as GameObject);
 
@@ -130,6 +137,8 @@ namespace OnionCollections.DataEditor
                     }
                 }
             }
+
+#endif
         }
     }
 
