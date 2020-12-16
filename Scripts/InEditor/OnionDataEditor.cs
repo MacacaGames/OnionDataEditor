@@ -2,9 +2,12 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UnityEditor;
+using OnionCollections.DataEditor;
 using OnionCollections.DataEditor.Editor;
+using System.Reflection;
 
 public static class OnionDataEditor
 {
@@ -57,8 +60,7 @@ public static class OnionDataEditor
     [MenuItem("Assets/Open with Onion Data Editor")]
     public static void OpenWithOnionDataEditor()
     {
-        //NOTE: 可接受非IQueryableData的ScriptableObject
-        Object selectObj = Selection.activeObject;
+        UnityEngine.Object selectObj = Selection.activeObject;
         if (selectObj != null)
         {
             var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
@@ -66,18 +68,46 @@ public static class OnionDataEditor
         }
     }
 
+    static Dictionary<Type, bool?> openWithDataEditorQuery = new Dictionary<Type, bool?>();
+
     [UnityEditor.Callbacks.OnOpenAsset(1)]
     public static bool OnOpenAsset(int instanceID, int line)
     {
-        Object target = EditorUtility.InstanceIDToObject(instanceID);
-        if (target is IQueryableData ||
-            target is DataGroup)
+        UnityEngine.Object target = EditorUtility.InstanceIDToObject(instanceID);
+
+        bool openResult = target is IQueryableData;
+
+        var t = target.GetType();
+
+        if (openWithDataEditorQuery.TryGetValue(t, out bool? result) == false)
+        {
+            var openAttr = t.GetCustomAttribute<OpenWithOnionDataEditor>(true);
+            if (openAttr != null)
+            {
+                openWithDataEditorQuery.Add(t, openAttr.openWithDataEditor);
+            }
+            else
+            {
+                openWithDataEditorQuery.Add(t, null);
+            }
+        }
+
+
+        if (openWithDataEditorQuery[t].HasValue)
+        {
+            openResult = openWithDataEditorQuery[t].Value;
+        }
+
+
+        if (openResult == true)
         {
             OpenWithOnionDataEditor();
             return true;
         }
-
-        return false;
+        else
+        {
+            return false;
+        }
     }
 
 }

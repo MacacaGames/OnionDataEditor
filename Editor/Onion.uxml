@@ -17,7 +17,7 @@
             </ui:Button>
         </ui:VisualElement>
         <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
-            <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1;">
+            <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1; border-right-width: 1px; border-right-color: rgba(0, 0, 0, 0.1);">
                 <ui:VisualElement style="flex-direction: row; height: 40px;">
                     <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
                     <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn btn-bookmark" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
@@ -30,7 +30,7 @@
                 <ui:VisualElement name="tree-view-container" style="flex-grow: 1;" />
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="Spliter" class="spliter" style="width: 6px;" />
+        <ui:VisualElement name="Spliter" class="spliter" style="width: 3px;" />
         <ui:VisualElement name="ContainerB" style="flex-grow: 1;">
             <ui:VisualElement style="flex-direction: column; align-items: flex-start; padding-right: 10px; flex-shrink: 0;">
                 <ui:VisualElement style="flex-shrink: 0; flex-grow: 0; flex-direction: row; height: 40px; align-items: center;">
@@ -43,7 +43,7 @@
             <ui:Label name="info-description" class="p" style="-unity-text-align: upper-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 0; padding-bottom: 5px; opacity: 0.5;" />
             <ui:ScrollView name="inspector-scroll" style="flex-grow: 1;" />
             <ui:VisualElement name="Spliter" class="spliter" style="height: 6px; display: none;" />
-            <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); height: 60px;">
+            <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); height: 60px; border-top-width: 1px; border-top-color: rgba(0, 0, 0, 0.05);">
                 <ui:VisualElement name="data-info-btn-list" style="height: 35px; flex-direction: row;" />
             </ui:VisualElement>
         </ui:VisualElement>

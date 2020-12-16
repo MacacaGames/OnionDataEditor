@@ -11,12 +11,23 @@ namespace OnionCollections.DataEditor
         const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly;
 
         /// <summary>取得MemberInfo的值。</summary>
-        internal static T GetValue<T>(this MemberInfo memberInfo, object forObject) where T : class
+        internal static T GetValue<T>(this MemberInfo memberInfo, object forObject) where T : new()
         {
-            if (memberInfo.TryGetValue(forObject, out T result))
-                return result;
-            else
-                throw new NotImplementedException();
+            object tempValue = null;
+
+            switch (memberInfo.MemberType)
+            {
+                case MemberTypes.Field:
+                    tempValue = ((FieldInfo)memberInfo).GetValue(forObject);
+                    break;
+                case MemberTypes.Property:
+                    tempValue = ((PropertyInfo)memberInfo).GetValue(forObject);
+                    break;
+            }
+
+            T resultValue = (T)tempValue;
+
+            return resultValue;
         }
 
         internal struct GetValueResult

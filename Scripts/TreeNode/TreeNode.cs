@@ -1,6 +1,4 @@
-﻿
-
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -51,7 +49,7 @@ namespace OnionCollections.DataEditor
 
         /// <summary>Return true if this node is pseudo.</summary>
         public bool isPseudo => nodeFlag.HasFlag(NodeFlag.Pseudo);
-        /// <summary>Return true if this node target is null, or node is pseudo.</summary>
+        /// <summary>Return true if this node target is null and node is not pseudo.</summary>
         public bool isNull => !isPseudo && dataObj == null;
         /// <summary>Return true if this node hide children nodes.</summary>
         public bool isHideElementNodes => nodeFlag.HasFlag(NodeFlag.HideElementNodes);
@@ -71,6 +69,9 @@ namespace OnionCollections.DataEditor
         public string description;
         /// <summary>Display icon of this node.</summary>
         public Texture icon = null;
+
+        /// <summary>Display color tag of this node. Color will not display if value is null.</summary>
+        internal Color nodeTagColor = new Color(0, 0, 0, 0);
 
         /// <summary>Action will be executed when node be selected.</summary>
         public OnionAction onSelectedAction;
@@ -142,16 +143,22 @@ namespace OnionCollections.DataEditor
         public enum NodeFlag
         {
             None = 0,
+
+            /// <summary>If node is pseudo, means it has no data object.</summary>
             Pseudo = 1 << 0,
+
+            /// <summary>If node set this flag, all of children nodes don't show in data editor.</summary>
             HideElementNodes = 1 << 1,
         }
         internal NodeFlag nodeFlag = NodeFlag.None;
 
-        public TreeNode(Object dataObj)
+        public TreeNode(Object dataObj, NodeFlag nodeFlag = NodeFlag.None)
         {
             this.dataObj = dataObj;
+            this.nodeFlag = nodeFlag;
 
-            InitSetting();
+            if (isPseudo == false)
+                InitSetting();
         }
 
         public TreeNode(NodeFlag nodeFlag, Object dataObj = null)
@@ -168,6 +175,7 @@ namespace OnionCollections.DataEditor
             displayName = GetTitle();
             description = GetDescription();
             icon = GetIcon();
+            nodeTagColor = GetColorTag();
 
             if (dataObj != null)
             {
@@ -200,57 +208,66 @@ namespace OnionCollections.DataEditor
         protected string GetTitle()
         {
             if (isPseudo)
-            {
                 return displayName;
-            }
-            else if (isNull)
-            {
+
+            if (isNull)
                 return "NULL";
-            }
-            else
-            {
-                string nodeTitle = dataObj.GetNodeTitle();
-                if (string.IsNullOrEmpty(nodeTitle) == false)
-                {
-                    return nodeTitle;
-                }
-                else if (string.IsNullOrEmpty(displayName) == false)
-                {
-                    return displayName;
-                }
-                else
-                {
-                    return dataObj.name;
-                }
-            }
+
+            string nodeTitle = dataObj.GetNodeTitle();
+
+            if (string.IsNullOrEmpty(nodeTitle) == false)            
+                return nodeTitle;
+            
+            if (string.IsNullOrEmpty(displayName) == false)            
+                return displayName;
+            
+            return dataObj.name;
+
         }
         string GetDescription()
         {
             if (isPseudo)
                 return "";
-            else if (isNull)
+
+            if (isNull)
                 return "";
-            else
-            {
-                string des = dataObj.GetNodeDescription();
-                if (string.IsNullOrEmpty(des) == true)
-                {
-                    return "";
-                }
-                else
-                {
-                    return des;
-                }
-            }
+
+            string des = dataObj.GetNodeDescription();
+
+            if (string.IsNullOrEmpty(des) == true)
+                return "";
+
+            return des;
         }
         Texture GetIcon()
         {
             if (isPseudo)
                 return icon;
-            else if (isNull)
+
+            if (isNull)
                 return EditorGUIUtility.FindTexture("console.erroricon.sml");
-            else
-                return dataObj.GetNodeIcon();
+
+            Texture nodeIcon = dataObj.GetNodeIcon();
+
+            if (nodeIcon != null)
+                return nodeIcon;
+
+            if (dataObj is GameObject || dataObj is Component)
+                return EditorGUIUtility.ObjectContent(null, dataObj.GetType()).image;
+            
+            return null;
+
+        }
+        Color GetColorTag()
+        {
+            if (isPseudo)
+                return nodeTagColor;
+
+            if (isNull)
+                return nodeTagColor;
+
+            Color c = dataObj.GetNodeTagColor();
+            return c;
         }
         
       
@@ -265,6 +282,7 @@ namespace OnionCollections.DataEditor
             foreach (var child in children)
                 yield return child;
         }
+
     }
 
 }
@@ -277,8 +295,6 @@ public class TreeNode
     public enum NodeFlag
     {
         None = 0,
-        Pseudo = 1 << 0,
-        HideElementNodes = 1 << 1,
     }
 
     public TreeNode(ScriptableObject dataObj)

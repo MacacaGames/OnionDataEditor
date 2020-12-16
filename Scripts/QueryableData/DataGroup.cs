@@ -9,8 +9,9 @@ using OnionCollections.DataEditor;
 using Sirenix.OdinInspector;
 #endif
 
+[OpenWithOnionDataEditor(true)]
 [CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
-public class DataGroup : ScriptableObject, IEnumerable<IQueryableData>
+public class DataGroup : QueryableData, IEnumerable<IQueryableData>
 {
     [SerializeField]
     string title;
@@ -41,6 +42,8 @@ public class DataGroup : ScriptableObject, IEnumerable<IQueryableData>
         foreach (var item in data)
             yield return item;
     }
+
+    public override string GetID() => title;
 
     public QueryableData this[string id] => this.QueryByID<QueryableData>(id);
     public QueryableData this[int index] => this.ElementAt(index) as QueryableData;

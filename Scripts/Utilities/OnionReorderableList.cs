@@ -6,27 +6,21 @@ using UnityEngine;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    internal class OnionReorderableList : ReorderableList
+    internal class OnionReorderableList
     {
         ReorderableList rList;
 
         SerializedObject serializedObject;
-        SerializedProperty elements;
         string title;
 
-        internal OnionReorderableList(SerializedProperty elements, string title) : base(elements.serializedObject, elements)
+        internal OnionReorderableList(SerializedProperty elements, string title)
         {
             Init(elements.serializedObject, elements, title);
-        }
-        internal OnionReorderableList(SerializedObject serializedObject, SerializedProperty elements, string title) : base(serializedObject, elements)
-        {
-            Init(serializedObject, elements, title);
         }
 
         void Init(SerializedObject serializedObject, SerializedProperty elements, string title)
         {
             this.serializedObject = serializedObject;
-            this.elements = elements;
             this.title = title;
 
             rList = new ReorderableList(serializedObject, elements, true, true, true, true)
@@ -34,6 +28,8 @@ namespace OnionCollections.DataEditor.Editor
                 drawHeaderCallback = DrawListHeader,
                 drawElementCallback = DrawListElement
             };
+
+            rList.elementHeight = EditorGUIUtility.singleLineHeight * 1.2F;
         }
 
         void DrawListHeader(Rect rect)
@@ -49,6 +45,7 @@ namespace OnionCollections.DataEditor.Editor
             var arect = rect;
             var serElem = rList.serializedProperty.GetArrayElementAtIndex(currentIndex);
             arect.height = EditorGUIUtility.singleLineHeight;
+            arect.y += EditorGUIUtility.singleLineHeight * 0.1F;
 
             EditorGUI.PropertyField(arect, serElem, GUIContent.none);
         }

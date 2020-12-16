@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    internal class OnionBookmark : QueryableData
+    internal class OnionBookmark : ScriptableObject
     {
         public Object target;
 
@@ -51,11 +51,6 @@ namespace OnionCollections.DataEditor.Editor
         }
 
         bool TargetIsNull() => target == null;
-
-        public override string GetID()
-        {
-            throw new System.NotImplementedException();
-        }
 
     }
 }

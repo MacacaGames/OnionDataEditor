@@ -32,68 +32,63 @@ namespace OnionCollections.DataEditor.Editor
         static Dictionary<Type, MemberInfo[]> memberCache = new Dictionary<Type, MemberInfo[]>();
         static Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool> attrResultCache = new Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool>();
 
-        internal static IEnumerable<TreeNode> GetElements(this Object dataObj)
+        internal static IEnumerable<TreeNode> GetElements(this TreeNode rootNode)
         {
-            if (dataObj != null)
+            if (rootNode.dataObj == null)
+                return null;
+            
+            List<TreeNode> nodeList = new List<TreeNode>();
+
+            Type dataObjType = rootNode.dataObj.GetType();
+
+            if (rootNode.dataObj is GameObject go)
             {
-                List<TreeNode> nodeList = new List<TreeNode>();
-
-                Type dataObjType = dataObj.GetType();
-
-                if (dataObj is GameObject go)
+                if (go.TryGetComponent(out IOnionDataEditorGameObjectAgent gameobjectAgent) == false)
                 {
-                    IEnumerable<TreeNode> nodes;
-                    if (go.TryGetComponent(out OnionDataEditorGameObjectAgent gameobjectAgent) == true)
-                    {
-                        nodes = gameobjectAgent.GetNodes(go);
-                    }
-                    else
-                    {
-                        nodes = go.GetComponents<Component>()
-                            .Select(c =>
-                            {
-                                string displayName = (c is IQueryableData q) ? q.GetID() : c.GetType().Name;
-
-                                return new TreeNode(c)
-                                {
-                                    displayName = displayName
-                                };
-                            });
-                    }
-
-                    nodeList.AddRange(nodes);
+                    gameobjectAgent = new DefaultOnionDataEditorGameObjectAgent();
                 }
-                else
-                {
-                    if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
-                    {
-                        members = dataObjType.GetMembers(defaultBindingFlags);
-                        memberCache.Add(dataObjType, members);
-                    }
 
-                    foreach (var member in members)
+                IEnumerable<TreeNode> nodes = gameobjectAgent.GetNodes(go);
+
+                rootNode.onInspectorAction = new OnionAction(() =>
+                {
+                    if (rootNode != null)
                     {
-                        foreach (var attrType in nodeAttrTypeList)
+                        gameobjectAgent.OnInspectorGUI(rootNode);
+                    }
+                });
+
+                nodeList.AddRange(nodes);
+            }
+            else
+            {
+                if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
+                {
+                    members = dataObjType.GetMembers(defaultBindingFlags);
+                    memberCache.Add(dataObjType, members);
+                }
+
+                foreach (var member in members)
+                {
+                    foreach (var attrType in nodeAttrTypeList)
+                    {
+                        foreach (Attribute attr in member.GetCustomAttributes(attrType, true))
                         {
-                            foreach (Attribute attr in member.GetCustomAttributes(attrType, true))
-                            {
-                                if (attr != null)
-                                    nodeList.AddRange(GetChildNodeWithAttribute(dataObj, member, attr));
-                            }
+                            if (attr != null)
+                                nodeList.AddRange(GetChildNodeWithAttribute(rootNode.dataObj, member, attr));
                         }
                     }
                 }
-
-                return nodeList;
             }
 
-            return null;
+            return nodeList;
+
         }
 
         static IEnumerable<TreeNode> GetChildNodeWithAttribute(Object dataObj, MemberInfo member, Attribute attr)
         { 
             //NodeElement
-            if (attr.GetType() == typeof(NodeElementAttribute))
+            if (attr is NodeElementAttribute)
             {
                 return
                     GetSingleOrMultipleType<Object>()
@@ -101,17 +96,15 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             //NodeGroupedElement
-            if (attr.GetType() == typeof(NodeGroupedElementAttribute))
+            if (attr is NodeGroupedElementAttribute groupAttr)
             {
-                NodeGroupedElementAttribute groupAttr = attr as NodeGroupedElementAttribute;
                 TreeNode groupedNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
                 {
                     displayName = groupAttr.displayName,
                 };
 
-                List<TreeNode> node = GetSingleOrMultipleType<Object>()
-                    .Select(_ => new TreeNode(_))
-                    .ToList();
+                IEnumerable<TreeNode> node = GetSingleOrMultipleType<Object>()
+                    .Select(_ => new TreeNode(_));
 
                 //若需要FindTree，則遍歷底下節點找
                 if (groupAttr.findTree)
@@ -124,11 +117,11 @@ namespace OnionCollections.DataEditor.Editor
                 if ((groupAttr.hideIfEmpty == true && groupedNode.childCount == 0) == false)
                     return new List<TreeNode> { groupedNode };
                 
-                return new List<TreeNode> { };
+                return Enumerable.Empty<TreeNode>();
             }
 
             //NodeCustomElement
-            if (attr.GetType() == typeof(NodeCustomElementAttribute))
+            if (attr is NodeCustomElementAttribute)
             {
                 return GetSingleOrMultipleType<TreeNode>();
             }
@@ -156,7 +149,7 @@ namespace OnionCollections.DataEditor.Editor
                         return resultCustom;
                 }
 
-                return new List<T> { };
+                return Enumerable.Empty<T>();
             }
 
         }
@@ -165,16 +158,22 @@ namespace OnionCollections.DataEditor.Editor
         /// <summary>
         /// Auto create nodes tree under the target node.
         /// </summary>
-        public static void GetElementTree(this TreeNode targetNode)
+        public static void GetElementTree(this TreeNode targetNode, int depth = 0)
         {
-            if (ReferenceCheck(targetNode) == false)
+            if(depth > 255)
             {
                 EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
-                throw new StackOverflowException($"{targetNode.displayName} is a parent of itself.");
+                throw new StackOverflowException($"{targetNode.displayName} may have infinite reference loop.");
             }
 
+            //if (ReferenceCheck(targetNode) == false)
+            //{
+            //    EditorWindow.GetWindow<OnionDataEditorWindow>().Close();
+            //    throw new StackOverflowException($"{targetNode.displayName} is a parent of itself.");
+            //}
 
-            var node = GetElements(targetNode.dataObj);
+
+            var node = targetNode.GetElements();
 
             targetNode.ClearChildren();
             targetNode.AddChildren(new List<TreeNode>(node));
@@ -184,7 +183,7 @@ namespace OnionCollections.DataEditor.Editor
                 if (el.dataObj != null && 
                     el.isHideElementNodes == false)
                 {
-                    el.GetElementTree();
+                    el.GetElementTree(depth + 1);
                 }
             }
 
@@ -242,7 +241,42 @@ namespace OnionCollections.DataEditor.Editor
 
             return null;
         }
-    
+
+        static T GetNodeAttrValue<T>(Object dataObj, Type attrType, T defaultValue) where T : struct
+        {
+            Type dataObjType = dataObj.GetType();
+
+            if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
+            {
+                members = dataObjType.GetMembers(defaultBindingFlags);
+                memberCache.Add(dataObjType, members);
+            }
+
+            foreach (var member in members)
+            {
+                var key = (dataObjType, member.ReflectedType, member.Name, attrType);
+                if (attrResultCache.TryGetValue(key, out bool attrResult) == false)
+                {
+                    //Debug.Log(key);
+                    //重找一次這個member有沒有這個attribut，並記錄結果
+                    if (member.GetCustomAttribute(attrType, true) != null)
+                        attrResult = true;
+                    else
+                        attrResult = false;
+
+                    attrResultCache.Add(key, attrResult);
+                }
+
+                if (attrResult == true)
+                {
+                    T r = member.GetValue<T>(dataObj);
+                    return r;
+                }
+            }
+
+            return defaultValue;
+        }
+
         internal static string GetNodeTitle(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeTitleAttribute));
@@ -261,6 +295,11 @@ namespace OnionCollections.DataEditor.Editor
                 var s = TryGetNodeAttrValue<Sprite>(dataObj, typeof(NodeIconAttribute));
                 if (s) result = s.texture;
             }
+            return result;
+        }
+        internal static Color GetNodeTagColor(this Object dataObj)
+        {
+            var result = GetNodeAttrValue(dataObj, typeof(NodeColorTagAttribute), new Color(0, 0, 0, 0));
             return result;
         }
 

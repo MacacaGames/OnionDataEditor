@@ -141,6 +141,13 @@ namespace OnionCollections.DataEditor.Editor
                 GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
             }
 
+            if (node.nodeTagColor.a > 0F)
+            {
+                const float colorTagWidth = 3F;
+                Rect colorTagRect = new Rect(args.rowRect.width - colorTagWidth, args.rowRect.y, colorTagWidth, args.rowRect.height - 1);
+                EditorGUI.DrawRect(colorTagRect, node.nodeTagColor);
+            }
+
             //Line
             Rect lineRect = args.rowRect;
             lineRect.x += GetContentIndent(args.item);

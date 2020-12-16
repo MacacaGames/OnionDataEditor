@@ -39,8 +39,12 @@
 #data-info-btn-list .onion-btn {
     min-width: 80px;
     max-width: 250px;
-    height: 30px;
+    height: 34px;
     border-radius: 15px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
 
 .card {
@@ -56,6 +60,18 @@
     background-image: none;
     margin: 5;
     padding: 10;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-top-right-radius: 12px;
+    border-bottom-right-radius: 12px;
+    border-left-color: rgba(0, 0, 0, 0.01);
+    border-right-color: rgba(0, 0, 0, 0.01);
+    border-top-color: rgba(0, 0, 0, 0.01);
+    border-bottom-color: rgba(0, 0, 0, 0.01);
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 1px;
 }
 
 .onion-btn:hover {
@@ -143,10 +159,22 @@
 }
 
 .btn-tab:hover {
-    background-color: rgba(255, 255, 255, 0.16);
+    background-color: rgba(56, 56, 56, 0.5);
 }
 
 .active-tab {
     opacity: 1;
-    background-color: rgba(255, 255, 255, 0.16);
+    background-color: rgb(56, 56, 56);
+}
+
+.active-tab:hover {
+    background-color: rgba(56, 56, 56, 255);
+}
+
+.btn-tab .btn-icon {
+    opacity: 0.3;
+}
+
+.active-tab .btn-icon {
+    opacity: 1;
 }
