@@ -32,9 +32,12 @@ namespace OnionCollections.DataEditor.Editor
         static Dictionary<Type, MemberInfo[]> memberCache = new Dictionary<Type, MemberInfo[]>();
         static Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool> attrResultCache = new Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool>();
 
-        internal static IEnumerable<TreeNode> GetElements(this TreeNode rootNode)
+        internal static List<TreeNode> GetElements(this TreeNode rootNode)
         {
-            if (rootNode.dataObj == null)
+            if (rootNode.isPseudo == true)
+                return rootNode.GetChildren().ToList();
+
+            if (rootNode.isNull == true)
                 return null;
             
             List<TreeNode> nodeList = new List<TreeNode>();
@@ -106,12 +109,16 @@ namespace OnionCollections.DataEditor.Editor
                 IEnumerable<TreeNode> node = GetSingleOrMultipleType<Object>()
                     .Select(_ => new TreeNode(_));
 
+                groupedNode.AddChildren(node);
+
                 //若需要FindTree，則遍歷底下節點找
                 if (groupAttr.findTree)
+                {
                     foreach (var item in node)
+                    {
                         item.GetElementTree();
-                        
-                groupedNode.AddChildren(node);
+                    }
+                }                        
 
                 //如果Element是Empty則不加入Group
                 if ((groupAttr.hideIfEmpty == true && groupedNode.childCount == 0) == false)
@@ -172,16 +179,14 @@ namespace OnionCollections.DataEditor.Editor
             //    throw new StackOverflowException($"{targetNode.displayName} is a parent of itself.");
             //}
 
-
             var node = targetNode.GetElements();
 
             targetNode.ClearChildren();
-            targetNode.AddChildren(new List<TreeNode>(node));
+            targetNode.AddChildren(node);
 
             foreach (var el in node)
             {
-                if (el.dataObj != null && 
-                    el.isHideElementNodes == false)
+                if (el.isHideElementNodes == false)
                 {
                     el.GetElementTree(depth + 1);
                 }
