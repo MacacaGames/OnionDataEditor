@@ -11,7 +11,21 @@ using System.Reflection;
 
 public static class OnionDataEditor
 {
-    public const string path = "Assets/OnionDataEditor";
+    const string AssetsPath = "Assets/OnionDataEditor";
+
+    //改成 UPM 後要針對不同的匯入方式處理路徑
+    public static string path
+    {
+        get
+        {
+            // 暫時只有確認 OSX 環境下這個路徑檢查沒問題，Win 有問題的話再來修
+            if (System.IO.Directory.Exists(Application.dataPath + AssetsPath.Replace("Assets", "")))
+            {
+                return AssetsPath;
+            }
+            return "Packages/com.macacagames.oniondataeditor/";
+        }
+    }
 
     static OnionSetting _setting;
     internal static OnionSetting setting
