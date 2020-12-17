@@ -1,0 +1,294 @@
+{
+  "homepages": [],
+  "source_base_path": "/Users/miki/Documents/SquidBeat/SB_Unity/Assets/OnionDataEditor/Document",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.Editor.NodeCustomElementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.NodeCustomElementAttribute.html",
+          "hash": "9aQOBH5wnk8c8xGeKUoJjA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.html",
+          "hash": "DKUus74cdqjX96BgpO13iQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.html",
+          "hash": "FJJ6ttvXrm3pyvdH4yyinw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.Editor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.html",
+          "hash": "HU13F0sRjMq0s3A9zqWCnQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.FieldDescriptionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.FieldDescriptionAttribute.html",
+          "hash": "dPdEkWjlOjRql5KpNlOgjw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.html",
+          "hash": "cMT9o8wvIsEpzAudSvb64w=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeActionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeActionAttribute.html",
+          "hash": "osrmQrOPOAz/2YS7/AZzzQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeColorTagAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeColorTagAttribute.html",
+          "hash": "QpO+1f9HD4fe8vmULWW3lg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeDescriptionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeDescriptionAttribute.html",
+          "hash": "GypQ3BJ975YUMnIrkguh9Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeElementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeElementAttribute.html",
+          "hash": "r5Y/PxGBUZ83JoZjI0Py8g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeGroupedElementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeGroupedElementAttribute.html",
+          "hash": "G05k5vqCinOiQO+8lG3EbQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeIconAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeIconAttribute.html",
+          "hash": "VhvJY7TFFr7GSGU9Dx3QMg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.NodeTitleAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeTitleAttribute.html",
+          "hash": "1NSVwSfu9G4gPKvpLH0tyQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.html",
+          "hash": "T6F42D7ZTLyTHsp8FFOpBw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.OpenWithOnionDataEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.OpenWithOnionDataEditor.html",
+          "hash": "WAq9ShzsyYxPCV7uPye5ag=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/OnionCollections.DataEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.html",
+          "hash": "IL4fQQ+J5U+JhkIYAd4zBQ=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "NWGPANvwYtKLf3lUFRDImA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "mOge2Jf8uldzdjX0QeW1RA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "n7QH9PjLqQ5/YYRLPw7VcQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "EIhwD2+o19OxxQFCB6JJTg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 2,
+          "skipped_file_count": 1
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 16,
+          "skipped_file_count": 16
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

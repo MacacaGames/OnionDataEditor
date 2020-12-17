@@ -1,0 +1,1805 @@
+id: cs.temp.dll
+language: CSharp
+name:
+  Default: cs.temp.dll
+qualifiedName:
+  Default: cs.temp.dll
+type: Assembly
+modifiers: {}
+items:
+- id: OnionCollections.DataEditor
+  commentId: N:OnionCollections.DataEditor
+  language: CSharp
+  name:
+    CSharp: OnionCollections.DataEditor
+    VB: OnionCollections.DataEditor
+  nameWithType:
+    CSharp: OnionCollections.DataEditor
+    VB: OnionCollections.DataEditor
+  qualifiedName:
+    CSharp: OnionCollections.DataEditor
+    VB: OnionCollections.DataEditor
+  type: Namespace
+  assemblies:
+  - cs.temp.dll
+  modifiers: {}
+  items:
+  - id: OnionCollections.DataEditor.NodeColorTagAttribute
+    commentId: T:OnionCollections.DataEditor.NodeColorTagAttribute
+    language: CSharp
+    name:
+      CSharp: NodeColorTagAttribute
+      VB: NodeColorTagAttribute
+    nameWithType:
+      CSharp: NodeColorTagAttribute
+      VB: NodeColorTagAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeColorTagAttribute
+      VB: OnionCollections.DataEditor.NodeColorTagAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeColorTagAttribute
+      path: ''
+      startLine: 690
+    summary: "\nDisplay custom color tag in data editor.\nDefault is transparent.\nOnly can attach on Color.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeColorTagAttribute : Attribute'
+        VB: >-
+          Public Class NodeColorTagAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items: []
+  - id: OnionCollections.DataEditor.OpenWithOnionDataEditor
+    commentId: T:OnionCollections.DataEditor.OpenWithOnionDataEditor
+    language: CSharp
+    name:
+      CSharp: OpenWithOnionDataEditor
+      VB: OpenWithOnionDataEditor
+    nameWithType:
+      CSharp: OpenWithOnionDataEditor
+      VB: OpenWithOnionDataEditor
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.OpenWithOnionDataEditor
+      VB: OnionCollections.DataEditor.OpenWithOnionDataEditor
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: OpenWithOnionDataEditor
+      path: ''
+      startLine: 735
+    summary: "\nAsset default open with data editor if set true.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class OpenWithOnionDataEditor : Attribute'
+        VB: >-
+          Public Class OpenWithOnionDataEditor
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+      commentId: P:OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+      language: CSharp
+      name:
+        CSharp: openWithDataEditor
+        VB: openWithDataEditor
+      nameWithType:
+        CSharp: OpenWithOnionDataEditor.openWithDataEditor
+        VB: OpenWithOnionDataEditor.openWithDataEditor
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+        VB: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+      type: Property
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: openWithDataEditor
+        path: ''
+        startLine: 738
+      syntax:
+        content:
+          CSharp: public bool openWithDataEditor { get; }
+          VB: Public ReadOnly Property openWithDataEditor As Boolean
+        parameters: []
+        return:
+          type: System.Boolean
+      overload: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor*
+      modifiers:
+        CSharp:
+        - public
+        - get
+        VB:
+        - Public
+        - ReadOnly
+    - id: OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor(System.Boolean)
+      commentId: M:OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor(System.Boolean)
+      language: CSharp
+      name:
+        CSharp: OpenWithOnionDataEditor(Boolean)
+        VB: OpenWithOnionDataEditor(Boolean)
+      nameWithType:
+        CSharp: OpenWithOnionDataEditor.OpenWithOnionDataEditor(Boolean)
+        VB: OpenWithOnionDataEditor.OpenWithOnionDataEditor(Boolean)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.OpenWithOnionDataEditor.OpenWithOnionDataEditor(System.Boolean)
+        VB: OnionCollections.DataEditor.OpenWithOnionDataEditor.OpenWithOnionDataEditor(System.Boolean)
+      type: Constructor
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: .ctor
+        path: ''
+        startLine: 739
+      syntax:
+        content:
+          CSharp: public OpenWithOnionDataEditor(bool openWithDataEditor)
+          VB: Public Sub New(openWithDataEditor As Boolean)
+        parameters:
+        - id: openWithDataEditor
+          type: System.Boolean
+      overload: OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor*
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+  - id: OnionCollections.DataEditor.NodeIconAttribute
+    commentId: T:OnionCollections.DataEditor.NodeIconAttribute
+    language: CSharp
+    name:
+      CSharp: NodeIconAttribute
+      VB: NodeIconAttribute
+    nameWithType:
+      CSharp: NodeIconAttribute
+      VB: NodeIconAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeIconAttribute
+      VB: OnionCollections.DataEditor.NodeIconAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeIconAttribute
+      path: ''
+      startLine: 754
+    summary: "\nDefine this node&apos;s icon in data editor.\nOnly can attach on UnityEngine.Texture and UnityEngine.Sprite.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeIconAttribute : Attribute'
+        VB: >-
+          Public Class NodeIconAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items: []
+  - id: OnionCollections.DataEditor.NodeElementAttribute
+    commentId: T:OnionCollections.DataEditor.NodeElementAttribute
+    language: CSharp
+    name:
+      CSharp: NodeElementAttribute
+      VB: NodeElementAttribute
+    nameWithType:
+      CSharp: NodeElementAttribute
+      VB: NodeElementAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeElementAttribute
+      VB: OnionCollections.DataEditor.NodeElementAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeElementAttribute
+      path: ''
+      startLine: 769
+    summary: "\nDefine child nodes in data editor.\nOnly can attach on IEnumerable&lt;UnityEngine.Object> and UnityEngine.Object.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeElementAttribute : Attribute'
+        VB: >-
+          Public Class NodeElementAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items: []
+  - id: OnionCollections.DataEditor.NodeActionAttribute
+    commentId: T:OnionCollections.DataEditor.NodeActionAttribute
+    language: CSharp
+    name:
+      CSharp: NodeActionAttribute
+      VB: NodeActionAttribute
+    nameWithType:
+      CSharp: NodeActionAttribute
+      VB: NodeActionAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeActionAttribute
+      VB: OnionCollections.DataEditor.NodeActionAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeActionAttribute
+      path: ''
+      startLine: 783
+    summary: "\nDisplay button that could execute custom function in data editor.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeActionAttribute : Attribute'
+        VB: >-
+          Public Class NodeActionAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.NodeActionAttribute.actionName
+      commentId: F:OnionCollections.DataEditor.NodeActionAttribute.actionName
+      language: CSharp
+      name:
+        CSharp: actionName
+        VB: actionName
+      nameWithType:
+        CSharp: NodeActionAttribute.actionName
+        VB: NodeActionAttribute.actionName
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeActionAttribute.actionName
+        VB: OnionCollections.DataEditor.NodeActionAttribute.actionName
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: actionName
+        path: ''
+        startLine: 786
+      syntax:
+        content:
+          CSharp: public string actionName
+          VB: Public actionName As String
+        return:
+          type: System.String
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+    - id: OnionCollections.DataEditor.NodeActionAttribute.userTags
+      commentId: F:OnionCollections.DataEditor.NodeActionAttribute.userTags
+      language: CSharp
+      name:
+        CSharp: userTags
+        VB: userTags
+      nameWithType:
+        CSharp: NodeActionAttribute.userTags
+        VB: NodeActionAttribute.userTags
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeActionAttribute.userTags
+        VB: OnionCollections.DataEditor.NodeActionAttribute.userTags
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: userTags
+        path: ''
+        startLine: 791
+      summary: "\nNodeActionAttribute enable function for users by user tags.\n"
+      example: []
+      syntax:
+        content:
+          CSharp: public string[] userTags
+          VB: Public userTags As String()
+        return:
+          type: System.String[]
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+    - id: OnionCollections.DataEditor.NodeActionAttribute.#ctor
+      commentId: M:OnionCollections.DataEditor.NodeActionAttribute.#ctor
+      language: CSharp
+      name:
+        CSharp: NodeActionAttribute()
+        VB: NodeActionAttribute()
+      nameWithType:
+        CSharp: NodeActionAttribute.NodeActionAttribute()
+        VB: NodeActionAttribute.NodeActionAttribute()
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeActionAttribute.NodeActionAttribute()
+        VB: OnionCollections.DataEditor.NodeActionAttribute.NodeActionAttribute()
+      type: Constructor
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: .ctor
+        path: ''
+        startLine: 793
+      syntax:
+        content:
+          CSharp: public NodeActionAttribute()
+          VB: Public Sub New
+      overload: OnionCollections.DataEditor.NodeActionAttribute.#ctor*
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+    - id: OnionCollections.DataEditor.NodeActionAttribute.#ctor(System.String)
+      commentId: M:OnionCollections.DataEditor.NodeActionAttribute.#ctor(System.String)
+      language: CSharp
+      name:
+        CSharp: NodeActionAttribute(String)
+        VB: NodeActionAttribute(String)
+      nameWithType:
+        CSharp: NodeActionAttribute.NodeActionAttribute(String)
+        VB: NodeActionAttribute.NodeActionAttribute(String)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeActionAttribute.NodeActionAttribute(System.String)
+        VB: OnionCollections.DataEditor.NodeActionAttribute.NodeActionAttribute(System.String)
+      type: Constructor
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: .ctor
+        path: ''
+        startLine: 794
+      syntax:
+        content:
+          CSharp: public NodeActionAttribute(string actionName)
+          VB: Public Sub New(actionName As String)
+        parameters:
+        - id: actionName
+          type: System.String
+      overload: OnionCollections.DataEditor.NodeActionAttribute.#ctor*
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+  - id: OnionCollections.DataEditor.NodeGroupedElementAttribute
+    commentId: T:OnionCollections.DataEditor.NodeGroupedElementAttribute
+    language: CSharp
+    name:
+      CSharp: NodeGroupedElementAttribute
+      VB: NodeGroupedElementAttribute
+    nameWithType:
+      CSharp: NodeGroupedElementAttribute
+      VB: NodeGroupedElementAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeGroupedElementAttribute
+      VB: OnionCollections.DataEditor.NodeGroupedElementAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeGroupedElementAttribute
+      path: ''
+      startLine: 810
+    summary: "\nDefine nodes in data editor.\nNodes will be grouped in a pseudo node.\nOnly can attach on IEnumerable&lt;UnityEngine.Object> and UnityEngine.Object.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeGroupedElementAttribute : Attribute'
+        VB: >-
+          Public Class NodeGroupedElementAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.NodeGroupedElementAttribute.findTree
+      commentId: F:OnionCollections.DataEditor.NodeGroupedElementAttribute.findTree
+      language: CSharp
+      name:
+        CSharp: findTree
+        VB: findTree
+      nameWithType:
+        CSharp: NodeGroupedElementAttribute.findTree
+        VB: NodeGroupedElementAttribute.findTree
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeGroupedElementAttribute.findTree
+        VB: OnionCollections.DataEditor.NodeGroupedElementAttribute.findTree
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: findTree
+        path: ''
+        startLine: 813
+      syntax:
+        content:
+          CSharp: public bool findTree
+          VB: Public findTree As Boolean
+        return:
+          type: System.Boolean
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+    - id: OnionCollections.DataEditor.NodeGroupedElementAttribute.hideIfEmpty
+      commentId: F:OnionCollections.DataEditor.NodeGroupedElementAttribute.hideIfEmpty
+      language: CSharp
+      name:
+        CSharp: hideIfEmpty
+        VB: hideIfEmpty
+      nameWithType:
+        CSharp: NodeGroupedElementAttribute.hideIfEmpty
+        VB: NodeGroupedElementAttribute.hideIfEmpty
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeGroupedElementAttribute.hideIfEmpty
+        VB: OnionCollections.DataEditor.NodeGroupedElementAttribute.hideIfEmpty
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: hideIfEmpty
+        path: ''
+        startLine: 814
+      syntax:
+        content:
+          CSharp: public bool hideIfEmpty
+          VB: Public hideIfEmpty As Boolean
+        return:
+          type: System.Boolean
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+    - id: OnionCollections.DataEditor.NodeGroupedElementAttribute.displayName
+      commentId: F:OnionCollections.DataEditor.NodeGroupedElementAttribute.displayName
+      language: CSharp
+      name:
+        CSharp: displayName
+        VB: displayName
+      nameWithType:
+        CSharp: NodeGroupedElementAttribute.displayName
+        VB: NodeGroupedElementAttribute.displayName
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeGroupedElementAttribute.displayName
+        VB: OnionCollections.DataEditor.NodeGroupedElementAttribute.displayName
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: displayName
+        path: ''
+        startLine: 815
+      syntax:
+        content:
+          CSharp: public string displayName
+          VB: Public displayName As String
+        return:
+          type: System.String
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+    - id: OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor(System.String,System.Boolean,System.Boolean)
+      commentId: M:OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor(System.String,System.Boolean,System.Boolean)
+      language: CSharp
+      name:
+        CSharp: NodeGroupedElementAttribute(String, Boolean, Boolean)
+        VB: NodeGroupedElementAttribute(String, Boolean, Boolean)
+      nameWithType:
+        CSharp: NodeGroupedElementAttribute.NodeGroupedElementAttribute(String, Boolean, Boolean)
+        VB: NodeGroupedElementAttribute.NodeGroupedElementAttribute(String, Boolean, Boolean)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.NodeGroupedElementAttribute.NodeGroupedElementAttribute(System.String, System.Boolean, System.Boolean)
+        VB: OnionCollections.DataEditor.NodeGroupedElementAttribute.NodeGroupedElementAttribute(System.String, System.Boolean, System.Boolean)
+      type: Constructor
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: .ctor
+        path: ''
+        startLine: 817
+      syntax:
+        content:
+          CSharp: public NodeGroupedElementAttribute(string displayName, bool findTree = false, bool hideIfEmpty = false)
+          VB: Public Sub New(displayName As String, findTree As Boolean = False, hideIfEmpty As Boolean = False)
+        parameters:
+        - id: displayName
+          type: System.String
+        - id: findTree
+          type: System.Boolean
+        - id: hideIfEmpty
+          type: System.Boolean
+      overload: OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor*
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+  - id: OnionCollections.DataEditor.NodeTitleAttribute
+    commentId: T:OnionCollections.DataEditor.NodeTitleAttribute
+    language: CSharp
+    name:
+      CSharp: NodeTitleAttribute
+      VB: NodeTitleAttribute
+    nameWithType:
+      CSharp: NodeTitleAttribute
+      VB: NodeTitleAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeTitleAttribute
+      VB: OnionCollections.DataEditor.NodeTitleAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeTitleAttribute
+      path: ''
+      startLine: 834
+    summary: "\nDisplay custom title in data editor.\nOnly can attach on String.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeTitleAttribute : Attribute'
+        VB: >-
+          Public Class NodeTitleAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items: []
+  - id: OnionCollections.DataEditor.FieldDescriptionAttribute
+    commentId: T:OnionCollections.DataEditor.FieldDescriptionAttribute
+    language: CSharp
+    name:
+      CSharp: FieldDescriptionAttribute
+      VB: FieldDescriptionAttribute
+    nameWithType:
+      CSharp: FieldDescriptionAttribute
+      VB: FieldDescriptionAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.FieldDescriptionAttribute
+      VB: OnionCollections.DataEditor.FieldDescriptionAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: FieldDescriptionAttribute
+      path: ''
+      startLine: 848
+    summary: "\nDisplay custom field description in data editor.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class FieldDescriptionAttribute : Attribute'
+        VB: >-
+          Public Class FieldDescriptionAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.FieldDescriptionAttribute.description
+      commentId: P:OnionCollections.DataEditor.FieldDescriptionAttribute.description
+      language: CSharp
+      name:
+        CSharp: description
+        VB: description
+      nameWithType:
+        CSharp: FieldDescriptionAttribute.description
+        VB: FieldDescriptionAttribute.description
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.FieldDescriptionAttribute.description
+        VB: OnionCollections.DataEditor.FieldDescriptionAttribute.description
+      type: Property
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: description
+        path: ''
+        startLine: 852
+      syntax:
+        content:
+          CSharp: public string description { get; }
+          VB: Public ReadOnly Property description As String
+        parameters: []
+        return:
+          type: System.String
+      overload: OnionCollections.DataEditor.FieldDescriptionAttribute.description*
+      modifiers:
+        CSharp:
+        - public
+        - get
+        VB:
+        - Public
+        - ReadOnly
+    - id: OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor(System.String)
+      commentId: M:OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor(System.String)
+      language: CSharp
+      name:
+        CSharp: FieldDescriptionAttribute(String)
+        VB: FieldDescriptionAttribute(String)
+      nameWithType:
+        CSharp: FieldDescriptionAttribute.FieldDescriptionAttribute(String)
+        VB: FieldDescriptionAttribute.FieldDescriptionAttribute(String)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.FieldDescriptionAttribute.FieldDescriptionAttribute(System.String)
+        VB: OnionCollections.DataEditor.FieldDescriptionAttribute.FieldDescriptionAttribute(System.String)
+      type: Constructor
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: .ctor
+        path: ''
+        startLine: 853
+      syntax:
+        content:
+          CSharp: public FieldDescriptionAttribute(string description)
+          VB: Public Sub New(description As String)
+        parameters:
+        - id: description
+          type: System.String
+      overload: OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor*
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+  - id: OnionCollections.DataEditor.NodeDescriptionAttribute
+    commentId: T:OnionCollections.DataEditor.NodeDescriptionAttribute
+    language: CSharp
+    name:
+      CSharp: NodeDescriptionAttribute
+      VB: NodeDescriptionAttribute
+    nameWithType:
+      CSharp: NodeDescriptionAttribute
+      VB: NodeDescriptionAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.NodeDescriptionAttribute
+      VB: OnionCollections.DataEditor.NodeDescriptionAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: NodeDescriptionAttribute
+      path: ''
+      startLine: 879
+    summary: "\nDisplay custom description in data editor.\nOnly can attach on String.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeDescriptionAttribute : Attribute'
+        VB: >-
+          Public Class NodeDescriptionAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items: []
+  - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    commentId: T:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    language: CSharp
+    name:
+      CSharp: IOnionDataEditorGameObjectAgent
+      VB: IOnionDataEditorGameObjectAgent
+    nameWithType:
+      CSharp: IOnionDataEditorGameObjectAgent
+      VB: IOnionDataEditorGameObjectAgent
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+      VB: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    type: Interface
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: IOnionDataEditorGameObjectAgent
+      path: ''
+      startLine: 2463
+    syntax:
+      content:
+        CSharp: public interface IOnionDataEditorGameObjectAgent
+        VB: Public Interface IOnionDataEditorGameObjectAgent
+    modifiers:
+      CSharp:
+      - public
+      - interface
+      VB:
+      - Public
+      - Interface
+    items:
+    - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      language: CSharp
+      name:
+        CSharp: GetNodes(GameObject)
+        VB: GetNodes(GameObject)
+      nameWithType:
+        CSharp: IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+        VB: IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+        VB: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      type: Method
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: GetNodes
+        path: ''
+        startLine: 2465
+      syntax:
+        content:
+          CSharp: IEnumerable<TreeNode> GetNodes(GameObject go)
+          VB: Function GetNodes(go As GameObject) As IEnumerable(Of TreeNode)
+        parameters:
+        - id: go
+          type: GameObject
+        return:
+          type: System.Collections.Generic.IEnumerable{TreeNode}
+      overload: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*
+      modifiers:
+        CSharp: []
+        VB: []
+    - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      language: CSharp
+      name:
+        CSharp: OnInspectorGUI(TreeNode)
+        VB: OnInspectorGUI(TreeNode)
+      nameWithType:
+        CSharp: IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+        VB: IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+        VB: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      type: Method
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: OnInspectorGUI
+        path: ''
+        startLine: 2467
+      syntax:
+        content:
+          CSharp: void OnInspectorGUI(TreeNode rootNode)
+          VB: Sub OnInspectorGUI(rootNode As TreeNode)
+        parameters:
+        - id: rootNode
+          type: TreeNode
+      overload: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI*
+      modifiers:
+        CSharp: []
+        VB: []
+  - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+    commentId: T:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+    language: CSharp
+    name:
+      CSharp: OnionDataEditorGameObjectAgent
+      VB: OnionDataEditorGameObjectAgent
+    nameWithType:
+      CSharp: OnionDataEditorGameObjectAgent
+      VB: OnionDataEditorGameObjectAgent
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+      VB: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor
+    source:
+      id: OnionDataEditorGameObjectAgent
+      path: ''
+      startLine: 2474
+    summary: "\nBecause game object can not attach custom node attribute, use OnionDataEditorGameObjectAgent to display children node in node editor.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public abstract class OnionDataEditorGameObjectAgent : MonoBehaviour, IOnionDataEditorGameObjectAgent'
+        VB: >-
+          Public MustInherit Class OnionDataEditorGameObjectAgent
+
+              Inherits MonoBehaviour
+
+              Implements IOnionDataEditorGameObjectAgent
+    inheritance:
+    - System.Object
+    implements:
+    - OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    modifiers:
+      CSharp:
+      - public
+      - abstract
+      - class
+      VB:
+      - Public
+      - MustInherit
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      commentId: M:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      language: CSharp
+      name:
+        CSharp: GetNodes(GameObject)
+        VB: GetNodes(GameObject)
+      nameWithType:
+        CSharp: OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+        VB: OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+        VB: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      type: Method
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: GetNodes
+        path: ''
+        startLine: 2481
+      summary: "\nDefine your custom method to get children nodes of game object.\n"
+      example: []
+      syntax:
+        content:
+          CSharp: public abstract IEnumerable<TreeNode> GetNodes(GameObject go)
+          VB: Public MustOverride Function GetNodes(go As GameObject) As IEnumerable(Of TreeNode)
+        parameters:
+        - id: go
+          type: GameObject
+          description: The target game object.
+        return:
+          type: System.Collections.Generic.IEnumerable{TreeNode}
+          description: ''
+      overload: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes*
+      implements:
+      - OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+      modifiers:
+        CSharp:
+        - public
+        - abstract
+        VB:
+        - Public
+        - MustOverride
+    - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      commentId: M:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      language: CSharp
+      name:
+        CSharp: OnInspectorGUI(TreeNode)
+        VB: OnInspectorGUI(TreeNode)
+      nameWithType:
+        CSharp: OnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+        VB: OnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+        VB: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      type: Method
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor
+      source:
+        id: OnInspectorGUI
+        path: ''
+        startLine: 2483
+      syntax:
+        content:
+          CSharp: public abstract void OnInspectorGUI(TreeNode rootNode)
+          VB: Public MustOverride Sub OnInspectorGUI(rootNode As TreeNode)
+        parameters:
+        - id: rootNode
+          type: TreeNode
+      overload: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI*
+      implements:
+      - OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+      modifiers:
+        CSharp:
+        - public
+        - abstract
+        VB:
+        - Public
+        - MustOverride
+- id: OnionCollections.DataEditor.Editor
+  commentId: N:OnionCollections.DataEditor.Editor
+  language: CSharp
+  name:
+    CSharp: OnionCollections.DataEditor.Editor
+    VB: OnionCollections.DataEditor.Editor
+  nameWithType:
+    CSharp: OnionCollections.DataEditor.Editor
+    VB: OnionCollections.DataEditor.Editor
+  qualifiedName:
+    CSharp: OnionCollections.DataEditor.Editor
+    VB: OnionCollections.DataEditor.Editor
+  type: Namespace
+  assemblies:
+  - cs.temp.dll
+  modifiers: {}
+  items:
+  - id: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+    commentId: T:OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+    language: CSharp
+    name:
+      CSharp: NodeOnSelectedAttribute
+      VB: NodeOnSelectedAttribute
+    nameWithType:
+      CSharp: NodeOnSelectedAttribute
+      VB: NodeOnSelectedAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+      VB: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor.Editor
+    source:
+      id: NodeOnSelectedAttribute
+      path: ''
+      startLine: 704
+    summary: "\nIf node be selected, will execute this function.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeOnSelectedAttribute : Attribute'
+        VB: >-
+          Public Class NodeOnSelectedAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.userTags
+      commentId: F:OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.userTags
+      language: CSharp
+      name:
+        CSharp: userTags
+        VB: userTags
+      nameWithType:
+        CSharp: NodeOnSelectedAttribute.userTags
+        VB: NodeOnSelectedAttribute.userTags
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.userTags
+        VB: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.userTags
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor.Editor
+      source:
+        id: userTags
+        path: ''
+        startLine: 707
+      syntax:
+        content:
+          CSharp: public string[] userTags
+          VB: Public userTags As String()
+        return:
+          type: System.String[]
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+  - id: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+    commentId: T:OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+    language: CSharp
+    name:
+      CSharp: NodeOnDoubleClickAttribute
+      VB: NodeOnDoubleClickAttribute
+    nameWithType:
+      CSharp: NodeOnDoubleClickAttribute
+      VB: NodeOnDoubleClickAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+      VB: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor.Editor
+    source:
+      id: NodeOnDoubleClickAttribute
+      path: ''
+      startLine: 718
+    summary: "\nIf node be double clicked, will execute this function.\n"
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeOnDoubleClickAttribute : Attribute'
+        VB: >-
+          Public Class NodeOnDoubleClickAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items:
+    - id: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.userTags
+      commentId: F:OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.userTags
+      language: CSharp
+      name:
+        CSharp: userTags
+        VB: userTags
+      nameWithType:
+        CSharp: NodeOnDoubleClickAttribute.userTags
+        VB: NodeOnDoubleClickAttribute.userTags
+      qualifiedName:
+        CSharp: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.userTags
+        VB: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.userTags
+      type: Field
+      assemblies:
+      - cs.temp.dll
+      namespace: OnionCollections.DataEditor.Editor
+      source:
+        id: userTags
+        path: ''
+        startLine: 724
+      summary: "\nNodeOnDoubleClickAttribute enable function for users by user tags.\n"
+      example: []
+      syntax:
+        content:
+          CSharp: public string[] userTags
+          VB: Public userTags As String()
+        return:
+          type: System.String[]
+      modifiers:
+        CSharp:
+        - public
+        VB:
+        - Public
+  - id: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+    commentId: T:OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+    language: CSharp
+    name:
+      CSharp: NodeCustomElementAttribute
+      VB: NodeCustomElementAttribute
+    nameWithType:
+      CSharp: NodeCustomElementAttribute
+      VB: NodeCustomElementAttribute
+    qualifiedName:
+      CSharp: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+      VB: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+    type: Class
+    assemblies:
+    - cs.temp.dll
+    namespace: OnionCollections.DataEditor.Editor
+    source:
+      id: NodeCustomElementAttribute
+      path: ''
+      startLine: 865
+    summary: Define custom node in data editor. Only can attach on IEnumerable&lt;TreeNode> and TreeNode.
+    example: []
+    syntax:
+      content:
+        CSharp: 'public class NodeCustomElementAttribute : Attribute'
+        VB: >-
+          Public Class NodeCustomElementAttribute
+
+              Inherits Attribute
+    inheritance:
+    - System.Object
+    modifiers:
+      CSharp:
+      - public
+      - class
+      VB:
+      - Public
+      - Class
+    items: []
+references:
+  OnionCollections.DataEditor.NodeColorTagAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeColorTagAttribute
+        name: NodeColorTagAttribute
+        nameWithType: NodeColorTagAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeColorTagAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeColorTagAttribute
+        name: NodeColorTagAttribute
+        nameWithType: NodeColorTagAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeColorTagAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeColorTagAttribute
+  System:
+    name:
+      CSharp:
+      - name: System
+        nameWithType: System
+        qualifiedName: System
+        isExternal: true
+      VB:
+      - name: System
+        nameWithType: System
+        qualifiedName: System
+    isDefinition: true
+    commentId: N:System
+  System.Boolean:
+    name:
+      CSharp:
+      - id: System.Boolean
+        name: Boolean
+        nameWithType: Boolean
+        qualifiedName: System.Boolean
+        isExternal: true
+      VB:
+      - id: System.Boolean
+        name: Boolean
+        nameWithType: Boolean
+        qualifiedName: System.Boolean
+        isExternal: true
+    isDefinition: true
+    parent: System
+    commentId: T:System.Boolean
+  OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor*
+        name: openWithDataEditor
+        nameWithType: OpenWithOnionDataEditor.openWithDataEditor
+        qualifiedName: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+      VB:
+      - id: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor*
+        name: openWithDataEditor
+        nameWithType: OpenWithOnionDataEditor.openWithDataEditor
+        qualifiedName: OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.OpenWithOnionDataEditor.openWithDataEditor
+  OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor*
+        name: OpenWithOnionDataEditor
+        nameWithType: OpenWithOnionDataEditor.OpenWithOnionDataEditor
+        qualifiedName: OnionCollections.DataEditor.OpenWithOnionDataEditor.OpenWithOnionDataEditor
+      VB:
+      - id: OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor*
+        name: OpenWithOnionDataEditor
+        nameWithType: OpenWithOnionDataEditor.OpenWithOnionDataEditor
+        qualifiedName: OnionCollections.DataEditor.OpenWithOnionDataEditor.OpenWithOnionDataEditor
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.OpenWithOnionDataEditor.#ctor
+  OnionCollections.DataEditor.OpenWithOnionDataEditor:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.OpenWithOnionDataEditor
+        name: OpenWithOnionDataEditor
+        nameWithType: OpenWithOnionDataEditor
+        qualifiedName: OnionCollections.DataEditor.OpenWithOnionDataEditor
+      VB:
+      - id: OnionCollections.DataEditor.OpenWithOnionDataEditor
+        name: OpenWithOnionDataEditor
+        nameWithType: OpenWithOnionDataEditor
+        qualifiedName: OnionCollections.DataEditor.OpenWithOnionDataEditor
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.OpenWithOnionDataEditor
+  OnionCollections.DataEditor.NodeIconAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeIconAttribute
+        name: NodeIconAttribute
+        nameWithType: NodeIconAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeIconAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeIconAttribute
+        name: NodeIconAttribute
+        nameWithType: NodeIconAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeIconAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeIconAttribute
+  OnionCollections.DataEditor.NodeElementAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeElementAttribute
+        name: NodeElementAttribute
+        nameWithType: NodeElementAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeElementAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeElementAttribute
+        name: NodeElementAttribute
+        nameWithType: NodeElementAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeElementAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeElementAttribute
+  System.String:
+    name:
+      CSharp:
+      - id: System.String
+        name: String
+        nameWithType: String
+        qualifiedName: System.String
+        isExternal: true
+      VB:
+      - id: System.String
+        name: String
+        nameWithType: String
+        qualifiedName: System.String
+        isExternal: true
+    isDefinition: true
+    parent: System
+    commentId: T:System.String
+  System.String[]:
+    name:
+      CSharp:
+      - id: System.String
+        name: String
+        nameWithType: String
+        qualifiedName: System.String
+        isExternal: true
+      - name: '[]'
+        nameWithType: '[]'
+        qualifiedName: '[]'
+      VB:
+      - id: System.String
+        name: String
+        nameWithType: String
+        qualifiedName: System.String
+        isExternal: true
+      - name: ()
+        nameWithType: ()
+        qualifiedName: ()
+    isDefinition: false
+  OnionCollections.DataEditor.NodeActionAttribute.#ctor*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeActionAttribute.#ctor*
+        name: NodeActionAttribute
+        nameWithType: NodeActionAttribute.NodeActionAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeActionAttribute.NodeActionAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeActionAttribute.#ctor*
+        name: NodeActionAttribute
+        nameWithType: NodeActionAttribute.NodeActionAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeActionAttribute.NodeActionAttribute
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.NodeActionAttribute.#ctor
+  OnionCollections.DataEditor.NodeActionAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeActionAttribute
+        name: NodeActionAttribute
+        nameWithType: NodeActionAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeActionAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeActionAttribute
+        name: NodeActionAttribute
+        nameWithType: NodeActionAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeActionAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeActionAttribute
+  OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor*
+        name: NodeGroupedElementAttribute
+        nameWithType: NodeGroupedElementAttribute.NodeGroupedElementAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeGroupedElementAttribute.NodeGroupedElementAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor*
+        name: NodeGroupedElementAttribute
+        nameWithType: NodeGroupedElementAttribute.NodeGroupedElementAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeGroupedElementAttribute.NodeGroupedElementAttribute
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.NodeGroupedElementAttribute.#ctor
+  OnionCollections.DataEditor.NodeGroupedElementAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeGroupedElementAttribute
+        name: NodeGroupedElementAttribute
+        nameWithType: NodeGroupedElementAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeGroupedElementAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeGroupedElementAttribute
+        name: NodeGroupedElementAttribute
+        nameWithType: NodeGroupedElementAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeGroupedElementAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeGroupedElementAttribute
+  OnionCollections.DataEditor.NodeTitleAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeTitleAttribute
+        name: NodeTitleAttribute
+        nameWithType: NodeTitleAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeTitleAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeTitleAttribute
+        name: NodeTitleAttribute
+        nameWithType: NodeTitleAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeTitleAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeTitleAttribute
+  OnionCollections.DataEditor.FieldDescriptionAttribute.description*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.FieldDescriptionAttribute.description*
+        name: description
+        nameWithType: FieldDescriptionAttribute.description
+        qualifiedName: OnionCollections.DataEditor.FieldDescriptionAttribute.description
+      VB:
+      - id: OnionCollections.DataEditor.FieldDescriptionAttribute.description*
+        name: description
+        nameWithType: FieldDescriptionAttribute.description
+        qualifiedName: OnionCollections.DataEditor.FieldDescriptionAttribute.description
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.FieldDescriptionAttribute.description
+  OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor*
+        name: FieldDescriptionAttribute
+        nameWithType: FieldDescriptionAttribute.FieldDescriptionAttribute
+        qualifiedName: OnionCollections.DataEditor.FieldDescriptionAttribute.FieldDescriptionAttribute
+      VB:
+      - id: OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor*
+        name: FieldDescriptionAttribute
+        nameWithType: FieldDescriptionAttribute.FieldDescriptionAttribute
+        qualifiedName: OnionCollections.DataEditor.FieldDescriptionAttribute.FieldDescriptionAttribute
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.FieldDescriptionAttribute.#ctor
+  OnionCollections.DataEditor.FieldDescriptionAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.FieldDescriptionAttribute
+        name: FieldDescriptionAttribute
+        nameWithType: FieldDescriptionAttribute
+        qualifiedName: OnionCollections.DataEditor.FieldDescriptionAttribute
+      VB:
+      - id: OnionCollections.DataEditor.FieldDescriptionAttribute
+        name: FieldDescriptionAttribute
+        nameWithType: FieldDescriptionAttribute
+        qualifiedName: OnionCollections.DataEditor.FieldDescriptionAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.FieldDescriptionAttribute
+  OnionCollections.DataEditor.NodeDescriptionAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.NodeDescriptionAttribute
+        name: NodeDescriptionAttribute
+        nameWithType: NodeDescriptionAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeDescriptionAttribute
+      VB:
+      - id: OnionCollections.DataEditor.NodeDescriptionAttribute
+        name: NodeDescriptionAttribute
+        nameWithType: NodeDescriptionAttribute
+        qualifiedName: OnionCollections.DataEditor.NodeDescriptionAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.NodeDescriptionAttribute
+  System.Collections.Generic.IEnumerable`1:
+    name:
+      CSharp:
+      - id: System.Collections.Generic.IEnumerable`1
+        name: IEnumerable
+        nameWithType: IEnumerable
+        qualifiedName: System.Collections.Generic.IEnumerable
+        isExternal: true
+      - name: <
+        nameWithType: <
+        qualifiedName: <
+      - name: T
+        nameWithType: T
+        qualifiedName: T
+      - name: '>'
+        nameWithType: '>'
+        qualifiedName: '>'
+      VB:
+      - id: System.Collections.Generic.IEnumerable`1
+        name: IEnumerable
+        nameWithType: IEnumerable
+        qualifiedName: System.Collections.Generic.IEnumerable
+        isExternal: true
+      - name: '(Of '
+        nameWithType: '(Of '
+        qualifiedName: '(Of '
+      - name: T
+        nameWithType: T
+        qualifiedName: T
+      - name: )
+        nameWithType: )
+        qualifiedName: )
+    isDefinition: true
+    commentId: T:System.Collections.Generic.IEnumerable`1
+  System.Collections.Generic:
+    name:
+      CSharp:
+      - name: System.Collections.Generic
+        nameWithType: System.Collections.Generic
+        qualifiedName: System.Collections.Generic
+        isExternal: true
+      VB:
+      - name: System.Collections.Generic
+        nameWithType: System.Collections.Generic
+        qualifiedName: System.Collections.Generic
+    isDefinition: true
+    commentId: N:System.Collections.Generic
+  System.Collections.Generic.IEnumerable{TreeNode}:
+    name:
+      CSharp:
+      - id: System.Collections.Generic.IEnumerable`1
+        name: IEnumerable
+        nameWithType: IEnumerable
+        qualifiedName: System.Collections.Generic.IEnumerable
+        isExternal: true
+      - name: <
+        nameWithType: <
+        qualifiedName: <
+      - id: TreeNode
+        name: TreeNode
+        nameWithType: TreeNode
+        qualifiedName: TreeNode
+      - name: '>'
+        nameWithType: '>'
+        qualifiedName: '>'
+      VB:
+      - id: System.Collections.Generic.IEnumerable`1
+        name: IEnumerable
+        nameWithType: IEnumerable
+        qualifiedName: System.Collections.Generic.IEnumerable
+        isExternal: true
+      - name: '(Of '
+        nameWithType: '(Of '
+        qualifiedName: '(Of '
+      - id: TreeNode
+        name: TreeNode
+        nameWithType: TreeNode
+        qualifiedName: TreeNode
+      - name: )
+        nameWithType: )
+        qualifiedName: )
+    isDefinition: false
+    definition: System.Collections.Generic.IEnumerable`1
+    parent: System.Collections.Generic
+    commentId: T:System.Collections.Generic.IEnumerable{TreeNode}
+  GameObject:
+    name:
+      CSharp:
+      - id: GameObject
+        name: GameObject
+        nameWithType: GameObject
+        qualifiedName: GameObject
+        isExternal: true
+      VB:
+      - id: GameObject
+        name: GameObject
+        nameWithType: GameObject
+        qualifiedName: GameObject
+        isExternal: true
+    isDefinition: true
+  OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*
+        name: GetNodes
+        nameWithType: IOnionDataEditorGameObjectAgent.GetNodes
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+      VB:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*
+        name: GetNodes
+        nameWithType: IOnionDataEditorGameObjectAgent.GetNodes
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+  TreeNode:
+    name:
+      CSharp:
+      - id: TreeNode
+        name: TreeNode
+        nameWithType: TreeNode
+        qualifiedName: TreeNode
+      VB:
+      - id: TreeNode
+        name: TreeNode
+        nameWithType: TreeNode
+        qualifiedName: TreeNode
+    isDefinition: true
+    commentId: T:TreeNode
+  OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI*
+        name: OnInspectorGUI
+        nameWithType: IOnionDataEditorGameObjectAgent.OnInspectorGUI
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+      VB:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI*
+        name: OnInspectorGUI
+        nameWithType: IOnionDataEditorGameObjectAgent.OnInspectorGUI
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+  OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+        name: IOnionDataEditorGameObjectAgent
+        nameWithType: IOnionDataEditorGameObjectAgent
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+      VB:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+        name: IOnionDataEditorGameObjectAgent
+        nameWithType: IOnionDataEditorGameObjectAgent
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    isDefinition: true
+    parent: OnionCollections.DataEditor
+    commentId: T:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+  OnionCollections.DataEditor:
+    name:
+      CSharp:
+      - name: OnionCollections.DataEditor
+        nameWithType: OnionCollections.DataEditor
+        qualifiedName: OnionCollections.DataEditor
+      VB:
+      - name: OnionCollections.DataEditor
+        nameWithType: OnionCollections.DataEditor
+        qualifiedName: OnionCollections.DataEditor
+    isDefinition: true
+    commentId: N:OnionCollections.DataEditor
+  OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes*
+        name: GetNodes
+        nameWithType: OnionDataEditorGameObjectAgent.GetNodes
+        qualifiedName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes
+      VB:
+      - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes*
+        name: GetNodes
+        nameWithType: OnionDataEditorGameObjectAgent.GetNodes
+        qualifiedName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes
+  OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject):
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+        name: GetNodes
+        nameWithType: IOnionDataEditorGameObjectAgent.GetNodes
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+      - name: (
+        nameWithType: (
+        qualifiedName: (
+      - id: GameObject
+        name: GameObject
+        nameWithType: GameObject
+        qualifiedName: GameObject
+        isExternal: true
+      - name: )
+        nameWithType: )
+        qualifiedName: )
+      VB:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+        name: GetNodes
+        nameWithType: IOnionDataEditorGameObjectAgent.GetNodes
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+      - name: (
+        nameWithType: (
+        qualifiedName: (
+      - id: GameObject
+        name: GameObject
+        nameWithType: GameObject
+        qualifiedName: GameObject
+        isExternal: true
+      - name: )
+        nameWithType: )
+        qualifiedName: )
+    isDefinition: true
+    parent: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+  OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI*:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI*
+        name: OnInspectorGUI
+        nameWithType: OnionDataEditorGameObjectAgent.OnInspectorGUI
+        qualifiedName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI
+      VB:
+      - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI*
+        name: OnInspectorGUI
+        nameWithType: OnionDataEditorGameObjectAgent.OnInspectorGUI
+        qualifiedName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI
+    isDefinition: true
+    commentId: Overload:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.OnInspectorGUI
+  OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode):
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+        name: OnInspectorGUI
+        nameWithType: IOnionDataEditorGameObjectAgent.OnInspectorGUI
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+      - name: (
+        nameWithType: (
+        qualifiedName: (
+      - id: TreeNode
+        name: TreeNode
+        nameWithType: TreeNode
+        qualifiedName: TreeNode
+      - name: )
+        nameWithType: )
+        qualifiedName: )
+      VB:
+      - id: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+        name: OnInspectorGUI
+        nameWithType: IOnionDataEditorGameObjectAgent.OnInspectorGUI
+        qualifiedName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+      - name: (
+        nameWithType: (
+        qualifiedName: (
+      - id: TreeNode
+        name: TreeNode
+        nameWithType: TreeNode
+        qualifiedName: TreeNode
+      - name: )
+        nameWithType: )
+        qualifiedName: )
+    isDefinition: true
+    parent: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+    commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+  OnionCollections.DataEditor.OnionDataEditorGameObjectAgent:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+        name: OnionDataEditorGameObjectAgent
+        nameWithType: OnionDataEditorGameObjectAgent
+        qualifiedName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+      VB:
+      - id: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+        name: OnionDataEditorGameObjectAgent
+        nameWithType: OnionDataEditorGameObjectAgent
+        qualifiedName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
+  OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+        name: NodeOnSelectedAttribute
+        nameWithType: NodeOnSelectedAttribute
+        qualifiedName: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+      VB:
+      - id: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+        name: NodeOnSelectedAttribute
+        nameWithType: NodeOnSelectedAttribute
+        qualifiedName: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+  OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+        name: NodeOnDoubleClickAttribute
+        nameWithType: NodeOnDoubleClickAttribute
+        qualifiedName: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+      VB:
+      - id: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+        name: NodeOnDoubleClickAttribute
+        nameWithType: NodeOnDoubleClickAttribute
+        qualifiedName: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+  OnionCollections.DataEditor.Editor.NodeCustomElementAttribute:
+    name:
+      CSharp:
+      - id: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+        name: NodeCustomElementAttribute
+        nameWithType: NodeCustomElementAttribute
+        qualifiedName: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+      VB:
+      - id: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+        name: NodeCustomElementAttribute
+        nameWithType: NodeCustomElementAttribute
+        qualifiedName: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+    isDefinition: true
+    commentId: T:OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+  OnionCollections.DataEditor.Editor:
+    name:
+      CSharp:
+      - name: OnionCollections.DataEditor.Editor
+        nameWithType: OnionCollections.DataEditor.Editor
+        qualifiedName: OnionCollections.DataEditor.Editor
+      VB:
+      - name: OnionCollections.DataEditor.Editor
+        nameWithType: OnionCollections.DataEditor.Editor
+        qualifiedName: OnionCollections.DataEditor.Editor
+    isDefinition: true
+    commentId: N:OnionCollections.DataEditor.Editor

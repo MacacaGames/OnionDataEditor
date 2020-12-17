@@ -1,3 +1,5 @@
+See [Document](https://macacagames.github.io/OnionDataEditor/) for more detail.
+
 # Onion Data Editor #
 
 Onion 是一個於 Unity 使用的資料檢視與編輯工具。
