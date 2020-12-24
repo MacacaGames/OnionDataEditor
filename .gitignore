@@ -10,7 +10,6 @@
 *.sln
 *.user
 *.userprefs
-*.meta
 *.tmp
  
 # need include the meta of file
@@ -21,3 +20,9 @@
 /BookmarkGroup.asset.meta
 /Setting.asset
 /Setting.asset.meta
+
+
+docs/*/*.meta
+Document/*/*.meta
+docs/*.meta
+Document/*.meta
