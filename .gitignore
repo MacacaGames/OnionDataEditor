@@ -16,6 +16,7 @@
 !*.*.meta
 
 /Bookmark/*
+/Bookmark.meta
 /BookmarkGroup.asset
 /BookmarkGroup.asset.meta
 /Setting.asset
