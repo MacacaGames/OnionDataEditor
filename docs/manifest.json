@@ -1,6 +1,6 @@
 {
   "homepages": [],
-  "source_base_path": "/Users/miki/Documents/SquidBeat/SB_Unity/Assets/OnionDataEditor/Document",
+  "source_base_path": "/Users/miki/Documents/SquidBeat/SB_Unity/Packages/OnionDataEditor/Document",
   "xrefmap": "xrefmap.yml",
   "files": [
     {
@@ -9,10 +9,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.Editor.NodeCustomElementAttribute.html",
-          "hash": "9aQOBH5wnk8c8xGeKUoJjA=="
+          "hash": "kAgQBghqo9wPDD08ERjhcQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -21,10 +21,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.html",
-          "hash": "DKUus74cdqjX96BgpO13iQ=="
+          "hash": "q4L9D2ecT3kM/+P1y+2Z1A=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -33,10 +33,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.html",
-          "hash": "FJJ6ttvXrm3pyvdH4yyinw=="
+          "hash": "9K1anneO5HN1E7qIGTHEjg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -48,7 +48,7 @@
           "hash": "HU13F0sRjMq0s3A9zqWCnQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -57,10 +57,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.FieldDescriptionAttribute.html",
-          "hash": "dPdEkWjlOjRql5KpNlOgjw=="
+          "hash": "T0LnQ+eW2vIrNIY9bBcieg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -69,10 +69,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.html",
-          "hash": "cMT9o8wvIsEpzAudSvb64w=="
+          "hash": "YoHBGNNI8LM04M3VbQHhMw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -81,10 +81,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeActionAttribute.html",
-          "hash": "osrmQrOPOAz/2YS7/AZzzQ=="
+          "hash": "i+3ZqcGE+T5gcZGw6AsXLg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -93,10 +93,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeColorTagAttribute.html",
-          "hash": "QpO+1f9HD4fe8vmULWW3lg=="
+          "hash": "L5Gs7V9/FopYpXf8mwo05g=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -105,10 +105,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeDescriptionAttribute.html",
-          "hash": "GypQ3BJ975YUMnIrkguh9Q=="
+          "hash": "2EHlUuEuEmWPApBWM1o73w=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -117,10 +117,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeElementAttribute.html",
-          "hash": "r5Y/PxGBUZ83JoZjI0Py8g=="
+          "hash": "kBwWTjQxGTVGML33zAKPCg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -129,10 +129,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeGroupedElementAttribute.html",
-          "hash": "G05k5vqCinOiQO+8lG3EbQ=="
+          "hash": "+C8n/WUkR775qjRg0pfdng=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -141,10 +141,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeIconAttribute.html",
-          "hash": "VhvJY7TFFr7GSGU9Dx3QMg=="
+          "hash": "AuEDYJadYUtvquvv5Vfkcg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -153,10 +153,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.NodeTitleAttribute.html",
-          "hash": "1NSVwSfu9G4gPKvpLH0tyQ=="
+          "hash": "uIBkASKxAm2hDMgf628hpA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -165,10 +165,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.html",
-          "hash": "T6F42D7ZTLyTHsp8FFOpBw=="
+          "hash": "ImehNJiYBG+GmL6UoIrv0g=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -177,10 +177,10 @@
       "output": {
         ".html": {
           "relative_path": "api/OnionCollections.DataEditor.OpenWithOnionDataEditor.html",
-          "hash": "WAq9ShzsyYxPCV7uPye5ag=="
+          "hash": "pq/UbnkvwtGztDIybPIUCA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -192,7 +192,7 @@
           "hash": "IL4fQQ+J5U+JhkIYAd4zBQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -201,10 +201,10 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "NWGPANvwYtKLf3lUFRDImA=="
+          "hash": "3jOGioBxxZBE+J2vRC+ViQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -225,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "n7QH9PjLqQ5/YYRLPw7VcQ=="
+          "hash": "Vtj+v6Jd3Z8Z5gzMK08TbQ=="
         }
       },
       "is_incremental": false,
@@ -247,23 +247,25 @@
   "incremental_info": [
     {
       "status": {
-        "can_incremental": true,
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
         "incrementalPhase": "build",
         "total_file_count": 0,
-        "skipped_file_count": 0
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
       },
       "processors": {
         "ConceptualDocumentProcessor": {
-          "can_incremental": true,
+          "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 2,
-          "skipped_file_count": 1
+          "skipped_file_count": 0
         },
         "ManagedReferenceDocumentProcessor": {
-          "can_incremental": true,
+          "can_incremental": false,
           "incrementalPhase": "build",
           "total_file_count": 16,
-          "skipped_file_count": 16
+          "skipped_file_count": 0
         },
         "TocDocumentProcessor": {
           "can_incremental": false,
@@ -276,8 +278,8 @@
     },
     {
       "status": {
-        "can_incremental": true,
-        "details": "Can support incremental post processing.",
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
         "incrementalPhase": "postProcessing",
         "total_file_count": 0,
         "skipped_file_count": 0

@@ -12,21 +12,7 @@ Onion 是一個於 Unity 使用的資料檢視與編輯工具。
 
 ### 如何開始使用？ ###
 
-### Option 1: Unity Package manager
-Add it to your editor's `manifest.json` file like this:
-```json
-    {
-    "dependencies": {
-        "com.macacagames.oniondataeditor": "https://github.com/MacacaGames/OnionDataEditor.git",
-    }
-}
-```
-
-### Option 2: Git SubModule
-
-```bash
-git submodule add https://github.com/MacacaGames/OnionDataEditor.git Assets/OnionDataEditor
-```
+* 建議以 SubModules 方式加入你的專案。
 * 加入後，可在 Unity 的 Window/Onion Data Editor 開啟視窗介面。
 
 ### 基本使用範例 ###

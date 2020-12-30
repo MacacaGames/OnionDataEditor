@@ -81,11 +81,11 @@ references:
   commentId: T:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
   fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
   nameWithType: IOnionDataEditorGameObjectAgent
-- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
   name: GetNodes(GameObject)
-  href: api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.html#OnionCollections_DataEditor_IOnionDataEditorGameObjectAgent_GetNodes_GameObject_
-  commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
-  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+  href: api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.html#OnionCollections_DataEditor_IOnionDataEditorGameObjectAgent_GetNodes_UnityEngine_GameObject_
+  commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
+  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
   nameWithType: IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
 - uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*
   name: GetNodes
@@ -217,11 +217,11 @@ references:
   commentId: T:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
   fullName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent
   nameWithType: OnionDataEditorGameObjectAgent
-- uid: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+- uid: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
   name: GetNodes(GameObject)
-  href: api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.html#OnionCollections_DataEditor_OnionDataEditorGameObjectAgent_GetNodes_GameObject_
-  commentId: M:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
-  fullName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(GameObject)
+  href: api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.html#OnionCollections_DataEditor_OnionDataEditorGameObjectAgent_GetNodes_UnityEngine_GameObject_
+  commentId: M:OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
+  fullName: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
   nameWithType: OnionDataEditorGameObjectAgent.GetNodes(GameObject)
 - uid: OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.GetNodes*
   name: GetNodes
