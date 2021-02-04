@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    internal class OnionBookmarkGroup : QueryableData, IEnumerable<OnionBookmark>
+    internal class OnionBookmarkGroup : QueryableData, IEnumerable<TreeNode>
     {
         const string nodeName = "Bookmarks";
 
@@ -17,29 +17,12 @@ namespace OnionCollections.DataEditor.Editor
 
         [NodeIcon]
         Texture2D icon => OnionDataEditorWindow.GetIconTexture("Bookmark_Fill");
-
-        [SerializeField]
-        //[NodeElement]
-        OnionBookmark[] data = new OnionBookmark[0];
-
-        [SerializeField]
+        
+        [HideInInspector]
         public int[] bookmarkGUIDs = new int[0];
-
-
-
+        
         public override string GetID() => nodeName;
 
-        public IEnumerator<OnionBookmark> GetEnumerator()
-        {
-            foreach (var item in data)
-                yield return item;
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            foreach (var item in data)
-                yield return item;
-        }
 
         public void AddBookmark(Object bookmark)
         {
@@ -82,6 +65,17 @@ namespace OnionCollections.DataEditor.Editor
             return OnionDataEditor.bookmarkGroup.bookmarkGUIDs.Contains(target.GetInstanceID());
         }
 
+        public IEnumerator<TreeNode> GetEnumerator()
+        {
+            foreach(var node in nodes)
+                yield return node;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            foreach (var node in nodes)
+                yield return node;
+        }
 
         [NodeCustomElement]
         IEnumerable< TreeNode> nodes
@@ -101,7 +95,8 @@ namespace OnionCollections.DataEditor.Editor
                             })
                         };
                         return node;
-                    });                    
+                    })
+                    .Where(n => n.isNull == false);                    
             }
         }
 
