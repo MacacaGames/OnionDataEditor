@@ -1,0 +1,325 @@
+{
+  "homepages": [],
+  "source_base_path": "/Users/miki/Documents/SquidBeat/SB_Unity/Packages/OnionDataEditor/.docfx_project",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.Editor.NodeCustomElementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.NodeCustomElementAttribute.html",
+          "hash": "k9leCsO1sFdQe9WHPQE+Cg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute.html",
+          "hash": "/1FZCFEr2XCApQT9+xVZVQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute.html",
+          "hash": "0dtf6L1UpDlquuYq9pJ8Ow=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.Editor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.Editor.html",
+          "hash": "EPluj99tSAu+rdMDrEy2JA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.FieldDescriptionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.FieldDescriptionAttribute.html",
+          "hash": "amb5ilhBckEtFsHtaTawWQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.html",
+          "hash": "YoHBGNNI8LM04M3VbQHhMw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeActionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeActionAttribute.html",
+          "hash": "2UXUtHgpGTClYPnLiqRIKA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeColorTagAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeColorTagAttribute.html",
+          "hash": "Q/KvkKvssdEeCGC6oueNQg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeDescriptionAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeDescriptionAttribute.html",
+          "hash": "wVp8IxFE0jPR0gkDu3xNwQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeElementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeElementAttribute.html",
+          "hash": "SycajK6cDGxFxQyFPEQhHA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeGroupedElementAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeGroupedElementAttribute.html",
+          "hash": "s0npoc8HA96wRvafOMcOjA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeIconAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeIconAttribute.html",
+          "hash": "yKAbOw4WIGSJh1DW/8Hkmw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.NodeTitleAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.NodeTitleAttribute.html",
+          "hash": "Qq7fH+J0S85gjtTAeGwxLQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.OnionDataEditorGameObjectAgent.html",
+          "hash": "gzvA48qQT1JuD3d0maQdAw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.OpenWithOnionDataEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.OpenWithOnionDataEditor.html",
+          "hash": "54Ahl0j5OIqh6975KZrgEw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "../Documentation~/api/OnionCollections.DataEditor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/OnionCollections.DataEditor.html",
+          "hash": "itqGspD3gQ4aqu2ulFbnhg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "../Documentation~/api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "mOge2Jf8uldzdjX0QeW1RA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "Grwz6cq9CpH6+UyPFXo2bw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "favicon.ico",
+      "output": {
+        "resource": {
+          "relative_path": "favicon.ico"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "ca31tu2V4v09XxIInz9K4A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Resource",
+      "source_relative_path": "logo.svg",
+      "output": {
+        "resource": {
+          "relative_path": "logo.svg"
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "am/S9vBmE9qrVa4lJLnXaw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot build incrementally because last build info is missing.",
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0,
+        "full_build_reason_code": "NoAvailableBuildCache"
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 2,
+          "skipped_file_count": 0
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": false,
+          "incrementalPhase": "build",
+          "total_file_count": 16,
+          "skipped_file_count": 0
+        },
+        "ResourceDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor ResourceDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": false,
+        "details": "Cannot support incremental post processing, the reason is: last post processor info is null.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
