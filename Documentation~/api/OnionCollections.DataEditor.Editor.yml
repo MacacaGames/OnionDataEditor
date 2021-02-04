@@ -1,0 +1,34 @@
+### YamlMime:ManagedReference
+items:
+- uid: OnionCollections.DataEditor.Editor
+  commentId: N:OnionCollections.DataEditor.Editor
+  id: OnionCollections.DataEditor.Editor
+  children:
+  - OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+  - OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+  - OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+  langs:
+  - csharp
+  - vb
+  name: OnionCollections.DataEditor.Editor
+  nameWithType: OnionCollections.DataEditor.Editor
+  fullName: OnionCollections.DataEditor.Editor
+  type: Namespace
+  assemblies:
+  - OnionDataEditor
+references:
+- uid: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+  commentId: T:OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+  name: NodeCustomElementAttribute
+  nameWithType: NodeCustomElementAttribute
+  fullName: OnionCollections.DataEditor.Editor.NodeCustomElementAttribute
+- uid: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+  commentId: T:OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+  name: NodeOnDoubleClickAttribute
+  nameWithType: NodeOnDoubleClickAttribute
+  fullName: OnionCollections.DataEditor.Editor.NodeOnDoubleClickAttribute
+- uid: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+  commentId: T:OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute
+  name: NodeOnSelectedAttribute
+  nameWithType: NodeOnSelectedAttribute
+  fullName: OnionCollections.DataEditor.Editor.NodeOnSelectedAttribute

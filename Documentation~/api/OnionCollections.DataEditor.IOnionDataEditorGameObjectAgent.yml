@@ -1,0 +1,217 @@
+### YamlMime:ManagedReference
+items:
+- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+  commentId: T:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+  id: IOnionDataEditorGameObjectAgent
+  parent: OnionCollections.DataEditor
+  children:
+  - OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
+  - OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+  langs:
+  - csharp
+  - vb
+  name: IOnionDataEditorGameObjectAgent
+  nameWithType: IOnionDataEditorGameObjectAgent
+  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+  type: Interface
+  source:
+    remote:
+      path: Scripts/Utilities/OnionDataEditorGameObjectAgent.cs
+      branch: master
+      repo: https://github.com/MacacaGames/OnionDataEditor.git
+    id: IOnionDataEditorGameObjectAgent
+    path: ../Scripts/Utilities/OnionDataEditorGameObjectAgent.cs
+    startLine: 12
+  assemblies:
+  - OnionDataEditor
+  namespace: OnionCollections.DataEditor
+  syntax:
+    content: public interface IOnionDataEditorGameObjectAgent
+    content.vb: Public Interface IOnionDataEditorGameObjectAgent
+  modifiers.csharp:
+  - public
+  - interface
+  modifiers.vb:
+  - Public
+  - Interface
+- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
+  commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
+  id: GetNodes(UnityEngine.GameObject)
+  parent: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+  langs:
+  - csharp
+  - vb
+  name: GetNodes(GameObject)
+  nameWithType: IOnionDataEditorGameObjectAgent.GetNodes(GameObject)
+  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes(UnityEngine.GameObject)
+  type: Method
+  source:
+    remote:
+      path: Scripts/Utilities/OnionDataEditorGameObjectAgent.cs
+      branch: master
+      repo: https://github.com/MacacaGames/OnionDataEditor.git
+    id: GetNodes
+    path: ../Scripts/Utilities/OnionDataEditorGameObjectAgent.cs
+    startLine: 14
+  assemblies:
+  - OnionDataEditor
+  namespace: OnionCollections.DataEditor
+  syntax:
+    content: IEnumerable<TreeNode> GetNodes(GameObject go)
+    parameters:
+    - id: go
+      type: UnityEngine.GameObject
+    return:
+      type: System.Collections.Generic.IEnumerable{TreeNode}
+    content.vb: Function GetNodes(go As GameObject) As IEnumerable(Of TreeNode)
+  overload: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*
+- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+  commentId: M:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+  id: OnInspectorGUI(TreeNode)
+  parent: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent
+  langs:
+  - csharp
+  - vb
+  name: OnInspectorGUI(TreeNode)
+  nameWithType: IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI(TreeNode)
+  type: Method
+  source:
+    remote:
+      path: Scripts/Utilities/OnionDataEditorGameObjectAgent.cs
+      branch: master
+      repo: https://github.com/MacacaGames/OnionDataEditor.git
+    id: OnInspectorGUI
+    path: ../Scripts/Utilities/OnionDataEditorGameObjectAgent.cs
+    startLine: 16
+  assemblies:
+  - OnionDataEditor
+  namespace: OnionCollections.DataEditor
+  syntax:
+    content: void OnInspectorGUI(TreeNode rootNode)
+    parameters:
+    - id: rootNode
+      type: TreeNode
+    content.vb: Sub OnInspectorGUI(rootNode As TreeNode)
+  overload: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI*
+references:
+- uid: OnionCollections.DataEditor
+  commentId: N:OnionCollections.DataEditor
+  name: OnionCollections.DataEditor
+  nameWithType: OnionCollections.DataEditor
+  fullName: OnionCollections.DataEditor
+- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes*
+  commentId: Overload:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+  name: GetNodes
+  nameWithType: IOnionDataEditorGameObjectAgent.GetNodes
+  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.GetNodes
+- uid: UnityEngine.GameObject
+  commentId: T:UnityEngine.GameObject
+  parent: UnityEngine
+  isExternal: true
+  name: GameObject
+  nameWithType: GameObject
+  fullName: UnityEngine.GameObject
+- uid: System.Collections.Generic.IEnumerable{TreeNode}
+  commentId: T:System.Collections.Generic.IEnumerable{TreeNode}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.IEnumerable`1
+  name: IEnumerable<TreeNode>
+  nameWithType: IEnumerable<TreeNode>
+  fullName: System.Collections.Generic.IEnumerable<TreeNode>
+  nameWithType.vb: IEnumerable(Of TreeNode)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of TreeNode)
+  name.vb: IEnumerable(Of TreeNode)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: TreeNode
+    name: TreeNode
+    nameWithType: TreeNode
+    fullName: TreeNode
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: TreeNode
+    name: TreeNode
+    nameWithType: TreeNode
+    fullName: TreeNode
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: UnityEngine
+  commentId: N:UnityEngine
+  isExternal: true
+  name: UnityEngine
+  nameWithType: UnityEngine
+  fullName: UnityEngine
+- uid: System.Collections.Generic.IEnumerable`1
+  commentId: T:System.Collections.Generic.IEnumerable`1
+  isExternal: true
+  name: IEnumerable<T>
+  nameWithType: IEnumerable<T>
+  fullName: System.Collections.Generic.IEnumerable<T>
+  nameWithType.vb: IEnumerable(Of T)
+  fullName.vb: System.Collections.Generic.IEnumerable(Of T)
+  name.vb: IEnumerable(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.IEnumerable`1
+    name: IEnumerable
+    nameWithType: IEnumerable
+    fullName: System.Collections.Generic.IEnumerable
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI*
+  commentId: Overload:OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+  name: OnInspectorGUI
+  nameWithType: IOnionDataEditorGameObjectAgent.OnInspectorGUI
+  fullName: OnionCollections.DataEditor.IOnionDataEditorGameObjectAgent.OnInspectorGUI
+- uid: TreeNode
+  commentId: T:TreeNode
+  name: TreeNode
+  nameWithType: TreeNode
+  fullName: TreeNode
