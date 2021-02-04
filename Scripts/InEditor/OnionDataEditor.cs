@@ -12,6 +12,7 @@ using System.Reflection;
 public static class OnionDataEditor
 {
     const string AssetsPath = "Assets/OnionDataEditor";
+    const string ResourcePath = "Assets/OnionDataEditor/Resources";
 
     //改成 UPM 後要針對不同的匯入方式處理路徑
     public static string path
@@ -32,10 +33,10 @@ public static class OnionDataEditor
     {
         get
         {
-            string _path = $"{path}/Setting.asset";
+            string assetName = "Setting";
 
             if (_setting == null)
-                _setting = AutoCreateLoad<OnionSetting>(_path);
+                _setting = AutoCreateLoad<OnionSetting>(assetName);
 
             return _setting;
         }
@@ -46,25 +47,36 @@ public static class OnionDataEditor
     {
         get
         {
-            string _path = $"{path}/BookmarkGroup.asset";
+            string assetName = "BookmarkGroup";
 
             if (_bookmarkGroup == null)
-                _bookmarkGroup = AutoCreateLoad<OnionBookmarkGroup>(_path);
+                _bookmarkGroup = AutoCreateLoad<OnionBookmarkGroup>(assetName);
 
             return _bookmarkGroup;
         }
     }
 
 
-    static T AutoCreateLoad<T>(string assetPath) where T : ScriptableObject
+    static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject
     {
-        var result = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+
+        string _path = $"{ResourcePath}/{assetName}.asset";
+
+        var result = Resources.Load<T>(assetName);
+
         if (result == null)
         {
+            DirectoryVisitor n = new DirectoryVisitor("Assets/")
+                .CreateFolderIfNotExist("OnionDataEditor")
+                .Enter("OnionDataEditor")
+                .CreateFolderIfNotExist("Resources")
+                .Enter("Resources");
+            
             var bookmarkGroupIns = ScriptableObject.CreateInstance<T>();
-            Debug.Log($"Auto create asset : {assetPath}");
-            AssetDatabase.CreateAsset(bookmarkGroupIns, assetPath);
-            result = AssetDatabase.LoadAssetAtPath<T>(assetPath);
+            Debug.Log($"Auto create asset : {ResourcePath}/{assetName}.asset");
+
+            AssetDatabase.CreateAsset(bookmarkGroupIns, $"{ResourcePath}/{assetName}.asset");
+            result = Resources.Load<T>(assetName);
         }
         return result;
     }

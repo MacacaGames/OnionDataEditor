@@ -3,6 +3,7 @@
 using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
+using System;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -13,15 +14,36 @@ namespace OnionCollections.DataEditor.Editor
         SerializedObject serializedObject;
         string title;
 
-        internal OnionReorderableList(SerializedProperty elements, string title)
+        Action<Rect, SerializedProperty, int> customGUI = null;
+
+        bool _editable = true;
+        public bool Editable
         {
-            Init(elements.serializedObject, elements, title);
+            set
+            {
+                rList.displayAdd = value;
+                rList.displayRemove = value;
+                rList.draggable = value;
+                _editable = value;
+            }
+            get => _editable;
         }
 
-        void Init(SerializedObject serializedObject, SerializedProperty elements, string title)
+        internal OnionReorderableList(SerializedProperty elements, string title)
+        {
+            Init(elements.serializedObject, elements, title, null);
+        }
+
+        internal OnionReorderableList(SerializedProperty elements, string title, Action<Rect, SerializedProperty, int> customGUI)
+        {
+            Init(elements.serializedObject, elements, title, customGUI);
+        }
+
+        void Init(SerializedObject serializedObject, SerializedProperty elements, string title, Action<Rect, SerializedProperty, int> customGUI)
         {
             this.serializedObject = serializedObject;
             this.title = title;
+            this.customGUI = customGUI;
 
             rList = new ReorderableList(serializedObject, elements, true, true, true, true)
             {
@@ -47,7 +69,14 @@ namespace OnionCollections.DataEditor.Editor
             arect.height = EditorGUIUtility.singleLineHeight;
             arect.y += EditorGUIUtility.singleLineHeight * 0.1F;
 
-            EditorGUI.PropertyField(arect, serElem, GUIContent.none);
+            if (customGUI == null)
+            {
+                EditorGUI.PropertyField(arect, serElem, GUIContent.none);
+            }
+            else
+            {
+                customGUI.Invoke(arect, serElem, currentIndex);
+            }
         }
 
         public void OnInspectorGUI()
