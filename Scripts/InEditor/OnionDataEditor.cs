@@ -63,7 +63,7 @@ public static class OnionDataEditor
 
         string _path = $"{ResourceRootPath}/{ResourcePath}/{assetName}.asset";
 
-        var result = Resources.Load<T>(assetName);
+        var result = Resources.Load<T>($"{ResourcePath}/{assetName}");
 
         if (result == null)
         {
