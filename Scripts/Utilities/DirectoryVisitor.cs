@@ -50,7 +50,7 @@ namespace OnionCollections.DataEditor
         internal DirectoryVisitor CreateFolder(string folderName)
         {
             AssetDatabase.CreateFolder(GetPathWithoutSplitChar(), folderName);
-            Debug.Log($"Create Folder:{GetPathWithoutSplitChar()} , {folderName}");
+            //Debug.Log($"Create Folder:{GetPathWithoutSplitChar()} , {folderName}");
 
             return this;
         }

@@ -12,7 +12,8 @@ using System.Reflection;
 public static class OnionDataEditor
 {
     const string AssetsPath = "Assets/OnionDataEditor";
-    const string ResourcePath = "Assets/OnionDataEditor/Resources";
+    const string ResourceRootPath = "Assets/Resources";
+    const string ResourcePath = "OnionDataEditor";
 
     //改成 UPM 後要針對不同的匯入方式處理路徑
     public static string path
@@ -60,23 +61,23 @@ public static class OnionDataEditor
     static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject
     {
 
-        string _path = $"{ResourcePath}/{assetName}.asset";
+        string _path = $"{ResourceRootPath}/{ResourcePath}/{assetName}.asset";
 
         var result = Resources.Load<T>(assetName);
 
         if (result == null)
         {
             DirectoryVisitor n = new DirectoryVisitor("Assets/")
-                .CreateFolderIfNotExist("OnionDataEditor")
-                .Enter("OnionDataEditor")
                 .CreateFolderIfNotExist("Resources")
-                .Enter("Resources");
-            
-            var bookmarkGroupIns = ScriptableObject.CreateInstance<T>();
-            Debug.Log($"Auto create asset : {ResourcePath}/{assetName}.asset");
+                .Enter("Resources")
+                .CreateFolderIfNotExist("OnionDataEditor")
+                .Enter("OnionDataEditor");
 
-            AssetDatabase.CreateAsset(bookmarkGroupIns, $"{ResourcePath}/{assetName}.asset");
-            result = Resources.Load<T>(assetName);
+            var bookmarkGroupIns = ScriptableObject.CreateInstance<T>();
+            Debug.Log($"Auto create asset : {ResourceRootPath}/{ResourcePath}/{assetName}.asset");
+
+            AssetDatabase.CreateAsset(bookmarkGroupIns, $"{ResourceRootPath}/{ResourcePath}/{assetName}.asset");
+            result = Resources.Load<T>($"{ResourcePath}/{assetName}");
         }
         return result;
     }
