@@ -18,23 +18,25 @@ namespace OnionCollections.DataEditor.Editor
         [NodeIcon]
         Texture2D icon => OnionDataEditorWindow.GetIconTexture("Bookmark_Fill");
         
+        
         [HideInInspector]
-        public int[] bookmarkGUIDs = new int[0];
+        public string[] bookmarkPaths = new string[0];
+
         
         public override string GetID() => nodeName;
 
 
         public void AddBookmark(Object bookmark)
         {
-            int v = bookmark.GetInstanceID();
-            if (bookmarkGUIDs.Contains(v) == false)
+            string v = AssetDatabase.GetAssetPath(bookmark);
+            if (bookmarkPaths.Contains(v) == false)
             {
                 SerializedObject serializedObject = new SerializedObject(this);
-                SerializedProperty data = serializedObject.FindProperty("bookmarkGUIDs");
+                SerializedProperty data = serializedObject.FindProperty("bookmarkPaths");
 
                 int arraySize = data.arraySize;
                 data.InsertArrayElementAtIndex(arraySize);
-                data.GetArrayElementAtIndex(arraySize).intValue = v;
+                data.GetArrayElementAtIndex(arraySize).stringValue = v;
 
                 serializedObject.ApplyModifiedProperties();
                 EditorUtility.SetDirty(this);
@@ -44,16 +46,15 @@ namespace OnionCollections.DataEditor.Editor
 
         public void RemoveBookmark(Object bookmark)
         {
-
-            int v = bookmark.GetInstanceID();
-            if (bookmarkGUIDs.Contains(v) == true)
+            string v = AssetDatabase.GetAssetPath(bookmark);
+            if (bookmarkPaths.Contains(v) == true)
             {
                 SerializedObject serializedObject = new SerializedObject(this);
-                SerializedProperty data = serializedObject.FindProperty("bookmarkGUIDs");
+                SerializedProperty data = serializedObject.FindProperty("bookmarkPaths");
 
-                var removedList = bookmarkGUIDs.ToList();
+                var removedList = bookmarkPaths.ToList();
                 removedList.Remove(v);
-                bookmarkGUIDs = removedList.ToArray();
+                bookmarkPaths = removedList.ToArray();
 
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
@@ -62,7 +63,8 @@ namespace OnionCollections.DataEditor.Editor
 
         public bool IsAddedInBookmark(Object target)
         {
-            return OnionDataEditor.bookmarkGroup.bookmarkGUIDs.Contains(target.GetInstanceID());
+            string v = AssetDatabase.GetAssetPath(target);
+            return bookmarkPaths.Contains(v) == true;
         }
 
         public IEnumerator<TreeNode> GetEnumerator()
@@ -82,10 +84,10 @@ namespace OnionCollections.DataEditor.Editor
         {
             get
             {
-                return bookmarkGUIDs
-                    .Select(id =>
+                return bookmarkPaths
+                    .Select(path =>
                     {
-                        var obj = EditorUtility.InstanceIDToObject(id);
+                        Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
                         TreeNode node = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
                         {
                             onDoubleClickAction = new OnionAction(() =>
@@ -111,20 +113,34 @@ namespace OnionCollections.DataEditor.Editor
 
         private void OnEnable()
         {
-            var bookmarkGUIDs = (target as OnionBookmarkGroup).bookmarkGUIDs;
+            var bookmarkPaths = (target as OnionBookmarkGroup).bookmarkPaths;
 
 
             SerializedObject so = new SerializedObject(target);
             bookmarkList = new OnionReorderableList(
-                //so.FindProperty("data"),
-                so.FindProperty("bookmarkGUIDs"),
+                so.FindProperty("bookmarkPaths"),
                 (target as IQueryableData).GetID(),
-                (r, sp, inx) => 
+                (r, sp, inx) =>
                 {
-                    var o = EditorUtility.InstanceIDToObject(bookmarkGUIDs[inx]);
-                    if (o != null)
+
+                    Object obj = AssetDatabase.LoadAssetAtPath<Object>(bookmarkPaths[inx]);
+
+                    const float objWidth = 150;
+                    const float spaceWidth = 10;
+
+                    Rect objRect = r;
+                    objRect.width = objWidth;
+
+                    Rect pathRect = r;
+                    pathRect.x += objWidth + spaceWidth;
+                    pathRect.width -= objWidth + spaceWidth;
+
+                    EditorGUI.ObjectField(objRect, obj, typeof(Object), true);
+                    bookmarkPaths[inx] = GUI.TextField(pathRect, bookmarkPaths[inx]);
+
+                    if (obj == null)
                     {
-                        EditorGUI.ObjectField(r, o, typeof(Object), true);
+                        //IS NULL
                     }
                 });
             bookmarkList.Editable = false;
