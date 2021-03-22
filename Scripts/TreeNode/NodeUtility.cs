@@ -38,7 +38,7 @@ namespace OnionCollections.DataEditor.Editor
                 return rootNode.GetChildren().ToList();
 
             if (rootNode.isNull == true)
-                return null;
+                return new List<TreeNode>();
             
             List<TreeNode> nodeList = new List<TreeNode>();
 
