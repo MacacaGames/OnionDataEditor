@@ -8,6 +8,7 @@ using UnityEditor;
 using System;
 using System.Linq;
 using System.Reflection;
+using System.IO;
 
 using Object = UnityEngine.Object;
 
@@ -282,6 +283,13 @@ namespace OnionCollections.DataEditor.Editor
             return defaultValue;
         }
 
+        readonly static Dictionary<string, string> extensionIconQuery = new Dictionary<string, string>
+        {
+            [".cs"] = "cs Script Icon",
+            [".prefab"] = "Prefab Icon",
+            [".assembly"] = "AssemblyDefinitionAsset Icon",
+        };
+
         internal static string GetNodeTitle(this Object dataObj)
         {
             var result = TryGetNodeAttrValue<string>(dataObj, typeof(NodeTitleAttribute));
@@ -294,13 +302,57 @@ namespace OnionCollections.DataEditor.Editor
         }
         internal static Texture GetNodeIcon(this Object dataObj)
         {
-            var result = TryGetNodeAttrValue<Texture>(dataObj, typeof(NodeIconAttribute));
-            if (result == null)
+            //Try get texture
+            var textureResult = TryGetNodeAttrValue<Texture>(dataObj, typeof(NodeIconAttribute));
+            if (textureResult != null)
             {
-                var s = TryGetNodeAttrValue<Sprite>(dataObj, typeof(NodeIconAttribute));
-                if (s) result = s.texture;
+                return textureResult;
             }
-            return result;
+
+            //Try get sprite
+            var spriteResult = TryGetNodeAttrValue<Sprite>(dataObj, typeof(NodeIconAttribute));
+            if (spriteResult != null)
+            {
+                return spriteResult.texture;
+            }
+
+            //Custom extension
+            if (AssetDatabase.IsMainAsset(dataObj))
+            {
+                string path = AssetDatabase.GetAssetPath(dataObj);
+                string extension = Path.GetExtension(path);
+
+                //Is folder?
+                if (string.IsNullOrEmpty(extension))
+                {
+                    bool isDarkTheme = EditorGUIUtility.isProSkin;
+                    return EditorGUIUtility.IconContent((isDarkTheme ? "d_" : "") + "Folder Icon").image;
+                }
+                else if(extensionIconQuery.TryGetValue(extension, out string iconName))
+                {
+                    bool isDarkTheme = EditorGUIUtility.isProSkin;
+                    return EditorGUIUtility.IconContent((isDarkTheme ? "d_" : "") + iconName).image;
+                }
+            }
+
+            //Use object default icon
+            var defaultResult = EditorGUIUtility.ObjectContent(null, dataObj.GetType()).image;
+
+            if(defaultResult.name == "d_DefaultAsset Icon" || defaultResult.name == "DefaultAsset Icon")
+            {
+                return null;
+            }
+            else
+            {
+                return defaultResult;
+            }
+
+
+
+
+
+
+
         }
         internal static Color GetNodeTagColor(this Object dataObj)
         {

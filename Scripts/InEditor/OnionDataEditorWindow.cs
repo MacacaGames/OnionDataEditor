@@ -95,7 +95,6 @@ namespace OnionCollections.DataEditor.Editor
             cloneTree.style.flexGrow = 1;
             root.Add(cloneTree);
 
-            CreateNeededAsset();
 
             //Tab
 
@@ -224,14 +223,6 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     Debug.Log("Opened target is null.");
                 }
-            }
-
-            void CreateNeededAsset()
-            {
-                //bookmark folder
-                if (AssetDatabase.IsValidFolder($"{path}/Bookmark") == false)
-                    AssetDatabase.CreateFolder(path, "Bookmark");
-
             }
 
             //

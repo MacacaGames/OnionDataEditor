@@ -5,6 +5,10 @@ using System;
 using System.Linq;
 using OnionCollections.DataEditor;
 
+#if (UNITY_EDITOR)
+using UnityEditor;
+#endif
+
 #if(ODIN_INSPECTOR)
 using Sirenix.OdinInspector;
 #endif
@@ -56,6 +60,10 @@ public class DataGroup : QueryableData, IEnumerable<IQueryableData>
 
     [NodeDescription]
     string nodeDescription => description;
+
+    [NodeIcon]
+    Texture icon => EditorGUIUtility.IconContent("d_Folder Icon").image;
+
 
 #endif
 
