@@ -80,7 +80,7 @@ namespace OnionCollections.DataEditor.Editor
         }
 
         [NodeCustomElement]
-        IEnumerable< TreeNode> nodes
+        IEnumerable<TreeNode> nodes
         {
             get
             {

@@ -27,19 +27,34 @@ namespace OnionCollections.DataEditor.Editor
 
         public IEnumerator<TreeNode> GetEnumerator()
         {
+            yield return bookmarksNode;
             yield return userTagsNode;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            yield return userTagsNode;
+            yield return GetEnumerator();
         }
+        
+        [NodeCustomElement]
+        IEnumerable<TreeNode> nodes => this.ToArray();
+
+        //Bookmark
+
+        TreeNode bookmarksNode
+        {
+            get
+            {
+                return new TreeNode(OnionDataEditor.bookmarkGroup);
+            }
+        }
+
+        //UserTag
 
         public string[] userTags = new string[0];
 
         OnionReorderableList userTagsList;
         TreeNode _userTagsNode;
-        [NodeCustomElement]
         TreeNode userTagsNode
         {
             get
@@ -50,6 +65,7 @@ namespace OnionCollections.DataEditor.Editor
                     _userTagsNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
                     {
                         displayName = propertyTitle,
+                        icon = EditorGUIUtility.IconContent("FilterByLabel").image,
                         onInspectorAction = new OnionAction(() =>
                         {
                             if (userTagsList == null)
@@ -66,8 +82,6 @@ namespace OnionCollections.DataEditor.Editor
                 return _userTagsNode;
             }
         }
-
-        
 
     }
 

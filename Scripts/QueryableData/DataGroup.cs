@@ -20,7 +20,7 @@ public class DataGroup : QueryableData, IEnumerable<IQueryableData>
     [SerializeField]
     string title;
 
-    [Multiline(3)]
+    //[Multiline(3)]
     [SerializeField]
     string description;
 
