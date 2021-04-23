@@ -68,7 +68,7 @@ namespace OnionCollections.DataEditor.Editor
             var window = GetWindow<OnionDataEditorWindow>();
 
             if (node?.dataObj == null)
-                window.SetTarget(OnionDataEditor.bookmarkGroup as Object);  //沒有東西的話就指定bookmarkGroup
+                window.SetTarget(OnionDataEditor.bookmarks);    //沒有東西的話就指定bookmarks
             else
                 window.SetTarget(node);
 
@@ -79,11 +79,11 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
-            //沒有東西的話就指定bookmarkGroup
+            
             if (data == null)
-                data = OnionDataEditor.bookmarkGroup;
-
-            window.SetTarget(data);     
+                window.SetTarget(OnionDataEditor.bookmarks);    //沒有東西的話就指定bookmarkGroup
+            else
+                window.SetTarget(data);
 
             return window;
         }
@@ -210,7 +210,7 @@ namespace OnionCollections.DataEditor.Editor
 
             void ChangeTabToBookmark()
             {
-                SetTarget((Object)OnionDataEditor.bookmarkGroup);
+                SetTarget(OnionDataEditor.bookmarks);
                 SwitchTab(Tab.Bookmark);
             }
 
@@ -243,14 +243,14 @@ namespace OnionCollections.DataEditor.Editor
             void OnToggleBookmark()
             {
                 int index = -1;
-                if (BookmarkObjectValid(target))
+                if (BookmarkObjectValid(treeRoot))
                 {
-                    if (OnionDataEditor.bookmarkGroup.IsAddedInBookmark(target) == true)
+                    if (OnionDataEditor.setting.IsAddedInBookmark(target) == true)
                         OnRemoveBookmark();
                     else
                         OnAddBookmark();
 
-                    FreshBookmarkView(target);
+                    FreshBookmarkView(treeRoot);
                 }
                 else
                 {
@@ -259,18 +259,18 @@ namespace OnionCollections.DataEditor.Editor
 
                 void OnRemoveBookmark()
                 {
-                    OnionDataEditor.bookmarkGroup.RemoveBookmark(target);
+                    OnionDataEditor.setting.RemoveBookmark(target);
                 }
 
                 void OnAddBookmark()
                 {
-                    if (BookmarkObjectValid(target) == false)
+                    if (BookmarkObjectValid(treeRoot) == false)
                     {
                         Debug.Log("Can not add this object in bookmark.");
                         return;
                     }
 
-                    OnionDataEditor.bookmarkGroup.AddBookmark(target);
+                    OnionDataEditor.setting.AddBookmark(target);
                 }
 
             }
@@ -328,30 +328,31 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
-        void FreshBookmarkView(Object newTarget)
+        void FreshBookmarkView(TreeNode node)
         {
             SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark");
 
             VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
 
-            bool isShow = BookmarkObjectValid(newTarget);
+            bool isShow = BookmarkObjectValid(node);
 
             viewElement.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
 
             if (isShow)
             {
-                if (OnionDataEditor.bookmarkGroup.IsAddedInBookmark(newTarget) == true)
+                if (OnionDataEditor.setting.IsAddedInBookmark(node.dataObj) == true)
                 {
                     SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark_Fill");
                 }
             }
         }
 
-        bool BookmarkObjectValid(Object target)
+        bool BookmarkObjectValid(TreeNode node)
         {
             bool result = 
                 target != null &&
-                IsSystemTarget(target) == false &&    //非系統Object
+                IsSystemTarget(node) == false &&    //非系統Object
+                node.isPseudo == false &&
                 ((target is GameObject && AssetDatabase.IsMainAsset(target)) || AssetDatabase.IsNativeAsset(target) == true);   //Prefab 或 ScriptableObject
 
             return result;
@@ -406,16 +407,13 @@ namespace OnionCollections.DataEditor.Editor
                 treeView.SetSelection(new List<int> { rootId });
                 treeView.SetExpanded(rootId, true);
 
-                if (newNode.dataObj != null)
-                {
-                    FreshBookmarkView(newNode.dataObj);
-                }
-
-                if (newNode.dataObj == OnionDataEditor.bookmarkGroup)
+                FreshBookmarkView(treeRoot);
+                
+                if (OnionDataEditor.IsBookmark(newNode))
                 {
                     SwitchTab(Tab.Bookmark);
                 }
-                else if (newNode.dataObj == OnionDataEditor.setting)
+                else if (OnionDataEditor.IsSetting(newNode))
                 {
                     SwitchTab(Tab.Setting);
                 }
@@ -461,11 +459,12 @@ namespace OnionCollections.DataEditor.Editor
             root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
         }
         
-        bool IsSystemTarget(Object compareTarget)
+        bool IsSystemTarget(TreeNode node)
         {
-            return 
-                compareTarget == OnionDataEditor.bookmarkGroup ||
-                compareTarget == OnionDataEditor.setting;
+            return
+                OnionDataEditor.IsBookmark(node) ||
+                OnionDataEditor.IsSetting(node);
+
         }
 
         static void SetIcon(VisualElement el, string iconName)

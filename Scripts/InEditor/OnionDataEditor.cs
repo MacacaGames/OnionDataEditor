@@ -8,6 +8,7 @@ using UnityEditor;
 using OnionCollections.DataEditor;
 using OnionCollections.DataEditor.Editor;
 using System.Reflection;
+using System.Linq;
 
 public static class OnionDataEditor
 {
@@ -43,19 +44,23 @@ public static class OnionDataEditor
         }
     }
 
-    static OnionBookmarkGroup _bookmarkGroup;
-    internal static OnionBookmarkGroup bookmarkGroup
+    internal static bool IsSetting(TreeNode node)
     {
-        get
-        {
-            string assetName = "BookmarkGroup";
-
-            if (_bookmarkGroup == null)
-                _bookmarkGroup = AutoCreateLoad<OnionBookmarkGroup>(assetName);
-
-            return _bookmarkGroup;
-        }
+        return node.isPseudo == false && node.dataObj == setting;
     }
+
+
+    internal static TreeNode bookmarks => setting.BookmarksNode;
+
+    internal static bool IsBookmark(TreeNode node)
+    {
+        return node.tags.Contains("Bookmarks");
+    }
+
+
+
+
+
 
 
     static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject

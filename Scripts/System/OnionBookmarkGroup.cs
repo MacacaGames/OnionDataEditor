@@ -26,46 +26,46 @@ namespace OnionCollections.DataEditor.Editor
         public override string GetID() => nodeName;
 
 
-        public void AddBookmark(Object bookmark)
-        {
-            string v = AssetDatabase.GetAssetPath(bookmark);
-            if (bookmarkPaths.Contains(v) == false)
-            {
-                SerializedObject serializedObject = new SerializedObject(this);
-                SerializedProperty data = serializedObject.FindProperty("bookmarkPaths");
+        //public void AddBookmark(Object bookmark)
+        //{
+        //    string v = AssetDatabase.GetAssetPath(bookmark);
+        //    if (bookmarkPaths.Contains(v) == false)
+        //    {
+        //        SerializedObject serializedObject = new SerializedObject(this);
+        //        SerializedProperty data = serializedObject.FindProperty("bookmarkPaths");
 
-                int arraySize = data.arraySize;
-                data.InsertArrayElementAtIndex(arraySize);
-                data.GetArrayElementAtIndex(arraySize).stringValue = v;
+        //        int arraySize = data.arraySize;
+        //        data.InsertArrayElementAtIndex(arraySize);
+        //        data.GetArrayElementAtIndex(arraySize).stringValue = v;
 
-                serializedObject.ApplyModifiedProperties();
-                EditorUtility.SetDirty(this);
-                AssetDatabase.SaveAssets();
-            }
-        }
+        //        serializedObject.ApplyModifiedProperties();
+        //        EditorUtility.SetDirty(this);
+        //        AssetDatabase.SaveAssets();
+        //    }
+        //}
 
-        public void RemoveBookmark(Object bookmark)
-        {
-            string v = AssetDatabase.GetAssetPath(bookmark);
-            if (bookmarkPaths.Contains(v) == true)
-            {
-                SerializedObject serializedObject = new SerializedObject(this);
-                SerializedProperty data = serializedObject.FindProperty("bookmarkPaths");
+        //public void RemoveBookmark(Object bookmark)
+        //{
+        //    string v = AssetDatabase.GetAssetPath(bookmark);
+        //    if (bookmarkPaths.Contains(v) == true)
+        //    {
+        //        SerializedObject serializedObject = new SerializedObject(this);
+        //        SerializedProperty data = serializedObject.FindProperty("bookmarkPaths");
 
-                var removedList = bookmarkPaths.ToList();
-                removedList.Remove(v);
-                bookmarkPaths = removedList.ToArray();
+        //        var removedList = bookmarkPaths.ToList();
+        //        removedList.Remove(v);
+        //        bookmarkPaths = removedList.ToArray();
 
-                EditorUtility.SetDirty(this);
-                AssetDatabase.SaveAssets();
-            }
-        }
+        //        EditorUtility.SetDirty(this);
+        //        AssetDatabase.SaveAssets();
+        //    }
+        //}
 
-        public bool IsAddedInBookmark(Object target)
-        {
-            string v = AssetDatabase.GetAssetPath(target);
-            return bookmarkPaths.Contains(v) == true;
-        }
+        //public bool IsAddedInBookmark(Object target)
+        //{
+        //    string v = AssetDatabase.GetAssetPath(target);
+        //    return bookmarkPaths.Contains(v) == true;
+        //}
 
         public IEnumerator<TreeNode> GetEnumerator()
         {

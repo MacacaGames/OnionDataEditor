@@ -41,6 +41,8 @@ namespace OnionCollections.DataEditor
         /// <summary>Display color tag of this node. Color will not display if value is null.</summary>
         internal Color nodeTagColor = new Color(0, 0, 0, 0);
 
+        internal string[] tags = new string[0];
+
         /// <summary>Action will be executed when node be selected.</summary>
         public OnionAction onSelectedAction;
         /// <summary>Action will be executed when node be double clicked.</summary>
