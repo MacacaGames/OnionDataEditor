@@ -49,26 +49,28 @@ namespace OnionCollections.DataEditor.Editor
         {
             get
             {
-                const string bookmarkTitle = "Bookmark";
+                const string bookmarkTitle = "Bookmarks";
 
-                SerializedObject so = new SerializedObject(this);
-                bookmarkList = new OnionReorderableList(so.FindProperty("bookmarkPaths"), bookmarkTitle, inspectGUI)
+                if (bookmarkList == null)
                 {
-                    Editable = false
-                };
+                    bookmarkList = new OnionReorderableList(
+                        new SerializedObject(this).FindProperty("bookmarkPaths"),
+                        bookmarkTitle,
+                        inspectGUI)
+                    {
+                        Editable = false
+                    };
+                }
+
 
                 var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
                 {
                     displayName = bookmarkTitle,
                     icon = OnionDataEditorWindow.GetIconTexture("Bookmark_Fill"),
-                    onInspectorAction = new OnionAction(() =>
-                    {
-                        bookmarkList.OnInspectorGUI();
-                    }),
+                    onInspectorAction = new OnionAction(() => bookmarkList.OnInspectorGUI()),
                     tags = new[] { "Bookmarks" },
                 };
-
-
+                
 
                 var bookmarkNodes = bookmarkPaths.Select(path =>
                 {
@@ -90,9 +92,10 @@ namespace OnionCollections.DataEditor.Editor
 
                 return node;
 
+
                 void inspectGUI(Rect r, SerializedProperty sp, int inx)
                 {
-                    UnityEngine.Object obj = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(bookmarkPaths[inx]);
+                    Object obj = AssetDatabase.LoadAssetAtPath<Object>(bookmarkPaths[inx]);
 
                     const float objWidth = 150;
                     const float spaceWidth = 10;
@@ -165,33 +168,29 @@ namespace OnionCollections.DataEditor.Editor
         public string[] userTags = new string[0];
 
         OnionReorderableList userTagsList;
-        TreeNode _userTagsNode;
         public TreeNode UserTagsNode
         {
             get
             {
-                if (_userTagsNode == null)
-                {
-                    const string propertyTitle = "User Tags";
-                    _userTagsNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
-                    {
-                        displayName = propertyTitle,
-                        icon = EditorGUIUtility.IconContent("FilterByLabel").image,
-                        onInspectorAction = new OnionAction(() =>
-                        {
-                            if (userTagsList == null)
-                            {
-                                userTagsList = new OnionReorderableList(
-                                    new SerializedObject(this).FindProperty("userTags"),
-                                    propertyTitle);
-                            }
+                const string propertyTitle = "User Tags";
 
-                            userTagsList.OnInspectorGUI();
-                        }),
-                        tags = new[] { "UserTags" },
-                    };
+                if (userTagsList == null)
+                {
+                    userTagsList = new OnionReorderableList(
+                        new SerializedObject(this).FindProperty("userTags"),
+                        propertyTitle);
                 }
-                return _userTagsNode;
+
+                var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                {
+                    displayName = propertyTitle,
+                    icon = EditorGUIUtility.IconContent("FilterByLabel").image,
+                    onInspectorAction = new OnionAction(() => userTagsList.OnInspectorGUI()),
+                    tags = new[] { "UserTags" },
+                };
+
+
+                return node;
             }
         }
         
