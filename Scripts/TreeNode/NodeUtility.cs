@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using System.IO;
+using UnityEditor.IMGUI.Controls;
 
 using Object = UnityEngine.Object;
 
@@ -162,6 +163,24 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
+        internal static void CreateTreeView(this TreeNode node, out DataObjTreeView treeView)
+        {
+            if (node == null)
+            {
+                treeView = null;
+                return;
+            }
+
+            node.GetElementTree();
+
+            var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
+
+            if (window.treeViewState == null)
+                treeView = new DataObjTreeView(node, new TreeViewState());
+            else
+                treeView = new DataObjTreeView(node, window.treeViewState);
+
+        }
 
         /// <summary>
         /// Auto create nodes tree under the target node.

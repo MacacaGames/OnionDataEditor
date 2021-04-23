@@ -17,17 +17,10 @@ namespace OnionCollections.DataEditor.Editor
     {
         static string path => OnionDataEditor.path;
 
-        Object _target;
-        Object target
-        {
-            get => _target;
-            set
-            {
-                OnTargetChange(value);
+        Object target => treeRoot?.dataObj;
 
-                _target = value;
-            }
-        }
+
+        TreeNode targetNode;
 
         TreeNode _selectedNode;
         TreeNode selectedNode
@@ -50,11 +43,13 @@ namespace OnionCollections.DataEditor.Editor
             Recent = 4,
         }
         Tab currentTab = Tab.None;
-        Object openedTarget;
+
+        TreeNode recentNode;
 
         public TreeViewState treeViewState;
+        DataObjTreeView treeView;
 
-        TreeRoot treeRoot;
+        TreeNode treeRoot;
         IMGUIContainer treeViewContainer;
 
 
@@ -63,10 +58,23 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
-            ShowWindow(window.openedTarget);    //預設開null，使其打開bookmarkGroup；有target的話就開target
+            ShowWindow(window.treeRoot);    //預設開null，使其打開bookmarkGroup；有target的話就開target
 
             return window;
         }
+
+        public static OnionDataEditorWindow ShowWindow(TreeNode node)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            if (node?.dataObj == null)
+                window.SetTarget(OnionDataEditor.bookmarkGroup as Object);  //沒有東西的話就指定bookmarkGroup
+            else
+                window.SetTarget(node);
+
+            return window;
+        }
+
         public static OnionDataEditorWindow ShowWindow(Object data)
         {
             var window = GetWindow<OnionDataEditorWindow>();
@@ -191,9 +199,9 @@ namespace OnionCollections.DataEditor.Editor
 
                 void DrawTreeView()
                 {
-                    if (treeRoot != null && target != null)
+                    if (treeRoot != null)
                     {
-                        treeRoot.treeView.OnGUI(treeViewContainer.layout);
+                        treeView.OnGUI(treeViewContainer.layout);
                     }
                 }
             }
@@ -214,14 +222,14 @@ namespace OnionCollections.DataEditor.Editor
 
             void ChangeTabToOpened()
             {
-                if (openedTarget != null)
+                if (recentNode != null)
                 {
-                    SetTarget(openedTarget);
+                    SetTarget(recentNode);
                     SwitchTab(Tab.Opened);
                 }
                 else
                 {
-                    Debug.Log("Opened target is null.");
+                    Debug.Log("Opened root is null.");
                 }
             }
 
@@ -229,7 +237,7 @@ namespace OnionCollections.DataEditor.Editor
             
             void OnFresh()
             {
-                OnTargetChange(target);
+                OnTargetChange(treeRoot);
             }
 
             void OnToggleBookmark()
@@ -316,7 +324,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
             //Opened 依照openedTarget來顯示
-            rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (openedTarget != null) ? DisplayStyle.Flex : DisplayStyle.None;
+            rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (recentNode != null) ? DisplayStyle.Flex : DisplayStyle.None;
 
         }
 
@@ -341,7 +349,9 @@ namespace OnionCollections.DataEditor.Editor
 
         bool BookmarkObjectValid(Object target)
         {
-            bool result = IsSystemTarget(target) == false &&    //非系統Object
+            bool result = 
+                target != null &&
+                IsSystemTarget(target) == false &&    //非系統Object
                 ((target is GameObject && AssetDatabase.IsMainAsset(target)) || AssetDatabase.IsNativeAsset(target) == true);   //Prefab 或 ScriptableObject
 
             return result;
@@ -351,63 +361,73 @@ namespace OnionCollections.DataEditor.Editor
         {
             if (treeRoot != null)
             {
-                treeRoot.CreateTreeView();
+                treeRoot.CreateTreeView(out treeView);
                 if (treeViewState == null)
-                    treeViewState = treeRoot.treeView.state;
+                    treeViewState = treeView.state;
             }
         }
 
         public void SetTarget(IQueryableData newTarget)
         {
-            SetTarget(newTarget as Object);
-
+            targetNode = new TreeNode(newTarget as Object);
+            OnTargetChange(targetNode);
         }
         public void SetTarget(Object newTarget)
         {
-            target = newTarget;
+            targetNode = new TreeNode(newTarget);
+            OnTargetChange(targetNode);
+        }
+        public void SetTarget(TreeNode newTarget)
+        {
+            targetNode = newTarget;
+            OnTargetChange(targetNode);
         }
                
-        void OnTargetChange(Object newTarget)
+        void OnTargetChange(TreeNode newNode)
         {
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
-            containerRoot.visible = (newTarget != null);
+            containerRoot.visible = (newNode != null);
 
 
-            if(newTarget == OnionDataEditor.bookmarkGroup)
+
+            if (newNode != null)
             {
-                SwitchTab(Tab.Bookmark);
-            }
-            else if(newTarget == OnionDataEditor.setting)
-            {
-                SwitchTab(Tab.Setting);
-            }
-            else
-            {
-                openedTarget = newTarget;
-                SwitchTab(Tab.Opened);
-            }
+                treeRoot = newNode;
+                treeRoot.CreateTreeView(out treeView);
 
-
-            if (newTarget != null)
-            {
-                treeRoot = new TreeRoot(newTarget);
-                treeRoot.CreateTreeView();
-
-                if(treeViewState == null)
-                    treeViewState = treeRoot.treeView.state;
+                if (treeViewState == null)
+                    treeViewState = treeView.state;
 
                 //選擇Root
                 selectedNode = treeRoot;
 
                 //選擇Root並展開
-                int rootId = treeRoot.treeView.GetRows()[0].id;
-                treeRoot.treeView.SetSelection(new List<int> { rootId });
-                treeRoot.treeView.SetExpanded(rootId, true);
+                int rootId = treeView.GetRows()[0].id;
+                treeView.SetSelection(new List<int> { rootId });
+                treeView.SetExpanded(rootId, true);
 
-                FreshBookmarkView(newTarget);
+                if (newNode.dataObj != null)
+                {
+                    FreshBookmarkView(newNode.dataObj);
+                }
 
+                if (newNode.dataObj == OnionDataEditor.bookmarkGroup)
+                {
+                    SwitchTab(Tab.Bookmark);
+                }
+                else if (newNode.dataObj == OnionDataEditor.setting)
+                {
+                    SwitchTab(Tab.Setting);
+                }
+                else
+                {
+                    recentNode = treeRoot;
+                    SwitchTab(Tab.Opened);
+                }
             }
         }
+
+
 
         void OnSelectedNodeChange(TreeNode newNode)
         {
@@ -541,24 +561,24 @@ namespace OnionCollections.DataEditor.Editor
         {
             selectedNode = node;
 
-            int selectionId = treeRoot.treeView.GetSelection()[0];
-            OnionAction onSelectedAction = treeRoot.treeView.treeQuery[selectionId].onSelectedAction;
+            int selectionId = treeView.GetSelection()[0];
+            OnionAction onSelectedAction = treeView.treeQuery[selectionId].onSelectedAction;
             if (onSelectedAction != null)
                 onSelectedAction.action.Invoke();
 
         }
         public void OnDoubleClickItem(TreeNode node)
         {
-            int selectionId = treeRoot.treeView.GetSelection()[0];
+            int selectionId = treeView.GetSelection()[0];
 
-            OnionAction onDoubleClickAction = treeRoot.treeView.treeQuery[selectionId].onDoubleClickAction;
+            OnionAction onDoubleClickAction = treeView.treeQuery[selectionId].onDoubleClickAction;
             if (onDoubleClickAction != null)
             {
                 onDoubleClickAction.action.Invoke();
             }
             else
             {
-                var selectionObject = treeRoot.treeView.treeQuery[selectionId].dataObj;
+                var selectionObject = treeView.treeQuery[selectionId].dataObj;
                 EditorGUIUtility.PingObject(selectionObject);   //Ping
             }
         }

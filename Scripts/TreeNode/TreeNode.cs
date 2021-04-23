@@ -10,38 +10,6 @@ using OnionCollections.DataEditor.Editor;
 
 namespace OnionCollections.DataEditor
 {
-    public class TreeRoot : TreeNode
-    {
-        internal DataObjTreeView treeView;
-
-        public TreeRoot(Object _) : base(_)
-        {
-            dataObj = _;
-            displayName = GetTitle();
-        }
-
-        /// <summary>Use this root to create tree view.</summary>
-        public void CreateTreeView()
-        {
-            CreatTree(this);
-
-            var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
-
-            if (window.treeViewState == null)
-                treeView = new DataObjTreeView(this, new TreeViewState());
-            else
-                treeView = new DataObjTreeView(this, window.treeViewState);
-            
-        }
-
-        void CreatTree(TreeNode node)
-        {
-            if (node == null) return;
-
-            node.GetElementTree();
-        }
-    }
-
     public class TreeNode: IEnumerable<TreeNode>
     {
         /// <summary>Target object of this node.</summary>
@@ -277,8 +245,7 @@ namespace OnionCollections.DataEditor
             Color c = dataObj.GetNodeTagColor();
             return c;
         }
-        
-      
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             foreach (var child in children)
