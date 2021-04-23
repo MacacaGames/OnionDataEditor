@@ -58,10 +58,7 @@ namespace OnionCollections.DataEditor.Editor
                     bookmarkList = new OnionReorderableList(
                         new SerializedObject(this).FindProperty("bookmarkPaths"),
                         bookmarkTitle,
-                        inspectGUI)
-                        {
-                            Editable = false
-                        };
+                        inspectGUI);
                 }
 
 
@@ -109,7 +106,15 @@ namespace OnionCollections.DataEditor.Editor
                     pathRect.x += objWidth + spaceWidth;
                     pathRect.width -= objWidth + spaceWidth;
 
-                    EditorGUI.ObjectField(objRect, obj, typeof(UnityEngine.Object), true);
+                    using (var ch = new EditorGUI.ChangeCheckScope())
+                    {
+                        var o = EditorGUI.ObjectField(objRect, obj, typeof(UnityEngine.Object), true);
+                        if (ch.changed)
+                        {
+                            bookmarkPaths[inx] = AssetDatabase.GetAssetPath(o);
+                        }
+                    }
+                    
                     bookmarkPaths[inx] = GUI.TextField(pathRect, bookmarkPaths[inx]);
 
                     if (obj == null)
