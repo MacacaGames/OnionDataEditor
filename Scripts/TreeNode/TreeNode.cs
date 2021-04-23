@@ -13,94 +13,103 @@ namespace OnionCollections.DataEditor
     public class TreeNode: IEnumerable<TreeNode>
     {
         /// <summary>Target object of this node.</summary>
-        public Object dataObj { get; protected set; }
+        public Object Target { get; protected set; }
+
+
 
         /// <summary>Return true if this node is pseudo.</summary>
-        public bool isPseudo => nodeFlag.HasFlag(NodeFlag.Pseudo);
+        public bool IsPseudo => flag.HasFlag(NodeFlag.Pseudo);
+
         /// <summary>Return true if this node target is null and node is not pseudo.</summary>
-        public bool isNull => !isPseudo && dataObj == null;
+        public bool IsNull => !IsPseudo && Target == null;
+
         /// <summary>Return true if this node hide children nodes.</summary>
-        public bool isHideElementNodes => nodeFlag.HasFlag(NodeFlag.HideElementNodes);
+        public bool IsHideElementNodes => flag.HasFlag(NodeFlag.HideElementNodes);
 
 
-        List<TreeNode> children = new List<TreeNode>();
 
-        internal int childCount => children.Count;
+        readonly List<TreeNode> children = new List<TreeNode>();
+        
+        /// <summary>Length of children.</summary>
+        internal int ChildCount => children.Count;
 
         /// <summary>Return this node's parent node.</summary>
-        public TreeNode parent { get; private set; }
-
+        public TreeNode Parent { get; private set; }
 
         /// <summary>Display name of this node.</summary>
         public string displayName;
+
         /// <summary>Description of this node.</summary>
         public string description;
+
         /// <summary>Display icon of this node.</summary>
         public Texture icon = null;
 
         /// <summary>Display color tag of this node. Color will not display if value is null.</summary>
-        internal Color nodeTagColor = new Color(0, 0, 0, 0);
+        internal Color tagColor = new Color(0, 0, 0, 0);
 
+        /// <summary>Tags use for any custom utilties if you want.</summary>
         internal string[] tags = new string[0];
 
         /// <summary>Action will be executed when node be selected.</summary>
-        public OnionAction onSelectedAction;
+        public OnionAction OnSelectedAction { get; set; }
+
         /// <summary>Action will be executed when node be double clicked.</summary>
-        public OnionAction onDoubleClickAction;
+        public OnionAction OnDoubleClickAction { get; set; }
 
         /// <summary>Actions of this node. Will display as button in data editor.</summary>
-        public IEnumerable<OnionAction> nodeActions;
+        public IEnumerable<OnionAction> NodeActions { get; set; }
 
-        OnionAction _onInspectorAction;
+        OnionAction _OnInspectorAction;
         /// <summary>Inspector action of this node.</summary>
-        public OnionAction onInspectorAction
+        public OnionAction OnInspectorAction
         {
             get
             {
-                if (isPseudo == false && dataObj != null)
+                if (IsPseudo == false && Target != null)
                 {
-                    if (_onInspectorAction == null)
+                    if (_OnInspectorAction == null)
                     {
-                        _onInspectorAction = new OnionAction(editorCache.OnInspectorGUI);
+                        _OnInspectorAction = new OnionAction(EditorCache.OnInspectorGUI);
                     }
                 }
 
-                return _onInspectorAction;                
+                return _OnInspectorAction;                
             }
-            set => _onInspectorAction = value;
+            set => _OnInspectorAction = value;
         }
 
-        VisualElement _onInspectorVisualElementRoot;
+        VisualElement _OnInspectorVisualElementRoot;
         /// <summary>Inspector visual element of this node.</summary>
-        public VisualElement onInspectorVisualElementRoot
+        public VisualElement OnInspectorVisualElementRoot
         {
             get
             {
-                if (isPseudo == false && dataObj != null)
+                if (IsPseudo == false && Target != null)
                 {
-                    if (_onInspectorVisualElementRoot == null)
+                    if (_OnInspectorVisualElementRoot == null)
                     {
-                        _onInspectorVisualElementRoot = editorCache.CreateInspectorGUI();
+                        _OnInspectorVisualElementRoot = EditorCache.CreateInspectorGUI();
                     }
                 }
 
-                return _onInspectorVisualElementRoot;
+                return _OnInspectorVisualElementRoot;
             }
-            set => _onInspectorVisualElementRoot = value;
+            set => _OnInspectorVisualElementRoot = value;
         }
 
-        UnityEditor.Editor _editorCache;
-        UnityEditor.Editor editorCache
+        UnityEditor.Editor _EditorCache;
+        UnityEditor.Editor EditorCache
         {
             get
             {
-                if (dataObj != null)
+                if (Target != null)
                 {
-                    if (_editorCache == null)
+                    if (_EditorCache == null)
                     {
-                        _editorCache = UnityEditor.Editor.CreateEditor(dataObj);
+                        _EditorCache = UnityEditor.Editor.CreateEditor(Target);
                     }
-                    return _editorCache;
+                    return _EditorCache;
                 }
                 else
                 {
@@ -108,6 +117,10 @@ namespace OnionCollections.DataEditor
                 }
             }
         }
+
+
+
+
 
         [System.Flags]
         public enum NodeFlag
@@ -120,23 +133,24 @@ namespace OnionCollections.DataEditor
             /// <summary>If node set this flag, all of children nodes don't show in data editor.</summary>
             HideElementNodes = 1 << 1,
         }
-        internal NodeFlag nodeFlag = NodeFlag.None;
 
-        public TreeNode(Object dataObj, NodeFlag nodeFlag = NodeFlag.None)
+        internal NodeFlag flag = NodeFlag.None;
+
+        public TreeNode(Object dataObj, NodeFlag flag = NodeFlag.None)
         {
-            this.dataObj = dataObj;
-            this.nodeFlag = nodeFlag;
+            this.Target = dataObj;
+            this.flag = flag;
 
-            if (isPseudo == false)
+            if (IsPseudo == false)
                 InitSetting();
         }
 
-        public TreeNode(NodeFlag nodeFlag, Object dataObj = null)
+        public TreeNode(NodeFlag flag, Object dataObj = null)
         {
-            this.dataObj = dataObj;
-            this.nodeFlag = nodeFlag;
+            this.Target = dataObj;
+            this.flag = flag;
             
-            if (isPseudo == false)
+            if (IsPseudo == false)
                 InitSetting();
         }
 
@@ -145,30 +159,33 @@ namespace OnionCollections.DataEditor
             displayName = GetTitle();
             description = GetDescription();
             icon = GetIcon();
-            nodeTagColor = GetColorTag();
+            tagColor = GetColorTag();
 
-            if (dataObj != null)
+            if (Target != null)
             {
-                nodeActions = dataObj.GetNodeActions();
-                onSelectedAction = dataObj.GetNodeOnSelectedAction();
-                onDoubleClickAction = dataObj.GetNodeOnDoubleClickAction();
+                NodeActions = Target.GetTargetActions();
+                OnSelectedAction = Target.GetTargetOnSelectedAction();
+                OnDoubleClickAction = Target.GetTargetOnDoubleClickAction();
             }
 
         }
+
+
+
 
         /// <summary>Add children in this node.</summary>
         public void AddChildren(IEnumerable<TreeNode> children)
         {
             this.children.AddRange(children);
             foreach (var child in children)
-                child.parent = this;
+                child.Parent = this;
         }
 
         /// <summary>Add single child in this node.</summary>
         public void AddSingleChild(TreeNode child)
         {
             this.children.Add(child);
-            child.parent = this;
+            child.Parent = this;
         }
 
         /// <summary>Clear all children.</summary>
@@ -176,6 +193,7 @@ namespace OnionCollections.DataEditor
         {
             children.Clear();
         }
+
         /// <summary>Get all children.</summary>
         public IEnumerable<TreeNode> GetChildren()
         {
@@ -183,15 +201,18 @@ namespace OnionCollections.DataEditor
         }
 
 
-        protected string GetTitle()
+
+
+
+        string GetTitle()
         {
-            if (isPseudo)
+            if (IsPseudo)
                 return displayName;
 
-            if (isNull)
+            if (IsNull)
                 return "NULL";
 
-            string nodeTitle = dataObj.GetNodeTitle();
+            string nodeTitle = Target.GetTargetTitle();
 
             if (string.IsNullOrEmpty(nodeTitle) == false)            
                 return nodeTitle;
@@ -199,54 +220,59 @@ namespace OnionCollections.DataEditor
             if (string.IsNullOrEmpty(displayName) == false)            
                 return displayName;
             
-            return dataObj.name;
+            return Target.name;
 
         }
+
         string GetDescription()
         {
-            if (isPseudo)
+            if (IsPseudo)
                 return "";
 
-            if (isNull)
+            if (IsNull)
                 return "";
 
-            string des = dataObj.GetNodeDescription();
+            string des = Target.GetTargetDescription();
 
             if (string.IsNullOrEmpty(des) == true)
                 return "";
 
             return des;
         }
+
         Texture GetIcon()
         {
-            if (isPseudo)
+            if (IsPseudo)
                 return icon;
 
-            if (isNull)
+            if (IsNull)
                 return EditorGUIUtility.FindTexture("console.erroricon.sml");
 
-            Texture nodeIcon = dataObj.GetNodeIcon();
+            Texture nodeIcon = Target.GetTargetIcon();
 
             if (nodeIcon != null)
                 return nodeIcon;
 
-            if (dataObj is GameObject || dataObj is Component)
-                return EditorGUIUtility.ObjectContent(null, dataObj.GetType()).image;
+            if (Target is GameObject || Target is Component)
+                return EditorGUIUtility.ObjectContent(null, Target.GetType()).image;
             
             return null;
 
         }
+
         Color GetColorTag()
         {
-            if (isPseudo)
-                return nodeTagColor;
+            if (IsPseudo)
+                return tagColor;
 
-            if (isNull)
-                return nodeTagColor;
+            if (IsNull)
+                return tagColor;
 
-            Color c = dataObj.GetNodeTagColor();
+            Color c = Target.GetTargetTagColor();
             return c;
         }
+
+
 
         IEnumerator IEnumerable.GetEnumerator()
         {

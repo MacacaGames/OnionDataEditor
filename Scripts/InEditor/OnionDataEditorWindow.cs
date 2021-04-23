@@ -17,7 +17,7 @@ namespace OnionCollections.DataEditor.Editor
     {
         static string path => OnionDataEditor.path;
 
-        Object target => treeRoot?.dataObj;
+        Object target => treeRoot?.Target;
 
 
         TreeNode targetNode;
@@ -40,17 +40,18 @@ namespace OnionCollections.DataEditor.Editor
             Opened = 1,
             Bookmark = 2,
             Setting = 3,
-            Recent = 4,
         }
         Tab currentTab = Tab.None;
 
-        TreeNode recentNode;
+        /// <summary>與Bookmark、Setting同階層，在選擇Bookmark、Setting時，此Node不會被改變。</summary>
+        TreeNode openedNode;
 
         public TreeViewState treeViewState;
         DataObjTreeView treeView;
-
-        TreeNode treeRoot;
         IMGUIContainer treeViewContainer;
+
+        /// <summary>目前顯示的Root Node，不論Bookmark、Setting，都會變動此Node。</summary>
+        TreeNode treeRoot;
 
 
         [MenuItem("Window/Onion Data Editor &#E")]
@@ -67,8 +68,8 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
-            if (node?.dataObj == null)
-                window.SetTarget(OnionDataEditor.bookmarks);    //沒有東西的話就指定bookmarks
+            if (node?.Target == null)
+                window.SetTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
             else
                 window.SetTarget(node);
 
@@ -78,10 +79,9 @@ namespace OnionCollections.DataEditor.Editor
         public static OnionDataEditorWindow ShowWindow(Object data)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-
             
             if (data == null)
-                window.SetTarget(OnionDataEditor.bookmarks);    //沒有東西的話就指定bookmarkGroup
+                window.SetTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
             else
                 window.SetTarget(data);
 
@@ -133,10 +133,11 @@ namespace OnionCollections.DataEditor.Editor
             root.Q<Button>("btn-info-document").clickable.clicked += OpenDocument;
             SetIcon(root.Q("btn-info-document-icon"), "Help");
 
-            //綁定btn-search-target
-            root.Q<Button>("btn-search-target").clickable.clicked += OnSearchTarget;
-            root.Q("btn-search-target").Add(new IMGUIContainer(OnSearchTargetListener));
-            SetIcon(root.Q("btn-search-target-icon"), "Search");
+
+            ////綁定btn-search-target
+            //root.Q<Button>("btn-search-target").clickable.clicked += OnSearchTarget;
+            //root.Q("btn-search-target").Add(new IMGUIContainer(OnSearchTargetListener));
+            //SetIcon(root.Q("btn-search-target-icon"), "Search");
 
 
             //建構treeview
@@ -169,7 +170,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 var inspectorContainer = new IMGUIContainer(() =>
                 {
-                    selectedNode?.onInspectorAction?.action?.Invoke();
+                    selectedNode?.OnInspectorAction?.action?.Invoke();
                 });
                 inspectorContainer.AddToClassList("inspect-container");
                 inspectorContainer.name = "inspect-container-imgui";
@@ -210,21 +211,21 @@ namespace OnionCollections.DataEditor.Editor
 
             void ChangeTabToBookmark()
             {
-                SetTarget(OnionDataEditor.bookmarks);
+                SetTarget(OnionDataEditor.Bookmarks);
                 SwitchTab(Tab.Bookmark);
             }
 
             void ChangeTabToSetting()
             {
-                SetTarget((Object)OnionDataEditor.setting);
+                SetTarget((Object)OnionDataEditor.Setting);
                 SwitchTab(Tab.Setting);
             }
 
             void ChangeTabToOpened()
             {
-                if (recentNode != null)
+                if (openedNode != null)
                 {
-                    SetTarget(recentNode);
+                    SetTarget(openedNode);
                     SwitchTab(Tab.Opened);
                 }
                 else
@@ -242,13 +243,16 @@ namespace OnionCollections.DataEditor.Editor
 
             void OnToggleBookmark()
             {
-                int index = -1;
-                if (BookmarkObjectValid(treeRoot))
+                if (CanNodeAddToBookmarks(treeRoot))
                 {
-                    if (OnionDataEditor.setting.IsAddedInBookmark(target) == true)
-                        OnRemoveBookmark();
+                    if (OnionDataEditor.Setting.IsAddedInBookmark(target) == true)
+                    {
+                        OnionDataEditor.Setting.RemoveBookmark(target);
+                    }
                     else
-                        OnAddBookmark();
+                    {
+                        OnionDataEditor.Setting.AddBookmark(target);
+                    }
 
                     FreshBookmarkView(treeRoot);
                 }
@@ -257,48 +261,33 @@ namespace OnionCollections.DataEditor.Editor
                     Debug.Log("Can not add this object in bookmark.");
                 }
 
-                void OnRemoveBookmark()
-                {
-                    OnionDataEditor.setting.RemoveBookmark(target);
-                }
-
-                void OnAddBookmark()
-                {
-                    if (BookmarkObjectValid(treeRoot) == false)
-                    {
-                        Debug.Log("Can not add this object in bookmark.");
-                        return;
-                    }
-
-                    OnionDataEditor.setting.AddBookmark(target);
-                }
-
             }
 
             void OpenDocument()
             {
-                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.dataObj));
+                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.Target));
             }
 
-            void OnSearchTarget()
-            {
-                int controlID = rootVisualElement.Q<Button>("btn-search-target").GetHashCode();
-                EditorGUIUtility.ShowObjectPicker<Object>(null, false, "", controlID);
-            }
 
-            void OnSearchTargetListener()
-            {
-                //作為監聽器
-                if (Event.current.commandName == "ObjectSelectorClosed" &&
-                    EditorGUIUtility.GetObjectPickerObject() != null &&
-                    EditorGUIUtility.GetObjectPickerControlID() == rootVisualElement.Q<Button>("btn-search-target").GetHashCode())
-                {
-                    Object selectObj = EditorGUIUtility.GetObjectPickerObject();
+            //void OnSearchTarget()
+            //{
+            //    int controlID = rootVisualElement.Q<Button>("btn-search-target").GetHashCode();
+            //    EditorGUIUtility.ShowObjectPicker<Object>(null, false, "", controlID);
+            //}
 
-                    if (selectObj != null)
-                        SetTarget(selectObj);
-                }
-            }
+            //void OnSearchTargetListener()
+            //{
+            //    //作為監聽器
+            //    if (Event.current.commandName == "ObjectSelectorClosed" &&
+            //        EditorGUIUtility.GetObjectPickerObject() != null &&
+            //        EditorGUIUtility.GetObjectPickerControlID() == rootVisualElement.Q<Button>("btn-search-target").GetHashCode())
+            //    {
+            //        Object selectObj = EditorGUIUtility.GetObjectPickerObject();
+
+            //        if (selectObj != null)
+            //            SetTarget(selectObj);
+            //    }
+            //}
 
         }
 
@@ -311,8 +300,8 @@ namespace OnionCollections.DataEditor.Editor
                 [Tab.Bookmark] = "btn-bookmark",
                 [Tab.Opened] = "btn-opened",
                 [Tab.Setting] = "btn-setting",
-                [Tab.Recent] = "btn-recent",
             };
+
             const string className = "active-tab";
             foreach (var p in elQuery)
             {
@@ -324,55 +313,99 @@ namespace OnionCollections.DataEditor.Editor
 
 
             //Opened 依照openedTarget來顯示
-            rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (recentNode != null) ? DisplayStyle.Flex : DisplayStyle.None;
+            rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (openedNode != null) ? DisplayStyle.Flex : DisplayStyle.None;
 
         }
 
         void FreshBookmarkView(TreeNode node)
         {
-            SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark");
+            bool isShow = CanNodeAddToBookmarks(node);
 
             VisualElement viewElement = rootVisualElement.Q("btn-add-bookmark");
-
-            bool isShow = BookmarkObjectValid(node);
-
             viewElement.style.display = isShow ? DisplayStyle.Flex : DisplayStyle.None;
 
             if (isShow)
             {
-                if (OnionDataEditor.setting.IsAddedInBookmark(node.dataObj) == true)
-                {
-                    SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), "Bookmark_Fill");
-                }
+                string iconName = (OnionDataEditor.Setting.IsAddedInBookmark(node.Target) == true) ? "Bookmark_Fill" : "Bookmark";
+                SetIcon(rootVisualElement.Q("btn-add-bookmark-icon"), iconName);
             }
         }
 
-        bool BookmarkObjectValid(TreeNode node)
+        bool CanNodeAddToBookmarks(TreeNode node)
         {
-            bool result = 
-                target != null &&
-                IsSystemTarget(node) == false &&    //非系統Object
-                node.isPseudo == false &&
-                ((target is GameObject && AssetDatabase.IsMainAsset(target)) || AssetDatabase.IsNativeAsset(target) == true);   //Prefab 或 ScriptableObject
+            if (node.IsNull)
+                return false;
 
-            return result;
+            if (node.IsPseudo)
+                return false;
+
+            if (IsSystemTarget(node))
+                return false;
+
+            if (target == null)
+                return false;
+
+            //Prefab
+            if ((target is GameObject && AssetDatabase.IsMainAsset(target)) == false)
+                return false;
+
+            //Asset
+            if (AssetDatabase.IsNativeAsset(target) == false) 
+                return false;
+
+            return true;
         }
 
-        public void FreshTreeView()
+
+        bool isInspectorActive = true;
+        void SetInspectorActive(bool active)
         {
-            if (treeRoot != null)
+            if (isInspectorActive == active)
+                return;
+
+            isInspectorActive = active;
+
+            var containerA = rootVisualElement.Q("ContainerA");
+            var containerB = rootVisualElement.Q("ContainerB");
+            var spliter = rootVisualElement.Q("Spliter");
+
+            if (active)
             {
-                treeRoot.CreateTreeView(out treeView);
-                if (treeViewState == null)
-                    treeViewState = treeView.state;
+                var winRect = position;
+                winRect.width += containerB.style.width.value.value;
+                position = winRect;
+
+                containerA.style.flexGrow = new StyleFloat(0F);
+                containerA.style.maxWidth = new StyleLength(500);
+                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             }
+            else
+            {
+                var winRect = position;
+                winRect.width -= containerB.style.width.value.value;
+                position = winRect;
+
+                containerA.style.flexGrow = new StyleFloat(1F);
+                containerA.style.maxWidth = new StyleLength(StyleKeyword.Auto);
+                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            }
+
+
         }
 
-        public void SetTarget(IQueryableData newTarget)
-        {
-            targetNode = new TreeNode(newTarget as Object);
-            OnTargetChange(targetNode);
-        }
+
+        //public void FreshTreeView()
+        //{
+        //    if (treeRoot != null)
+        //    {
+        //        treeRoot.CreateTreeView(out treeView);
+        //        if (treeViewState == null)
+        //            treeViewState = treeView.state;
+        //    }
+        //}
+
         public void SetTarget(Object newTarget)
         {
             targetNode = new TreeNode(newTarget);
@@ -388,8 +421,6 @@ namespace OnionCollections.DataEditor.Editor
         {
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
             containerRoot.visible = (newNode != null);
-
-
 
             if (newNode != null)
             {
@@ -419,7 +450,7 @@ namespace OnionCollections.DataEditor.Editor
                 }
                 else
                 {
-                    recentNode = treeRoot;
+                    openedNode = treeRoot;
                     SwitchTab(Tab.Opened);
                 }
             }
@@ -441,10 +472,10 @@ namespace OnionCollections.DataEditor.Editor
                 }
 
 
-                if (newNode.onInspectorVisualElementRoot != null)
+                if (newNode.OnInspectorVisualElementRoot != null)
                 {
                     inspectContainer.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-                    parentVisualElement.Add(newNode.onInspectorVisualElementRoot);
+                    parentVisualElement.Add(newNode.OnInspectorVisualElementRoot);
                 }
                 else
                 {
@@ -456,7 +487,7 @@ namespace OnionCollections.DataEditor.Editor
             DisplayInfo(newNode);
 
             var root = rootVisualElement;
-            root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.dataObj == null ? DisplayStyle.None : DisplayStyle.Flex);
+            root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.Target == null ? DisplayStyle.None : DisplayStyle.Flex);
         }
         
         bool IsSystemTarget(TreeNode node)
@@ -464,24 +495,20 @@ namespace OnionCollections.DataEditor.Editor
             return
                 OnionDataEditor.IsBookmark(node) ||
                 OnionDataEditor.IsSetting(node);
-
         }
 
         static void SetIcon(VisualElement el, string iconName)
         {
-            el.style.backgroundImage = new StyleBackground(GetIconTexture(iconName));
+            el.style.backgroundImage = new StyleBackground(OnionDataEditor.GetIconTexture(iconName));
         }
-        public static Texture2D GetIconTexture(string iconName)
-        {
-            return AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png");
-        }
+        
 
         List<Button> actionBtns = new List<Button>();
         void DisplayInfo(TreeNode node)
         {
-            rootVisualElement.Q("btn-info-document").style.display = (node.dataObj != null) ? DisplayStyle.Flex : DisplayStyle.None;
+            rootVisualElement.Q("btn-info-document").style.display = (node.Target != null) ? DisplayStyle.Flex : DisplayStyle.None;
 
-            if (node != null && node.nodeActions != null && node.nodeActions.Any() == false)
+            if (node != null && node.NodeActions != null && node.NodeActions.Any() == false)
             {
                 rootVisualElement.Q("data-info").style.display = DisplayStyle.None;
             }
@@ -521,7 +548,7 @@ namespace OnionCollections.DataEditor.Editor
                 var root = this.rootVisualElement;
 
                 var container = root.Q("data-info-btn-list");
-                if (node != null && node.nodeActions != null && node.nodeActions.Any() == false)
+                if (node != null && node.NodeActions != null && node.NodeActions.Any() == false)
                 {
                     container.style.display = DisplayStyle.None;
                 }
@@ -535,9 +562,9 @@ namespace OnionCollections.DataEditor.Editor
                 actionBtns = new List<Button>();
 
 
-                if (n.nodeActions != null)
+                if (n.NodeActions != null)
                 {
-                    foreach (var action in n.nodeActions)
+                    foreach (var action in n.NodeActions)
                     {
                         Button actionBtn = new Button()
                         {
@@ -560,27 +587,25 @@ namespace OnionCollections.DataEditor.Editor
         {
             selectedNode = node;
 
-            int selectionId = treeView.GetSelection()[0];
-            OnionAction onSelectedAction = treeView.treeQuery[selectionId].onSelectedAction;
+            OnionAction onSelectedAction = node.OnSelectedAction;
             if (onSelectedAction != null)
                 onSelectedAction.action.Invoke();
 
         }
         public void OnDoubleClickItem(TreeNode node)
         {
-            int selectionId = treeView.GetSelection()[0];
-
-            OnionAction onDoubleClickAction = treeView.treeQuery[selectionId].onDoubleClickAction;
+            OnionAction onDoubleClickAction = node.OnDoubleClickAction;
             if (onDoubleClickAction != null)
             {
                 onDoubleClickAction.action.Invoke();
             }
-            else
+            else if(node.IsPseudo == false)
             {
-                var selectionObject = treeView.treeQuery[selectionId].dataObj;
+                var selectionObject = node.Target;
                 EditorGUIUtility.PingObject(selectionObject);   //Ping
             }
         }
+
 
     }
 

@@ -14,16 +14,19 @@ namespace OnionCollections.DataEditor.Editor
         const string nodeName = "Settings";
 
         [NodeTitle]
-        string title => nodeName;
+        string Title => nodeName;
 
         [NodeDescription]
-        string description => "Onion data editor settings.";
+        string Description => "Onion data editor settings.";
 
         [NodeIcon]
-        Texture2D icon => OnionDataEditorWindow.GetIconTexture("Settings");
-
+        Texture2D Icon => OnionDataEditor.GetIconTexture("Settings");
 
         public override string GetID() => nodeName;
+
+        [NodeCustomElement]
+        IEnumerable<TreeNode> Nodes => this.ToArray();
+
 
         public IEnumerator<TreeNode> GetEnumerator()
         {
@@ -35,13 +38,12 @@ namespace OnionCollections.DataEditor.Editor
         {
             yield return GetEnumerator();
         }
-        
-        [NodeCustomElement]
-        IEnumerable<TreeNode> nodes => this.ToArray();
+
 
 
         #region Bookmark
-        
+
+        [SerializeField]
         public string[] bookmarkPaths = new string[0];
 
         OnionReorderableList bookmarkList;
@@ -57,17 +59,17 @@ namespace OnionCollections.DataEditor.Editor
                         new SerializedObject(this).FindProperty("bookmarkPaths"),
                         bookmarkTitle,
                         inspectGUI)
-                    {
-                        Editable = false
-                    };
+                        {
+                            Editable = false
+                        };
                 }
 
 
                 var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
                 {
                     displayName = bookmarkTitle,
-                    icon = OnionDataEditorWindow.GetIconTexture("Bookmark_Fill"),
-                    onInspectorAction = new OnionAction(() => bookmarkList.OnInspectorGUI()),
+                    icon = OnionDataEditor.GetIconTexture("Bookmark_Fill"),
+                    OnInspectorAction = new OnionAction(() => bookmarkList.OnInspectorGUI()),
                     tags = new[] { "Bookmarks" },
                 };
                 
@@ -77,7 +79,7 @@ namespace OnionCollections.DataEditor.Editor
                     Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
                     TreeNode n = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
                     {
-                        onDoubleClickAction = new OnionAction(() =>
+                        OnDoubleClickAction = new OnionAction(() =>
                         {
                             var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
                             onionWindow.SetTarget(obj);
@@ -85,7 +87,7 @@ namespace OnionCollections.DataEditor.Editor
                     };
                     return n;
                 })
-                .Where(n => n.isNull == false);
+                .Where(n => n.IsNull == false);
 
 
                 node.AddChildren(bookmarkNodes);
@@ -165,6 +167,7 @@ namespace OnionCollections.DataEditor.Editor
 
         #region UserTag
 
+        [SerializeField]
         public string[] userTags = new string[0];
 
         OnionReorderableList userTagsList;
@@ -185,7 +188,7 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     displayName = propertyTitle,
                     icon = EditorGUIUtility.IconContent("FilterByLabel").image,
-                    onInspectorAction = new OnionAction(() => userTagsList.OnInspectorGUI()),
+                    OnInspectorAction = new OnionAction(() => userTagsList.OnInspectorGUI()),
                     tags = new[] { "UserTags" },
                 };
 
@@ -201,23 +204,17 @@ namespace OnionCollections.DataEditor.Editor
     [CustomEditor(typeof(OnionSetting))]
     public class OnionSettingEditor: UnityEditor.Editor
     {
-        List<TreeNode> nodes;
-        private void OnEnable()
-        {
-            nodes = (target as OnionSetting).ToList();
-        }
-
-
         public override VisualElement CreateInspectorGUI()
         {
-            var ve = new VisualElement();
+            var root = new VisualElement();
 
-            foreach(var node in nodes)
+            List<TreeNode> nodes = (target as OnionSetting).ToList();
+            foreach (var node in nodes)
             {
-                ve.Add(new IMGUIContainer(node.onInspectorAction.action));
+                root.Add(new IMGUIContainer(node.OnInspectorAction.action));
             }
 
-            return ve;
+            return root;
         }
 
     }

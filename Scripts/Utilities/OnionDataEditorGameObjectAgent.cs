@@ -63,7 +63,7 @@ namespace OnionCollections.DataEditor
 #if (UNITY_EDITOR)
 
             if (go == null)
-                go = (rootNode.dataObj as GameObject);
+                go = (rootNode.Target as GameObject);
 
 
             GUIStyle iconStyle = new GUIStyle
@@ -97,7 +97,7 @@ namespace OnionCollections.DataEditor
                     {
                         GUILayout.Label("", GUILayout.Width(2F));
                         GUILayout.Toggle(go.activeSelf, "", GUILayout.Width(20));
-                        GUILayout.TextField(rootNode.dataObj.name);
+                        GUILayout.TextField(rootNode.Target.name);
                     }
 
                     GUILayout.Label("", GUILayout.Height(0F));
@@ -130,10 +130,10 @@ namespace OnionCollections.DataEditor
             {
                 foreach (var n in rootNode.GetChildren())
                 {
-                    if (n.isPseudo == false && n.isNull == false)
+                    if (n.IsPseudo == false && n.IsNull == false)
                     {
                         GUILayout.Label("", GUILayout.Width(1F));
-                        GUILayout.Label(EditorGUIUtility.ObjectContent(null, n.dataObj.GetType()).image, iconStyle);
+                        GUILayout.Label(EditorGUIUtility.ObjectContent(null, n.Target.GetType()).image, iconStyle);
                     }
                 }
             }

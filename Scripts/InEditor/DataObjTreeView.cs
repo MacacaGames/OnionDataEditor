@@ -86,9 +86,9 @@ namespace OnionCollections.DataEditor.Editor
             TreeNode node = treeQuery[args.item.id];
 
             RowState state;
-            if (node.isNull)
+            if (node.IsNull)
                 state = RowState.Error;
-            else if (node.isPseudo)
+            else if (node.IsPseudo)
                 state = RowState.Pseudo;
             else
                 state = RowState.Normal;
@@ -121,8 +121,8 @@ namespace OnionCollections.DataEditor.Editor
 
 
             //child count
-            bool isHideElementNodes = node.nodeFlag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
-            if (treeQuery[args.item.id].childCount > 0 || isHideElementNodes)
+            bool isHideElementNodes = node.flag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
+            if (treeQuery[args.item.id].ChildCount > 0 || isHideElementNodes)
             {
                 const float tagWidth = 150F;
                 Rect rightRect = new Rect(args.rowRect.width - tagWidth, args.rowRect.y, tagWidth, args.rowRect.height);
@@ -136,16 +136,16 @@ namespace OnionCollections.DataEditor.Editor
                 if (isHideElementNodes)
                     displayTag = "H";
                 else
-                    displayTag = treeQuery[args.item.id].childCount.ToString();
+                    displayTag = treeQuery[args.item.id].ChildCount.ToString();
 
                 GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
             }
 
-            if (node.nodeTagColor.a > 0F)
+            if (node.tagColor.a > 0F)
             {
                 const float colorTagWidth = 3F;
                 Rect colorTagRect = new Rect(args.rowRect.width - colorTagWidth, args.rowRect.y, colorTagWidth, args.rowRect.height - 1);
-                EditorGUI.DrawRect(colorTagRect, node.nodeTagColor);
+                EditorGUI.DrawRect(colorTagRect, node.tagColor);
             }
 
             //Line

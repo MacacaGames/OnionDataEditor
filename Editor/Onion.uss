@@ -168,7 +168,7 @@
 }
 
 .active-tab:hover {
-    background-color: rgba(56, 56, 56, 255);
+    background-color: rgb(56, 56, 56);
 }
 
 .btn-tab .btn-icon {

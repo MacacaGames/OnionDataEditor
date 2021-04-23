@@ -1,8 +1,8 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <Style src="Onion.uss" />
     <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row;">
-        <Style src="Onion.uss" />
-        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.08); flex-direction: column; width: 40px;">
-            <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.08); flex-direction: column; width: 40px; flex-shrink: 0;">
+            <ui:Button name="btn-search-target" class="onion-btn onion-icon-btn" style="flex-grow: 0; height: 30px; width: 30px; margin: 5; visibility: hidden;">
                 <ui:VisualElement name="btn-search-target-icon" class="btn-icon" />
             </ui:Button>
             <ui:Button name="btn-opened" class="btn-tab" style="flex-grow: 0;">

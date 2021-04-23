@@ -13,7 +13,6 @@ using System.Linq;
 public static class OnionDataEditor
 {
     const string AssetsPath = "Assets/OnionDataEditor";
-    const string ResourceRootPath = "Assets/Resources";
     const string ResourcePath = "OnionDataEditor";
 
     //改成 UPM 後要針對不同的匯入方式處理路徑
@@ -31,11 +30,11 @@ public static class OnionDataEditor
     }
 
     static OnionSetting _setting;
-    internal static OnionSetting setting
+    internal static OnionSetting Setting
     {
         get
         {
-            string assetName = "Setting";
+            const string assetName = "Setting";
 
             if (_setting == null)
                 _setting = AutoCreateLoad<OnionSetting>(assetName);
@@ -46,11 +45,11 @@ public static class OnionDataEditor
 
     internal static bool IsSetting(TreeNode node)
     {
-        return node.isPseudo == false && node.dataObj == setting;
+        return node.IsPseudo == false && node.Target == Setting;
     }
 
 
-    internal static TreeNode bookmarks => setting.BookmarksNode;
+    internal static TreeNode Bookmarks => Setting.BookmarksNode;
 
     internal static bool IsBookmark(TreeNode node)
     {
@@ -60,30 +59,31 @@ public static class OnionDataEditor
 
 
 
-
+    internal static Texture2D GetIconTexture(string iconName)
+    {
+        return AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png");
+    }
 
 
     static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject
     {
-
-        string _path = $"{ResourceRootPath}/{ResourcePath}/{assetName}.asset";
-
         var result = Resources.Load<T>($"{ResourcePath}/{assetName}");
 
         if (result == null)
         {
-            DirectoryVisitor n = new DirectoryVisitor("Assets/")
+            DirectoryVisitor directoryVisitor = new DirectoryVisitor("Assets/")
                 .CreateFolderIfNotExist("Resources")
                 .Enter("Resources")
-                .CreateFolderIfNotExist("OnionDataEditor")
-                .Enter("OnionDataEditor");
+                .CreateFolderIfNotExist(ResourcePath)
+                .Enter(ResourcePath);
 
-            var bookmarkGroupIns = ScriptableObject.CreateInstance<T>();
-            Debug.Log($"Auto create asset : {ResourceRootPath}/{ResourcePath}/{assetName}.asset");
+            var assetIns = ScriptableObject.CreateInstance<T>();
+            Debug.Log($"Auto create asset : {directoryVisitor}{assetName}.asset");
 
-            AssetDatabase.CreateAsset(bookmarkGroupIns, $"{ResourceRootPath}/{ResourcePath}/{assetName}.asset");
+            AssetDatabase.CreateAsset(assetIns, $"{directoryVisitor}/{assetName}.asset");
             result = Resources.Load<T>($"{ResourcePath}/{assetName}");
         }
+
         return result;
     }
 
@@ -100,34 +100,32 @@ public static class OnionDataEditor
         }
     }
 
-    static Dictionary<Type, bool?> openWithDataEditorQuery = new Dictionary<Type, bool?>();
+
+
+    static readonly Dictionary<Type, bool?> openWithDataEditorQuery = new Dictionary<Type, bool?>();
 
     [UnityEditor.Callbacks.OnOpenAsset(1)]
     public static bool OnOpenAsset(int instanceID, int line)
     {
         UnityEngine.Object target = EditorUtility.InstanceIDToObject(instanceID);
 
-        bool openResult = target is IQueryableData;
-
         var t = target.GetType();
 
-        if (openWithDataEditorQuery.TryGetValue(t, out bool? result) == false)
+        if (openWithDataEditorQuery.TryGetValue(t, out bool? queryResult) == false)
         {
             var openAttr = t.GetCustomAttribute<OpenWithOnionDataEditor>(true);
-            if (openAttr != null)
-            {
-                openWithDataEditorQuery.Add(t, openAttr.openWithDataEditor);
-            }
-            else
-            {
-                openWithDataEditorQuery.Add(t, null);
-            }
+            queryResult = openAttr?.openWithDataEditor;
+            openWithDataEditorQuery.Add(t, queryResult);
         }
 
-
-        if (openWithDataEditorQuery[t].HasValue)
+        bool openResult;
+        if (queryResult.HasValue)
         {
             openResult = openWithDataEditorQuery[t].Value;
+        }
+        else
+        {
+            openResult = target is IQueryableData;
         }
 
 
