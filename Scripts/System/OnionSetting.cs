@@ -96,6 +96,12 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     Object obj = AssetDatabase.LoadAssetAtPath<Object>(bookmarkPaths[inx]);
 
+                    if (obj == null)
+                    {
+                        //IS NULL
+                        GUI.color = new Color(1F, 0.8F, 0.8F);
+                    }
+
                     const float objWidth = 150;
                     const float spaceWidth = 10;
 
@@ -114,13 +120,19 @@ namespace OnionCollections.DataEditor.Editor
                             bookmarkPaths[inx] = AssetDatabase.GetAssetPath(o);
                         }
                     }
-                    
-                    bookmarkPaths[inx] = GUI.TextField(pathRect, bookmarkPaths[inx]);
 
-                    if (obj == null)
+                    using (var ch = new EditorGUI.ChangeCheckScope())
                     {
-                        //IS NULL
+                        var p = GUI.TextField(pathRect, bookmarkPaths[inx]);
+                        if (ch.changed)
+                        {
+                            bookmarkPaths[inx] = p;
+                        }
                     }
+
+
+                    GUI.color = Color.white;
+
                 }
 
             }
@@ -217,6 +229,10 @@ namespace OnionCollections.DataEditor.Editor
             foreach (var node in nodes)
             {
                 root.Add(new IMGUIContainer(node.OnInspectorAction.action));
+
+                var space = new VisualElement();
+                space.style.height = new StyleLength(10);
+                root.Add(space);
             }
 
             return root;
