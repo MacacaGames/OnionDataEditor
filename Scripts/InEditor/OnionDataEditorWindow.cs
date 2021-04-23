@@ -129,10 +129,6 @@ namespace OnionCollections.DataEditor.Editor
             root.Q<Button>("btn-add-bookmark").clickable.clicked += OnToggleBookmark;
             //SetIcon(root.Q("btn-add-bookmark-icon"), "Heart");
 
-            //綁定btn-info-document
-            root.Q<Button>("btn-info-document").clickable.clicked += OpenDocument;
-            SetIcon(root.Q("btn-info-document-icon"), "Help");
-
 
             ////綁定btn-search-target
             //root.Q<Button>("btn-search-target").clickable.clicked += OnSearchTarget;
@@ -217,7 +213,7 @@ namespace OnionCollections.DataEditor.Editor
 
             void ChangeTabToSetting()
             {
-                SetTarget((Object)OnionDataEditor.Setting);
+                SetTarget(OnionDataEditor.Setting);
                 SwitchTab(Tab.Setting);
             }
 
@@ -230,7 +226,7 @@ namespace OnionCollections.DataEditor.Editor
                 }
                 else
                 {
-                    Debug.Log("Opened root is null.");
+                    ChangeTabToBookmark();
                 }
             }
 
@@ -238,6 +234,7 @@ namespace OnionCollections.DataEditor.Editor
             
             void OnFresh()
             {
+                treeRoot.InitSetting();
                 OnTargetChange(treeRoot);
             }
 
@@ -262,12 +259,6 @@ namespace OnionCollections.DataEditor.Editor
                 }
 
             }
-
-            void OpenDocument()
-            {
-                OnionDocumentWindow.ShowWindow(OnionDocument.GetDocument(selectedNode.Target));
-            }
-
 
             //void OnSearchTarget()
             //{
@@ -485,9 +476,6 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             DisplayInfo(newNode);
-
-            var root = rootVisualElement;
-            root.Q("btn-info-document").style.display = new StyleEnum<DisplayStyle>(newNode.Target == null ? DisplayStyle.None : DisplayStyle.Flex);
         }
         
         bool IsSystemTarget(TreeNode node)
@@ -506,15 +494,13 @@ namespace OnionCollections.DataEditor.Editor
         List<Button> actionBtns = new List<Button>();
         void DisplayInfo(TreeNode node)
         {
-            rootVisualElement.Q("btn-info-document").style.display = (node.Target != null) ? DisplayStyle.Flex : DisplayStyle.None;
-
-            if (node != null && node.NodeActions != null && node.NodeActions.Any() == false)
+            if (node != null && node.NodeActions != null && node.NodeActions.Any())
             {
-                rootVisualElement.Q("data-info").style.display = DisplayStyle.None;
+                rootVisualElement.Q("data-info").style.display = DisplayStyle.Flex;
             }
             else
             {
-                rootVisualElement.Q("data-info").style.display = DisplayStyle.Flex;
+                rootVisualElement.Q("data-info").style.display = DisplayStyle.None;
             }
 
 
@@ -532,7 +518,7 @@ namespace OnionCollections.DataEditor.Editor
                 root.Q<Label>("info-title").text = nodeTitle;
                 root.Q<Label>("info-description").text = nodeDescription;
 
-                if (node != null && string.IsNullOrEmpty(node.description) == true)
+                if (n != null && string.IsNullOrEmpty(n.description) == true)
                 {
                     root.Q<Label>("info-description").style.display = DisplayStyle.None;
                 }
@@ -548,19 +534,11 @@ namespace OnionCollections.DataEditor.Editor
                 var root = this.rootVisualElement;
 
                 var container = root.Q("data-info-btn-list");
-                if (node != null && node.NodeActions != null && node.NodeActions.Any() == false)
-                {
-                    container.style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    container.style.display = DisplayStyle.Flex;
-                }
 
                 foreach (var actionBtn in actionBtns)
                     container.Remove(actionBtn);
-                actionBtns = new List<Button>();
 
+                actionBtns = new List<Button>();
 
                 if (n.NodeActions != null)
                 {

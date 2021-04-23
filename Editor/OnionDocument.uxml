@@ -1,8 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements">
-    <ui:Label text="title" name="title" class="A">
-        <Style path="Assets/OnionDataEditor/Editor/OnionDocument.uss" />
-    </ui:Label>
-    <ui:VisualElement name="content" style="flex-grow: 1;">
-        <Style path="Assets/OnionDataEditor/Editor/OnionDocument.uss" />
-    </ui:VisualElement>
-</ui:UXML>

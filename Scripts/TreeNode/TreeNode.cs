@@ -154,7 +154,7 @@ namespace OnionCollections.DataEditor
                 InitSetting();
         }
 
-        void InitSetting()
+        internal void InitSetting()
         {
             displayName = GetTitle();
             description = GetDescription();
