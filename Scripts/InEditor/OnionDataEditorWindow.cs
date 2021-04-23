@@ -336,15 +336,18 @@ namespace OnionCollections.DataEditor.Editor
             if (target == null)
                 return false;
 
-            //Prefab
-            if ((target is GameObject && AssetDatabase.IsMainAsset(target)) == false)
-                return false;
+            //---
 
-            //Asset
-            if (AssetDatabase.IsNativeAsset(target) == false) 
-                return false;
+            if (AssetDatabase.IsNativeAsset(target) == true)                        //Asset(without prefab, sence...)
+                return true;
 
-            return true;
+            if (AssetDatabase.IsForeignAsset(target) == true)                       //Asset
+                return true;
+
+            if (target is GameObject && AssetDatabase.IsMainAsset(target) == true)  //Prefab
+                return true;
+
+            return false;
         }
 
 
