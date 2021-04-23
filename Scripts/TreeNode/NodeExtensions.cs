@@ -304,6 +304,8 @@ namespace OnionCollections.DataEditor.Editor
             [".cs"] = "cs Script Icon",
             [".prefab"] = "Prefab Icon",
             [".assembly"] = "AssemblyDefinitionAsset Icon",
+            [".uxml"] = "UxmlScript Icon",
+            [".uss"] = "UssScript Icon",
         };
 
 
@@ -349,8 +351,10 @@ namespace OnionCollections.DataEditor.Editor
                 }
                 else if(extensionIconQuery.TryGetValue(extension, out string iconName))
                 {
-                    bool isDarkTheme = EditorGUIUtility.isProSkin;
-                    return EditorGUIUtility.IconContent((isDarkTheme ? "d_" : "") + iconName).image;
+                    //bool isDarkTheme = EditorGUIUtility.isProSkin;
+                    //var icon = EditorGUIUtility.IconContent((isDarkTheme ? "d_" : "") + iconName);
+
+                    return EditorGUIUtility.IconContent(iconName).image;
                 }
             }
 

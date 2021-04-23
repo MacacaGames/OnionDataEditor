@@ -10,7 +10,7 @@ using UnityEditor;
 #endif
 
 [OpenWithOnionDataEditor(true)]
-[CreateAssetMenu(menuName = "Data/AssetFilterGroup")]
+[CreateAssetMenu(menuName = "Onion Data Editor/Asset Group", fileName = "AssetGroup")]
 public class AssetFilterGroup : ScriptableObject
 {
     [SerializeField]
@@ -30,7 +30,7 @@ public class AssetFilterGroup : ScriptableObject
 #if (UNITY_EDITOR)
 
     [NodeCustomElement]
-    IEnumerable<TreeNode> nodes
+    IEnumerable<TreeNode> Nodes
     {
         get
         {
@@ -115,12 +115,8 @@ public class AssetFilterGroup : ScriptableObject
         }
     }
 
-
-
     [NodeIcon]
-    Texture icon => EditorGUIUtility.IconContent("d_Folder Icon").image;
-
-
+    Texture Icon => EditorGUIUtility.IconContent("d_Folder Icon").image;
 
 #endif
 }

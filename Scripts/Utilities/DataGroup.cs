@@ -10,7 +10,7 @@ using UnityEditor;
 #endif
 
 [OpenWithOnionDataEditor(true)]
-[CreateAssetMenu(menuName = "Data/Data Group", fileName = "DataGroup")]
+[CreateAssetMenu(menuName = "Onion Data Editor/Data Group", fileName = "DataGroup")]
 public class DataGroup : QueryableData, IEnumerable<IQueryableData>
 {
     [SerializeField]
