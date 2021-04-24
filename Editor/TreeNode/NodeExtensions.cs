@@ -251,7 +251,6 @@ namespace OnionCollections.DataEditor.Editor
                 return defaultNodeConstructor;
             }
 
-            Debug.Log($"Find! {node.Target.GetType()}");
             return constructor;
         }
 
@@ -267,7 +266,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 foreach (var t in assembly.GetTypes())
                 {
-                    CustomConstructorOfAttribute attr = t.GetCustomAttribute<CustomConstructorOfAttribute>(false);
+                    CustomNodeConstructorOfAttribute attr = t.GetCustomAttribute<CustomNodeConstructorOfAttribute>(false);
                     if (attr != null)
                     {
                         Type type = attr.type;

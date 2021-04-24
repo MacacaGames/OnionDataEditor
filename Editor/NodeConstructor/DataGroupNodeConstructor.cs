@@ -3,7 +3,7 @@ using UnityEditor;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    [CustomConstructorOf(typeof(DataGroup))]
+    [CustomNodeConstructorOf(typeof(DataGroup))]
     internal class DataGroupNodeConstructor : NodeConstructorBase
     {
         public override TreeNode Construct(TreeNode node, Object target)
