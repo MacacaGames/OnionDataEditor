@@ -1,5 +1,4 @@
-﻿#if(UNITY_EDITOR)
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -98,7 +97,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             //建構
             var root = this.rootVisualElement;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "/Editor/Onion.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "/Editor/EditorWindow/Onion.uxml");
             TemplateContainer cloneTree = visualTree.CloneTree();
             cloneTree.style.flexGrow = 1;
             root.Add(cloneTree);
@@ -605,4 +604,3 @@ namespace OnionCollections.DataEditor.Editor
     }
 
 }
-#endif

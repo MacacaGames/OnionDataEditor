@@ -1,14 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-#if (UNITY_EDITOR)
 using UnityEditor;
-using UnityEditor.IMGUI.Controls;
 using UnityEngine.UIElements;
-using OnionCollections.DataEditor.Editor;
 
-namespace OnionCollections.DataEditor
+namespace OnionCollections.DataEditor.Editor
 {
     public class TreeNode: IEnumerable<TreeNode>
     {
@@ -294,24 +290,3 @@ namespace OnionCollections.DataEditor
     }
 
 }
-
-#else
-
-public class TreeNode
-{
-    [System.Flags]
-    public enum NodeFlag
-    {
-        None = 0,
-    }
-
-    public TreeNode(ScriptableObject dataObj)
-    {
-    }
-
-    public TreeNode(NodeFlag nodeFlag, ScriptableObject dataObj = null)
-    {
-    }
-}
-
-#endif

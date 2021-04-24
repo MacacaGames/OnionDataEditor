@@ -65,7 +65,7 @@ public class DataGroup : QueryableData, IEnumerable<IQueryableData>
 
 #if (UNITY_EDITOR)
 
-[CustomEditor(typeof(DataGroup))]
+//[CustomEditor(typeof(DataGroup))]
 class DataGroupEditor : Editor
 {
     DataGroup targetDataGroup;

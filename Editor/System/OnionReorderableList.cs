@@ -1,6 +1,4 @@
-﻿#if(UNITY_EDITOR)
-
-using UnityEditor;
+﻿using UnityEditor;
 using UnityEditorInternal;
 using UnityEngine;
 using System;
@@ -89,4 +87,3 @@ namespace OnionCollections.DataEditor.Editor
         }
     }
 }
-#endif
