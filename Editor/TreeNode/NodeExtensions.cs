@@ -1,6 +1,4 @@
 ﻿
-#if(UNITY_EDITOR)
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -235,7 +233,7 @@ namespace OnionCollections.DataEditor.Editor
 
         readonly static PseudoNodeConstructor pseudoNodeConstructor = new PseudoNodeConstructor();
         readonly static DefaultNodeConstructor defaultNodeConstructor = new DefaultNodeConstructor();
-        static Dictionary<Type, NodeConstructorBase> constructorQuery;
+        static Dictionary<Type, Type> constructorQuery;
 
         static NodeConstructorBase GetNodeConstructor(TreeNode node) 
         {
@@ -246,10 +244,12 @@ namespace OnionCollections.DataEditor.Editor
                 return pseudoNodeConstructor;
             }
 
-            if (constructorQuery.TryGetValue(node.Target.GetType(), out NodeConstructorBase constructor) == false)
+            if (constructorQuery.TryGetValue(node.Target.GetType(), out Type constructorType) == false)
             {
                 return defaultNodeConstructor;
             }
+
+            NodeConstructorBase constructor = Activator.CreateInstance(constructorType) as NodeConstructorBase; ;
 
             return constructor;
         }
@@ -260,7 +260,7 @@ namespace OnionCollections.DataEditor.Editor
                 return;
 
 
-            constructorQuery = new Dictionary<Type, NodeConstructorBase>();
+            constructorQuery = new Dictionary<Type, Type>();
 
             foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
@@ -270,8 +270,8 @@ namespace OnionCollections.DataEditor.Editor
                     if (attr != null)
                     {
                         Type type = attr.type;
-                        NodeConstructorBase constructor = Activator.CreateInstance(t) as NodeConstructorBase;
-                        constructorQuery.Add(type, constructor);
+                        Type constructorType = t;
+                        constructorQuery.Add(type, constructorType);
                     }
                 }
             }
@@ -594,5 +594,3 @@ namespace OnionCollections.DataEditor.Editor
         #endregion
     }
 }
-
-#endif
