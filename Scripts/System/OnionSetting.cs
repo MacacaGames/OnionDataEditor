@@ -66,31 +66,38 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     displayName = bookmarkTitle,
                     icon = OnionDataEditor.GetIconTexture("Bookmark_Fill"),
-                    OnInspectorAction = new OnionAction(() => bookmarkList.OnInspectorGUI()),
+                    OnInspectorAction = new OnionAction(bookmarkList.OnInspectorGUI),
                     tags = new[] { "Bookmarks" },
                 };
-                
 
-                var bookmarkNodes = bookmarkPaths.Select(path =>
-                {
-                    Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
-                    TreeNode n = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
-                    {
-                        OnDoubleClickAction = new OnionAction(() =>
-                        {
-                            var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
-                            onionWindow.SetTarget(obj);
-                        })
-                    };
-                    return n;
-                })
-                .Where(n => n.IsNull == false);
+                node.OnRebuildNode = new OnionAction(BuildChildren);
 
+                BuildChildren();
 
-                node.AddChildren(bookmarkNodes);
 
                 return node;
 
+                void BuildChildren()
+                {
+                    node.ClearChildren();
+
+                    var bookmarkNodes = bookmarkPaths.Select(path =>
+                    {
+                        Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
+                        TreeNode n = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
+                        {
+                            OnDoubleClickAction = new OnionAction(() =>
+                            {
+                                var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
+                                onionWindow.SetTarget(obj);
+                            })
+                        };
+                        return n;
+                    })
+                    .Where(n => n.IsNull == false);
+
+                    node.AddChildren(bookmarkNodes);
+                }
 
                 void inspectGUI(Rect r, SerializedProperty sp, int inx)
                 {
@@ -168,6 +175,7 @@ namespace OnionCollections.DataEditor.Editor
                 removedList.Remove(v);
                 bookmarkPaths = removedList.ToArray();
 
+                serializedObject.ApplyModifiedProperties();
                 EditorUtility.SetDirty(this);
                 AssetDatabase.SaveAssets();
             }
@@ -205,7 +213,7 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     displayName = propertyTitle,
                     icon = EditorGUIUtility.IconContent("FilterByLabel").image,
-                    OnInspectorAction = new OnionAction(() => userTagsList.OnInspectorGUI()),
+                    OnInspectorAction = new OnionAction(userTagsList.OnInspectorGUI),
                     tags = new[] { "UserTags" },
                 };
 

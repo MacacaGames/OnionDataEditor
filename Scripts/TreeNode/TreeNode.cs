@@ -43,19 +43,24 @@ namespace OnionCollections.DataEditor
         public string description;
 
         /// <summary>Display icon of this node.</summary>
-        public Texture icon = null;
+        public Texture icon;
 
         /// <summary>Display color tag of this node. Color will not display if value is null.</summary>
-        internal Color tagColor = new Color(0, 0, 0, 0);
+        public Color tagColor = new Color(0, 0, 0, 0);
 
         /// <summary>Tags use for any custom utilties if you want.</summary>
         internal string[] tags = new string[0];
+
+
 
         /// <summary>Action will be executed when node be selected.</summary>
         public OnionAction OnSelectedAction { get; set; }
 
         /// <summary>Action will be executed when node be double clicked.</summary>
         public OnionAction OnDoubleClickAction { get; set; }
+
+        /// <summary>Action when node rebuild. It will not execute when node first build.</summary>
+        internal OnionAction OnRebuildNode { get; set; }
 
         /// <summary>Actions of this node. Will display as button in data editor.</summary>
         public IEnumerable<OnionAction> NodeActions { get; set; }
@@ -127,7 +132,7 @@ namespace OnionCollections.DataEditor
         {
             None = 0,
 
-            /// <summary>If node is pseudo, means it has no data object.</summary>
+            /// <summary>If node is pseudo, means it has no target object.</summary>
             Pseudo = 1 << 0,
 
             /// <summary>If node set this flag, all of children nodes don't show in data editor.</summary>
@@ -136,18 +141,18 @@ namespace OnionCollections.DataEditor
 
         internal NodeFlag flag = NodeFlag.None;
 
-        public TreeNode(Object dataObj, NodeFlag flag = NodeFlag.None)
+        public TreeNode(Object target, NodeFlag flag = NodeFlag.None)
         {
-            this.Target = dataObj;
+            this.Target = target;
             this.flag = flag;
 
             if (IsPseudo == false)
                 InitSetting();
         }
 
-        public TreeNode(NodeFlag flag, Object dataObj = null)
+        public TreeNode(NodeFlag flag, Object target = null)
         {
-            this.Target = dataObj;
+            this.Target = target;
             this.flag = flag;
             
             if (IsPseudo == false)
@@ -161,7 +166,7 @@ namespace OnionCollections.DataEditor
             icon = GetIcon();
             tagColor = GetColorTag();
 
-            if (Target != null)
+            if (IsNull == false)
             {
                 NodeActions = Target.GetTargetActions();
                 OnSelectedAction = Target.GetTargetOnSelectedAction();

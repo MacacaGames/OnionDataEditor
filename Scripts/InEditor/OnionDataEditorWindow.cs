@@ -234,7 +234,21 @@ namespace OnionCollections.DataEditor.Editor
             
             void OnFresh()
             {
-                treeRoot.InitSetting();
+                if(treeRoot == null)
+                {
+                    SetTarget(OnionDataEditor.Bookmarks);
+                    return;
+                }
+
+                if (treeRoot.OnRebuildNode == null)
+                {
+                    treeRoot.InitSetting();
+                }
+                else
+                {
+                    treeRoot.OnRebuildNode.action.Invoke();
+                }
+
                 OnTargetChange(treeRoot);
             }
 

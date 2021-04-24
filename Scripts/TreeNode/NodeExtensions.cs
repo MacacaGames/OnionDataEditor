@@ -211,7 +211,14 @@ namespace OnionCollections.DataEditor.Editor
                 return;
             }
 
-            node.GetElementTree();
+            if (node.IsPseudo == false)
+            {
+                node = GetNodeConstructor(node).Construct(node, node.Target);
+            }
+            else
+            {
+                node = pseudoNodeConstructor.Construct(node, null);
+            }
 
             var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
 
@@ -221,6 +228,60 @@ namespace OnionCollections.DataEditor.Editor
                 treeView = new DataObjTreeView(node, window.treeViewState);
 
         }
+
+
+
+        #region Constructor
+
+        readonly static PseudoNodeConstructor pseudoNodeConstructor = new PseudoNodeConstructor();
+        readonly static DefaultNodeConstructor defaultNodeConstructor = new DefaultNodeConstructor();
+        static Dictionary<Type, NodeConstructorBase> constructorQuery;
+
+        static NodeConstructorBase GetNodeConstructor(TreeNode node) 
+        {
+            BuildConstructorQuery();
+
+            if (node.IsPseudo)
+            {
+                return pseudoNodeConstructor;
+            }
+
+            if (constructorQuery.TryGetValue(node.Target.GetType(), out NodeConstructorBase constructor) == false)
+            {
+                return defaultNodeConstructor;
+            }
+
+            Debug.Log($"Find! {node.Target.GetType()}");
+            return constructor;
+        }
+
+        static void BuildConstructorQuery()
+        {
+            if (constructorQuery != null)
+                return;
+
+
+            constructorQuery = new Dictionary<Type, NodeConstructorBase>();
+
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var t in assembly.GetTypes())
+                {
+                    CustomConstructorOfAttribute attr = t.GetCustomAttribute<CustomConstructorOfAttribute>(false);
+                    if (attr != null)
+                    {
+                        Type type = attr.type;
+                        NodeConstructorBase constructor = Activator.CreateInstance(t) as NodeConstructorBase;
+                        constructorQuery.Add(type, constructor);
+                    }
+                }
+            }
+
+
+        }
+
+
+        #endregion
 
 
         #region 取得target身上的特定屬性Attribute
@@ -337,7 +398,7 @@ namespace OnionCollections.DataEditor.Editor
                 return spriteResult.texture;
             }
 
-            //Custom extension
+            //If is asset
             if (AssetDatabase.IsMainAsset(target))
             {
                 string path = AssetDatabase.GetAssetPath(target);
@@ -349,13 +410,16 @@ namespace OnionCollections.DataEditor.Editor
                     bool isDarkTheme = EditorGUIUtility.isProSkin;
                     return EditorGUIUtility.IconContent((isDarkTheme ? "d_" : "") + "Folder Icon").image;
                 }
-                else if(extensionIconQuery.TryGetValue(extension, out string iconName))
+
+                //Custom extension icon
+                if (extensionIconQuery.TryGetValue(extension, out string iconName))
                 {
                     //bool isDarkTheme = EditorGUIUtility.isProSkin;
                     //var icon = EditorGUIUtility.IconContent((isDarkTheme ? "d_" : "") + iconName);
 
                     return EditorGUIUtility.IconContent(iconName).image;
                 }
+
             }
 
             //Use object default icon
