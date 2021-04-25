@@ -3,60 +3,48 @@ using System.Collections.Generic;
 using UnityEngine;
 using OnionCollections.DataEditor;
 using System.Linq;
-
-#if (UNITY_EDITOR)
 using OnionCollections.DataEditor.Editor;
 using UnityEditor;
-#endif
 
 [OpenWithOnionDataEditor(true)]
 [CreateAssetMenu(menuName = "Onion Data Editor/Asset Group", fileName = "AssetGroup")]
 public class AssetFilterGroup : ScriptableObject
 {
-    [SerializeField]
-    string[] matchNames = new string[0];
 
     [SerializeField]
-    string[] matchLabels = new string[0];
-
-    [SerializeField]
-    string[] matchTypes = new string[0];
+    public FilterItem[] filters = new FilterItem[0];
 
     [SerializeField]
     string[] searchFolders = new string[0];
 
+    public enum FilterType
+    {
+        NameIncluding = 0,
+        TypeIs = 1,
+        LableHas = 2,
+    }
 
+    [System.Serializable]
+    public struct FilterItem
+    {
+        public FilterType type;
+        public string value;
+    }
 
-#if (UNITY_EDITOR)
 
     [NodeCustomElement]
     IEnumerable<TreeNode> Nodes
     {
         get
         {
-            var names = matchNames.Where(n => !string.IsNullOrEmpty(n));
-            var labels = matchLabels.Where(n => !string.IsNullOrEmpty(n));
-            var types = matchTypes.Where(n => !string.IsNullOrEmpty(n));
-
-            var folders = searchFolders.Where(n => !string.IsNullOrEmpty(n));
-            
+            const int maxResultAmount = 1000;
 
 
-            if (!names.Any() &&
-                !labels.Any() &&
-                !types.Any())
-            {
-                return new[]
-                {
-                    new TreeNode(TreeNode.NodeFlag.Pseudo)
-                    {
-                        displayName = "You have to fill at least one match field."
-                    }
-                };
-            }
+            IEnumerable<string> names = filters.Where(n => n.type == FilterType.NameIncluding).Select(n => n.value).Where(n => !string.IsNullOrEmpty(n));
+            IEnumerable<string> labels = filters.Where(n => n.type == FilterType.LableHas).Select(n => n.value).Where(n => !string.IsNullOrEmpty(n));
+            IEnumerable<string> types = filters.Where(n => n.type == FilterType.TypeIs).Select(n => n.value).Where(n => !string.IsNullOrEmpty(n));
 
-
-
+            IEnumerable<string> folders = searchFolders.Where(n => !string.IsNullOrEmpty(n));
 
             string filter = "";
 
@@ -87,7 +75,22 @@ public class AssetFilterGroup : ScriptableObject
                 findResult = AssetDatabase.FindAssets(filter);
             }
 
+
+            if (findResult.Length == 0)
+            {
+                return new[]
+                {
+                    new TreeNode(TreeNode.NodeFlag.Pseudo)
+                    {
+                        displayName = "Can not find any match asset."
+                    }
+                };
+            }
+
+            bool isTooMuchResult = findResult.Length > maxResultAmount;
+
             var result = findResult
+                .Take(maxResultAmount)
                 .Select(o =>
                 {
                     string path = AssetDatabase.GUIDToAssetPath(o);
@@ -108,9 +111,24 @@ public class AssetFilterGroup : ScriptableObject
                     return node;
                 });
 
+            if (isTooMuchResult == true)
+                return AppendTooMuchNode(result);
 
             return result;
 
+            IEnumerable<TreeNode> AppendTooMuchNode(IEnumerable<TreeNode> results)
+            {
+                foreach (var n in results)
+                    yield return n;
+
+                var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                {
+                    displayName = $"Too many nodes to show..."
+                };
+
+                yield return node;
+
+            }
 
         }
     }
@@ -118,5 +136,4 @@ public class AssetFilterGroup : ScriptableObject
     [NodeIcon]
     Texture Icon => EditorGUIUtility.IconContent("d_Folder Icon").image;
 
-#endif
 }
