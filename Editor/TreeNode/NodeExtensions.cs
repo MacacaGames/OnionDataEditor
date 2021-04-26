@@ -422,9 +422,9 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             //Use object default icon
-            var defaultResult = EditorGUIUtility.ObjectContent(null, target.GetType()).image;
+            var defaultResult = EditorGUIUtility.ObjectContent(null, target.GetType())?.image;
 
-            if(defaultResult.name == "d_DefaultAsset Icon" || defaultResult.name == "DefaultAsset Icon")
+            if(defaultResult == null || defaultResult.name == "d_DefaultAsset Icon" || defaultResult.name == "DefaultAsset Icon")
             {
                 return null;
             }
