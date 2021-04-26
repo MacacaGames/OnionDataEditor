@@ -1,9 +1,12 @@
 {
     "name": "OnionDataEditor.Editor",
+    "rootNamespace": "",
     "references": [
         "GUID:60797f6a67769480e908b81b91a53e4d"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,
