@@ -26,10 +26,11 @@ public class AssetFilterGroupEditor : Editor
 
         if (filterList == null)
         {
-            filterList = new OnionReorderableList(
-                new SerializedObject(assetFilterGroup).FindProperty("filters"),
-                "Filters",
-                itemGUI);
+            filterList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("filters"))
+            {
+                title = "Filters",
+                customGUI = itemGUI
+            };
         }
 
         filterList.OnInspectorGUI();
@@ -39,9 +40,10 @@ public class AssetFilterGroupEditor : Editor
 
         if(searchFolderList == null)
         {
-            searchFolderList = new OnionReorderableList(
-                new SerializedObject(assetFilterGroup).FindProperty("searchFolders"),
-                "Search Folders");
+            searchFolderList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("searchFolders"))
+            {
+                title = "Search Folders"
+            };
         }
 
         searchFolderList.OnInspectorGUI();

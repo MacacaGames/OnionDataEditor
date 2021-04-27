@@ -14,7 +14,7 @@ namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDataEditorWindow : EditorWindow
     {
-        static string path => OnionDataEditor.path;
+        static string path => OnionDataEditor.Path;
 
         Object target => treeRoot?.Target;
 
@@ -104,6 +104,8 @@ namespace OnionCollections.DataEditor.Editor
 
 
             //Tab
+
+            SetIcon(root.Q("oniondataeditor-icon"), "OnionDataEditorIcon");
 
             //綁定btn-opened
             root.Q<Button>("btn-opened").clickable.clicked += ChangeTabToOpened;

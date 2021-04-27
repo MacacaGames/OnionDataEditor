@@ -75,11 +75,11 @@
 }
 
 .onion-btn:hover {
-    background-color: rgba(2, 106, 167, 0.25);
+    background-color: rgba(91, 132, 153, 0.2);
 }
 
 .onion-btn:active {
-    background-color: rgba(88, 120, 138, 0.5);
+    background-color: rgba(0, 119, 179, 0.2);
 }
 
 .onion-btn.onion-icon-btn {
@@ -153,13 +153,13 @@
     justify-content: center;
     align-items: center;
     opacity: 0.5;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgba(56, 56, 56, 0.3);
     height: 40px;
     width: 38px;
 }
 
 .btn-tab:hover {
-    background-color: rgba(56, 56, 56, 0.5);
+    background-color: rgba(56, 56, 56, 0.75);
 }
 
 .active-tab {

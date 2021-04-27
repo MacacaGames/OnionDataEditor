@@ -247,7 +247,7 @@ namespace OnionCollections.DataEditor.Editor
                 return icon;
 
             if (IsNull)
-                return EditorGUIUtility.FindTexture("console.erroricon.sml");
+                return OnionDataEditor.SmallErrorIcon;
 
             Texture nodeIcon = Target.GetTargetIcon();
 

@@ -10,9 +10,13 @@ namespace OnionCollections.DataEditor.Editor
         ReorderableList rList;
 
         SerializedObject serializedObject;
-        string title;
+        
+        public string title = "No Title";
+        public Texture2D titleIcon = null;
 
-        Action<Rect, SerializedProperty, int> customGUI = null;
+        public Action<Rect, SerializedProperty, int> customGUI = null;
+        public Action<Rect> customHeadGUI = null;
+
 
         bool _editable = true;
         public bool Editable
@@ -27,21 +31,14 @@ namespace OnionCollections.DataEditor.Editor
             get => _editable;
         }
 
-        internal OnionReorderableList(SerializedProperty elements, string title)
+        internal OnionReorderableList(SerializedProperty elements)
         {
-            Init(elements.serializedObject, elements, title, null);
+            Init(elements.serializedObject, elements);
         }
 
-        internal OnionReorderableList(SerializedProperty elements, string title, Action<Rect, SerializedProperty, int> customGUI)
-        {
-            Init(elements.serializedObject, elements, title, customGUI);
-        }
-
-        void Init(SerializedObject serializedObject, SerializedProperty elements, string title, Action<Rect, SerializedProperty, int> customGUI)
+        void Init(SerializedObject serializedObject, SerializedProperty elements)
         {
             this.serializedObject = serializedObject;
-            this.title = title;
-            this.customGUI = customGUI;
 
             rList = new ReorderableList(serializedObject, elements, true, true, true, true)
             {
@@ -56,7 +53,20 @@ namespace OnionCollections.DataEditor.Editor
         {
             var arect = rect;
             arect.height = EditorGUIUtility.singleLineHeight;
-            EditorGUI.LabelField(arect, title);
+
+            if (customHeadGUI == null)
+            {
+                if (titleIcon != null)
+                {
+                    EditorGUI.LabelField(new Rect(rect.x + 2, rect.y + 2, 14, 14), new GUIContent("", titleIcon));
+                    arect.x += 18;
+                }
+                EditorGUI.LabelField(arect, title);
+            }
+            else
+            {
+                customHeadGUI.Invoke(arect);
+            }
         }
 
 

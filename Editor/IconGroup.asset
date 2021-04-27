@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4d0eacb2be11b2346924d571edb10977, type: 3}
+  m_Name: IconGroup
+  m_EditorClassIdentifier: 
+  data:
+  - key: Bookmark
+    defaultIcon: {fileID: 2800000, guid: b0adcabdec00fe245965b021b89eeb9c, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: b0adcabdec00fe245965b021b89eeb9c, type: 3}
+  - key: Bookmark_Fill
+    defaultIcon: {fileID: 2800000, guid: 9153224ecf09c0f4bade64d4a5b6268d, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 9153224ecf09c0f4bade64d4a5b6268d, type: 3}
+  - key: Refresh
+    defaultIcon: {fileID: 2800000, guid: 0f5444c1c6b0acc46ae6b8e90b4d08b8, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 0f5444c1c6b0acc46ae6b8e90b4d08b8, type: 3}
+  - key: Settings
+    defaultIcon: {fileID: 2800000, guid: 0fe8855cef2224b4ca67b9735edb4bb5, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 0fe8855cef2224b4ca67b9735edb4bb5, type: 3}
+  - key: Tag
+    defaultIcon: {fileID: 2800000, guid: b38ef9fa0f8a2f54aaa84cd04e8e8fe1, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: b38ef9fa0f8a2f54aaa84cd04e8e8fe1, type: 3}
+  - key: Edit
+    defaultIcon: {fileID: 2800000, guid: 6f68f842b6427a0499f29d439371af61, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 6f68f842b6427a0499f29d439371af61, type: 3}
+  - key: Dot
+    defaultIcon: {fileID: 2800000, guid: df065f81b40f2e44ca3f8707ad40e771, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: df065f81b40f2e44ca3f8707ad40e771, type: 3}
+  - key: Dash
+    defaultIcon: {fileID: 2800000, guid: c7ad007fc00f2b8438e3427efb2d4050, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: c7ad007fc00f2b8438e3427efb2d4050, type: 3}
+  - key: OnionDataEditorIcon
+    defaultIcon: {fileID: 2800000, guid: 5508119df5918544780cbff6aa442f5d, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 5508119df5918544780cbff6aa442f5d, type: 3}

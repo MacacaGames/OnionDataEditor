@@ -39,7 +39,7 @@ public static class QueryableDataExtensions
         T result = (T)target.SingleOrDefault(_ => _.GetID() == id);
         if(result == null)
         {
-            UnityEngine.Debug.LogError("QueryableData在查找id時，找到的結果為null，可能是id重複或資料本身為null");
+            UnityEngine.Debug.LogError($"Query result is null. Maybe the id is duplicate, or the result is null.");
         }
         return result;
     }

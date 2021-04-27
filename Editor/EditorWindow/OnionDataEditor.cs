@@ -11,19 +11,18 @@ namespace OnionCollections.DataEditor.Editor
 {
     public static class OnionDataEditor
     {
-        const string AssetsPath = "Assets/OnionDataEditor";
+        const string RootPath = "OnionDataEditor";
         const string ResourcePath = "OnionDataEditor";
 
-        //改成 UPM 後要針對不同的匯入方式處理路徑
-        public static string path
+        public static string Path
         {
             get
             {
-                // 暫時只有確認 OSX 環境下這個路徑檢查沒問題，Win 有問題的話再來修
-                if (System.IO.Directory.Exists(Application.dataPath + AssetsPath.Replace("Assets", "")))
+                if (System.IO.Directory.Exists($"{Application.dataPath}/{RootPath}"))
                 {
-                    return AssetsPath;
+                    return $"Assets/{RootPath}";
                 }
+
                 return "Packages/com.macacagames.oniondataeditor/";
             }
         }
@@ -55,14 +54,30 @@ namespace OnionCollections.DataEditor.Editor
             return node.tags.Contains("Bookmarks");
         }
 
+        #region Icon
 
-
-
-        internal static Texture2D GetIconTexture(string iconName)
+        static OnionEditorIconGroup iconGroup = null;
+        internal static Texture2D GetIconTexture(string iconKey)
         {
-            return AssetDatabase.LoadAssetAtPath<Texture2D>($"{path}/Editor/Icons/{iconName}.png");
+            if(iconGroup == null)
+            {
+                iconGroup = AssetDatabase.LoadAssetAtPath<OnionEditorIconGroup>($"{Path}/Editor/IconGroup.asset");
+            }
+
+            Texture2D result = iconGroup.GetIcon(iconKey);
+
+            return result;
         }
 
+        public static Texture2D SmallErrorIcon => EditorGUIUtility.FindTexture("console.erroricon.sml");
+        public static Texture2D ErrorIcon => EditorGUIUtility.FindTexture("console.erroricon");
+        public static Texture2D SmallInfoIcon => EditorGUIUtility.FindTexture("console.infoicon.sml");
+        public static Texture2D InfoIcon => EditorGUIUtility.FindTexture("console.infoicon");
+        public static Texture2D SmallWarningIcon => EditorGUIUtility.FindTexture("console.warnicon.sml");
+        public static Texture2D WarningIcon => EditorGUIUtility.FindTexture("console.warnicon");
+
+
+        #endregion
 
         static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject
         {

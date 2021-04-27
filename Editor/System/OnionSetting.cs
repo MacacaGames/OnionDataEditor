@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using UnityEngine.UIElements;
 using System.Linq;
 
 namespace OnionCollections.DataEditor.Editor
@@ -19,7 +18,7 @@ namespace OnionCollections.DataEditor.Editor
         string Description => "Onion data editor settings.";
 
         [NodeIcon]
-        Texture2D Icon => OnionDataEditor.GetIconTexture("Settings");
+        Texture Icon => OnionDataEditor.GetIconTexture("Settings");
 
         public override string GetID() => nodeName;
 
@@ -54,10 +53,12 @@ namespace OnionCollections.DataEditor.Editor
 
                 if (bookmarkList == null)
                 {
-                    bookmarkList = new OnionReorderableList(
-                        new SerializedObject(this).FindProperty("bookmarkPaths"),
-                        bookmarkTitle,
-                        inspectGUI);
+                    bookmarkList = new OnionReorderableList(new SerializedObject(this).FindProperty("bookmarkPaths"))
+                    {
+                        title = bookmarkTitle,
+                        titleIcon = OnionDataEditor.GetIconTexture("Bookmark_Fill"),
+                        customGUI = inspectGUI,
+                    };
                 }
 
 
@@ -203,15 +204,17 @@ namespace OnionCollections.DataEditor.Editor
 
                 if (userTagsList == null)
                 {
-                    userTagsList = new OnionReorderableList(
-                        new SerializedObject(this).FindProperty("userTags"),
-                        propertyTitle);
+                    userTagsList = new OnionReorderableList(new SerializedObject(this).FindProperty("userTags"))
+                    {
+                        title = propertyTitle,
+                        titleIcon = OnionDataEditor.GetIconTexture("Tag"),
+                    };
                 }
 
                 var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
                 {
                     displayName = propertyTitle,
-                    icon = EditorGUIUtility.IconContent("FilterByLabel").image,
+                    icon = OnionDataEditor.GetIconTexture("Tag"),
                     OnInspectorAction = new OnionAction(userTagsList.OnInspectorGUI),
                     tags = new[] { "UserTags" },
                 };
@@ -225,25 +228,4 @@ namespace OnionCollections.DataEditor.Editor
 
     }
 
-    [CustomEditor(typeof(OnionSetting))]
-    public class OnionSettingEditor: UnityEditor.Editor
-    {
-        public override VisualElement CreateInspectorGUI()
-        {
-            var root = new VisualElement();
-
-            List<TreeNode> nodes = (target as OnionSetting).ToList();
-            foreach (var node in nodes)
-            {
-                root.Add(new IMGUIContainer(node.OnInspectorAction.action));
-
-                var space = new VisualElement();
-                space.style.height = new StyleLength(10);
-                root.Add(space);
-            }
-
-            return root;
-        }
-
-    }
 }

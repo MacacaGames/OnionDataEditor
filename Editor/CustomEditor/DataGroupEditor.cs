@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using OnionCollections.DataEditor.Editor;
 
 [CustomEditor(typeof(DataGroup))]
 class DataGroupEditor : Editor
@@ -47,7 +48,7 @@ class DataGroupEditor : Editor
                 padding = new RectOffset(0, 0, 0, 0),
                 margin = new RectOffset(5, 5, 5, 5)
             };
-            iconStyle.normal.background = EditorGUIUtility.IconContent("console.erroricon").image as Texture2D;
+            iconStyle.normal.background = OnionDataEditor.ErrorIcon;
         }
 
         if (targetDataGroup.IsDataHaveNull == true)
@@ -56,7 +57,7 @@ class DataGroupEditor : Editor
         }
         else if (targetDataGroup.IsDataHaveRepeatId == true)
         {
-            ErrorInfo("Data have repeat id!");
+            ErrorInfo("Data have duplicate id!");
         }
 
 
