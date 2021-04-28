@@ -14,13 +14,13 @@ namespace OnionCollections.DataEditor.Editor
 
 
         /// <summary>Return true if this node is pseudo.</summary>
-        public bool IsPseudo => flag.HasFlag(NodeFlag.Pseudo);
+        public bool IsPseudo => Flag.HasFlag(NodeFlag.Pseudo);
 
         /// <summary>Return true if this node target is null and node is not pseudo.</summary>
         public bool IsNull => !IsPseudo && Target == null;
 
         /// <summary>Return true if this node hide children nodes.</summary>
-        public bool IsHideElementNodes => flag.HasFlag(NodeFlag.HideElementNodes);
+        public bool IsHideElementNodes => Flag.HasFlag(NodeFlag.HideElementNodes);
 
 
 
@@ -135,12 +135,12 @@ namespace OnionCollections.DataEditor.Editor
             HideElementNodes = 1 << 1,
         }
 
-        internal NodeFlag flag = NodeFlag.None;
+        internal NodeFlag Flag { get; set; } = NodeFlag.Pseudo;
 
         public TreeNode(Object target, NodeFlag flag = NodeFlag.None)
         {
-            this.Target = target;
-            this.flag = flag;
+            Target = target;
+            Flag = flag;
 
             if (IsPseudo == false)
                 InitSetting();
@@ -148,11 +148,17 @@ namespace OnionCollections.DataEditor.Editor
 
         public TreeNode(NodeFlag flag, Object target = null)
         {
-            this.Target = target;
-            this.flag = flag;
+            Target = target;
+            Flag = flag;
             
             if (IsPseudo == false)
                 InitSetting();
+        }
+
+        public TreeNode()
+        {
+            Target = null;
+            Flag = NodeFlag.Pseudo;
         }
 
         internal void InitSetting()

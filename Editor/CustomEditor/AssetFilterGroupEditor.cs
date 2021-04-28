@@ -14,40 +14,16 @@ public class AssetFilterGroupEditor : Editor
     {
         assetFilterGroup = target as AssetFilterGroup;
 
-    }
-
-    OnionReorderableList filterList;
-    OnionReorderableList searchFolderList;
-
-    public override void OnInspectorGUI()
-    {
-
-        GUILayout.Space(10);
-
-        if (filterList == null)
+        filterList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("filters"))
         {
-            filterList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("filters"))
-            {
-                title = "Filters",
-                customGUI = itemGUI
-            };
-        }
+            title = "Filters",
+            customGUI = itemGUI
+        };
 
-        filterList.OnInspectorGUI();
-
-
-        GUILayout.Space(10);
-
-        if(searchFolderList == null)
+        searchFolderList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("searchFolders"))
         {
-            searchFolderList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("searchFolders"))
-            {
-                title = "Search Folders"
-            };
-        }
-
-        searchFolderList.OnInspectorGUI();
-
+            title = "Search Folders"
+        };
 
 
         void itemGUI(Rect r, SerializedProperty sp, int inx)
@@ -90,6 +66,20 @@ public class AssetFilterGroupEditor : Editor
             GUI.color = Color.white;
 
         }
+    }
+
+    OnionReorderableList filterList;
+    OnionReorderableList searchFolderList;
+
+    public override void OnInspectorGUI()
+    {
+        GUILayout.Space(10);
+
+        filterList.OnInspectorGUI();
+
+        GUILayout.Space(10);
+
+        searchFolderList.OnInspectorGUI();
     }
 
 

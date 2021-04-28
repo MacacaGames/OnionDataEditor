@@ -80,11 +80,11 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     return new[]
                     {
-                    new TreeNode(TreeNode.NodeFlag.Pseudo)
-                    {
-                        displayName = "Can not find any match asset."
-                    }
-                };
+                        new TreeNode()
+                        {
+                            displayName = "Can not find any match asset."
+                        }
+                    };
                 }
 
                 bool isTooMuchResult = findResult.Length > maxResultAmount;
@@ -121,7 +121,7 @@ namespace OnionCollections.DataEditor.Editor
                     foreach (var n in results)
                         yield return n;
 
-                    var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                    var node = new TreeNode()
                     {
                         displayName = $"Too many nodes to show..."
                     };

@@ -62,7 +62,7 @@ namespace OnionCollections.DataEditor.Editor
                 }
 
 
-                var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                var node = new TreeNode()
                 {
                     displayName = bookmarkTitle,
                     icon = OnionDataEditor.GetIconTexture("Bookmark_Fill"),
@@ -211,7 +211,7 @@ namespace OnionCollections.DataEditor.Editor
                     };
                 }
 
-                var node = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                var node = new TreeNode()
                 {
                     displayName = propertyTitle,
                     icon = OnionDataEditor.GetIconTexture("Tag"),

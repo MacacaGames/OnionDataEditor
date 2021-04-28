@@ -121,7 +121,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
             //child count
-            bool isHideElementNodes = node.flag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
+            bool isHideElementNodes = node.Flag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
             if (treeQuery[args.item.id].ChildCount > 0 || isHideElementNodes)
             {
                 const float tagWidth = 150F;
@@ -198,9 +198,16 @@ namespace OnionCollections.DataEditor.Editor
 
         //Events
         bool isSelectChange = false;
-        protected override void SingleClickedItem(int id)
+
+        protected override void ContextClickedItem(int id)
         {
-            base.SingleClickedItem(id);
+            base.ContextClickedItem(id);
+
+
+            if (Event.current.isMouse && Event.current.button == 1)
+            {
+                OnRightClickMenu(treeQuery[id]);
+            }
 
             if (isSelectChange)
             {
@@ -209,7 +216,27 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             EditorWindow.GetWindow<OnionDataEditorWindow>().OnTriggerItem(treeQuery[id]);
+
+
+            void OnRightClickMenu(TreeNode node)
+            {
+                if (node.NodeActions == null)
+                    return;
+
+                var menu = new GenericMenu
+                {
+                    allowDuplicateNames = true,
+                };
+
+                foreach(var action in node.NodeActions)
+                {
+                    menu.AddItem(new GUIContent(action.actionName), false, ()=> { action.action(); });
+                }
+
+                menu.ShowAsContext();
+            }
         }
+
         protected override void DoubleClickedItem(int id)
         {
             base.DoubleClickedItem(id);

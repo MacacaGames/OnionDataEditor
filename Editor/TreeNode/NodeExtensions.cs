@@ -42,7 +42,7 @@ namespace OnionCollections.DataEditor.Editor
             //NodeGroupedElement
             if (attr is NodeGroupedElementAttribute groupAttr)
             {
-                TreeNode groupedNode = new TreeNode(TreeNode.NodeFlag.Pseudo)
+                TreeNode groupedNode = new TreeNode()
                 {
                     displayName = groupAttr.displayName,
                 };

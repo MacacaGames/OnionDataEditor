@@ -12,8 +12,9 @@ namespace OnionCollections.DataEditor.Editor
     [CreateAssetMenu(menuName = "Onion Data Editor/Player Pref Group", fileName = "PlayerPrefGroup")]
     internal class PlayerPrefGroup : ScriptableObject
     {
+
         [SerializeField]
-        string[] regexFilter = new string[0];
+        public string[] regexFilter = new string[0];
 
 
         [NodeCustomElement]
@@ -21,23 +22,88 @@ namespace OnionCollections.DataEditor.Editor
         {
             get
             {
-                return FilterPlayerPrefByRegexs().Select(n =>
-                {
-                    return new TreeNode(TreeNode.NodeFlag.Pseudo)
+                return FilterPlayerPrefByRegexs()
+                    .Select(n =>
                     {
-                        displayName = $"{n.Key} : {n.Value}",
-                    };
-                });
+                        return new TreeNode()
+                        {
+                            displayName = $"{n.Key} : {n.Value}",
+                            OnInspectorAction = GetPrefInspector(n.Key, n.Value),
+                            NodeActions = new List<OnionAction>
+                            {
+                                new OnionAction(() => { PlayerPrefs.DeleteKey(n.Key);PlayerPrefs.Save(); }, $"Delete {n.Key}")
+                            }
+                        };
+                    });
             }
         }
+
+        OnionAction GetPrefInspector(string key, object value)
+        {
+            EditorGUIUtility.labelWidth = 150F;
+
+            const float btnWidth = 60F;
+            switch (value)
+            {
+                case int i:
+                    return new OnionAction(() =>
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            i = EditorGUILayout.IntField(new GUIContent(key), i);
+                            if (GUILayout.Button("Save", GUILayout.Width(btnWidth)))
+                            {
+                                PlayerPrefs.SetInt(key, i);
+                                PlayerPrefs.Save();
+                            }
+                        }
+                    });
+
+                case float f:
+                    return new OnionAction(() =>
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            f = EditorGUILayout.FloatField(new GUIContent(key), f);
+                            if (GUILayout.Button("Save", GUILayout.Width(btnWidth)))
+                            {
+                                PlayerPrefs.SetFloat(key, f);
+                                PlayerPrefs.Save();
+                            }
+                        }
+                    });
+
+                case string str:
+                    return new OnionAction(() =>
+                    {
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            str = EditorGUILayout.TextField(new GUIContent(key), str);
+                            if (GUILayout.Button("Save", GUILayout.Width(btnWidth)))
+                            {
+                                PlayerPrefs.SetString(key, str);
+                                PlayerPrefs.Save();
+                            }
+                        }
+                    });
+
+                default:
+                    return null;
+            }            
+        }
+
 
 
         [NodeAction]
         void AddRandom()
         {
             PlayerPrefs.SetInt($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0, 100));
+            PlayerPrefs.SetFloat($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F));
+            PlayerPrefs.SetString($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F).ToString());
             PlayerPrefs.Save();
         }
+
+
 
         [NodeAction]
         void DeleteAll()
@@ -45,13 +111,18 @@ namespace OnionCollections.DataEditor.Editor
             PlayerPrefs.DeleteAll();
         }
 
+
+
         IEnumerable<PlayerPrefPair> FilterPlayerPrefByRegexs()
         {
-            var regexs = regexFilter.Select(n => new Regex(n));
+            var regexs = regexFilter
+                .Where(n => string.IsNullOrEmpty(n) == false)
+                .Select(n => new Regex(n));
             
             return GetAllPlayerPrefPair()
                 .Where(n => regexs.All(r => r.Match(n.Key).Success));
         }
+
 
 
         [Serializable]
@@ -60,8 +131,10 @@ namespace OnionCollections.DataEditor.Editor
             public string Key { get; set; }
             public object Value { get; set; }
         }
+
+
         
-        public static PlayerPrefPair[] GetAllPlayerPrefPair()
+        static PlayerPrefPair[] GetAllPlayerPrefPair()
         {
             string companyName = PlayerSettings.companyName;
             string productName = PlayerSettings.productName;
@@ -199,10 +272,6 @@ namespace OnionCollections.DataEditor.Editor
             }
 
         }
-
-
-
-
 
 
     }
