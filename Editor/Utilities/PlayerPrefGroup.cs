@@ -16,6 +16,9 @@ namespace OnionCollections.DataEditor.Editor
         [SerializeField]
         public string[] regexFilter = new string[0];
 
+        [NodeIcon]
+        Texture Icon => EditorGUIUtility.IconContent("d_Folder Icon").image;
+
 
         [NodeCustomElement]
         IEnumerable<TreeNode> Nodes
@@ -28,6 +31,7 @@ namespace OnionCollections.DataEditor.Editor
                         return new TreeNode()
                         {
                             displayName = $"{n.Key} : {n.Value}",
+                            icon = OnionDataEditor.GetIconTexture("Dot"),
                             OnInspectorAction = GetPrefInspector(n.Key, n.Value),
                             NodeActions = new List<OnionAction>
                             {
@@ -37,6 +41,7 @@ namespace OnionCollections.DataEditor.Editor
                     });
             }
         }
+
 
         OnionAction GetPrefInspector(string key, object value)
         {

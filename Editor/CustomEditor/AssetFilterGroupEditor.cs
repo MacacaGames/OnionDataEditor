@@ -17,12 +17,14 @@ public class AssetFilterGroupEditor : Editor
         filterList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("filters"))
         {
             title = "Filters",
-            customGUI = itemGUI
+            customGUI = itemGUI,
+            titleIcon = EditorGUIUtility.IconContent("d_Search Icon").image as Texture2D,
         };
 
         searchFolderList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("searchFolders"))
         {
-            title = "Search Folders"
+            title = "Search Folders",
+            titleIcon = EditorGUIUtility.IconContent("d_Folder Icon").image as Texture2D,
         };
 
 

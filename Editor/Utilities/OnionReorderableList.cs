@@ -63,8 +63,8 @@ namespace OnionCollections.DataEditor.Editor
             {
                 if (titleIcon != null)
                 {
-                    EditorGUI.LabelField(new Rect(rect.x + 2, rect.y + 2, 14, 14), new GUIContent("", titleIcon));
-                    aRect.x += 18;
+                    EditorGUI.LabelField(new Rect(rect.x +0, rect.y +1, 16, 16), new GUIContent("", titleIcon));
+                    aRect.x += 17;
                 }
                 EditorGUI.LabelField(aRect, title);
             }
@@ -73,6 +73,24 @@ namespace OnionCollections.DataEditor.Editor
                 customHeadGUI.Invoke(aRect);
             }
 
+            //DrawListSize();
+
+            void DrawListSize()
+            {
+                var rRect = rect;
+                const float rectWidth = 40;
+
+                rRect.x = rect.width - rectWidth;
+                rRect.width = rectWidth;
+                rRect.y += 1;
+
+                using (var ch = new EditorGUI.ChangeCheckScope())
+                {
+                    var n = EditorGUI.DelayedIntField(rRect, elements.arraySize, EditorStyles.miniTextField);
+                    if (ch.changed)
+                        elements.arraySize = n;
+                }
+            }
         }
 
 
