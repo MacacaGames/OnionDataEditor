@@ -17,6 +17,7 @@ public class PlayerPrefGroupEditor : Editor
         filterList = new OnionReorderableList(new SerializedObject(playerPrefGroup).FindProperty("regexFilter"))
         {
             title = "Regex Filters",
+            titleIcon = OnionDataEditor.GetIconTexture("Filter"),
         };
 
     }

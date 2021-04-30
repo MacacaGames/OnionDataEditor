@@ -18,13 +18,13 @@ public class AssetFilterGroupEditor : Editor
         {
             title = "Filters",
             customGUI = itemGUI,
-            titleIcon = EditorGUIUtility.IconContent("d_Search Icon").image as Texture2D,
+            titleIcon = OnionDataEditor.GetIconTexture("Filter"),
         };
 
         searchFolderList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("searchFolders"))
         {
             title = "Search Folders",
-            titleIcon = EditorGUIUtility.IconContent("d_Folder Icon").image as Texture2D,
+            titleIcon = OnionDataEditor.GetIconTexture("Folder"),
         };
 
 

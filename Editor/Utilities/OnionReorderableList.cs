@@ -64,7 +64,7 @@ namespace OnionCollections.DataEditor.Editor
                 if (titleIcon != null)
                 {
                     EditorGUI.LabelField(new Rect(rect.x +0, rect.y +1, 16, 16), new GUIContent("", titleIcon));
-                    aRect.x += 17;
+                    aRect.x += 19;
                 }
                 EditorGUI.LabelField(aRect, title);
             }
