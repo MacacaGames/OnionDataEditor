@@ -24,7 +24,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-        readonly List<TreeNode> children = new List<TreeNode>();
+        readonly protected List<TreeNode> children = new List<TreeNode>();
         
         /// <summary>Length of children.</summary>
         internal int ChildCount => children.Count;
@@ -198,6 +198,11 @@ namespace OnionCollections.DataEditor.Editor
         /// <summary>Clear all children.</summary>
         public void ClearChildren()
         {
+            foreach(var ch in children)
+            {
+                ch.Parent = null;
+            }
+
             children.Clear();
         }
 

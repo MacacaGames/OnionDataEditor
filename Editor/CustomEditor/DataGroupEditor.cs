@@ -34,11 +34,11 @@ class DataGroupEditor : Editor
     {
         if (backgrounStyle == null)
         {
-            backgrounStyle = new GUIStyle(GUI.skin.box)
+            backgrounStyle = new GUIStyle(EditorStyles.helpBox)
             {
                 padding = new RectOffset(0, 0, 0, 0)
             };
-            backgrounStyle.normal.background = backgroundTex;
+            //backgrounStyle.normal.background = backgroundTex;
         }
 
         if (iconStyle == null)
@@ -68,6 +68,7 @@ class DataGroupEditor : Editor
         {
 
             GUILayout.Space(10);
+            GUI.backgroundColor = new Color(1F, 0.4F, 0.4F);
             using (new GUILayout.HorizontalScope(backgrounStyle, GUILayout.Height(32 + 10)))
             {
                 GUILayout.Label("", iconStyle, GUILayout.Width(32), GUILayout.Height(32));

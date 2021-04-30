@@ -19,7 +19,7 @@ Onion 是一個於 Unity 使用的資料檢視與編輯工具。
 
 我們先寫兩個 Script ，分別為 AreaData 與 MonsterData，他們都繼承自QueryableData。
 
-```
+```csharp
 using OnionCollections.DataEditor;
 
 public class AreaData : QueryableData
@@ -31,7 +31,7 @@ public class AreaData : QueryableData
     public MonsterData[] monsterDatas;
 }
 ```
-```
+```csharp
 using OnionCollections.DataEditor;
 
 public class MonsterData : QueryableData

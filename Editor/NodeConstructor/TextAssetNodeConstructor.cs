@@ -11,6 +11,15 @@ namespace OnionCollections.DataEditor.Editor
     {
         public override TreeNode Construct(TreeNode node, Object target)
         {
+            if(AssetDatabase.IsMainAsset(target) && AssetDatabase.GetAssetPath(target).EndsWith(".json"))
+            {
+                var n = new JsonNodeConstructor().Construct(node, target);
+
+                return n;
+            }
+
+
+
             node.OnInspectorAction = new OnionAction(OnInspectorGUI);
 
             node.NodeActions = new List<OnionAction>
@@ -34,12 +43,19 @@ namespace OnionCollections.DataEditor.Editor
             editingContent = textAsset.text;
         }
 
+        GUIStyle textFieldGUIStyle;
         string editingContent;
         void OnInspectorGUI()
         {
+            textFieldGUIStyle = new GUIStyle(EditorStyles.textArea)
+            {
+                padding = new RectOffset(15, 15, 15, 15),
+                margin = new RectOffset(0, 0, 0, 0),
+            };
+
             using (var ch = new EditorGUI.ChangeCheckScope())
             {
-                var n = GUILayout.TextArea(editingContent);
+                var n = GUILayout.TextArea(editingContent, textFieldGUIStyle);
                 if (ch.changed)
                 {
                     editingContent = n;

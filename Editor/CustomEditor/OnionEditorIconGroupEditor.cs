@@ -12,6 +12,9 @@ public class OnionEditorIconGroupEditor : Editor
 
     private void OnEnable()
     {
+        const float leftPadding = 14;
+        const float space = 3;
+
         if (iconList == null)
         {
             iconList = new OnionReorderableList(new SerializedObject(target).FindProperty("data"))
@@ -26,20 +29,13 @@ public class OnionEditorIconGroupEditor : Editor
         {
             using (var ch = new EditorGUI.ChangeCheckScope())
             {
-                const float leftPadding = 14;
-                r.width -= leftPadding;
-                r.x += leftPadding;
+                var rects = r.ExtendLeft(-leftPadding).HorizontalSplit(3, space);
 
-                r.width = (r.width - 10) / 3;
+                EditorGUI.LabelField(rects[0], new GUIContent("Key"));
 
-                EditorGUI.LabelField(r, new GUIContent("Key"));
+                EditorGUI.LabelField(rects[1], new GUIContent("Default"));
 
-                r.x += r.width + 10 / (3 - 1);
-                EditorGUI.LabelField(r, new GUIContent("Default"));
-
-                r.x += r.width + 10 / (3 - 1);
-                EditorGUI.LabelField(r, new GUIContent("DarkMode"));
-
+                EditorGUI.LabelField(rects[2], new GUIContent("DarkMode"));
             }
         };
 
@@ -47,16 +43,13 @@ public class OnionEditorIconGroupEditor : Editor
         {
             using (var ch = new EditorGUI.ChangeCheckScope())
             {
+                var rects = r.HorizontalSplit(3, space);
 
-                r.width = (r.width - 10) / 3;
+                EditorGUI.PropertyField(rects[0], sp.FindPropertyRelative("key"), GUIContent.none);
 
-                EditorGUI.PropertyField(r, sp.FindPropertyRelative("key"), new GUIContent(""));
+                EditorGUI.PropertyField(rects[1], sp.FindPropertyRelative("defaultIcon"), GUIContent.none);
 
-                r.x += r.width + 10 / (3 - 1);
-                EditorGUI.PropertyField(r, sp.FindPropertyRelative("defaultIcon"), new GUIContent(""));
-
-                r.x += r.width + 10 / (3 - 1);
-                EditorGUI.PropertyField(r, sp.FindPropertyRelative("darkModeIcon"), new GUIContent(""));
+                EditorGUI.PropertyField(rects[2], sp.FindPropertyRelative("darkModeIcon"), GUIContent.none);
 
                 if (ch.changed)
                 {
