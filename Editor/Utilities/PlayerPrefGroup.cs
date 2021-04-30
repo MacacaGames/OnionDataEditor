@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    [OpenWithOnionDataEditor(true)]
+    [OpenWithOnionDataEditorAttribute(true)]
     [CreateAssetMenu(menuName = "Onion Data Editor/Player Pref Group", fileName = "PlayerPrefGroup")]
     internal class PlayerPrefGroup : ScriptableObject
     {

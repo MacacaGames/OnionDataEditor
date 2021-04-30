@@ -6,9 +6,9 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 
-namespace OnionCollections.DataEditor
+namespace OnionCollections.DataEditor.Editor
 {
-    public class VisualElementResizer : MouseManipulator
+    internal class VisualElementResizer : MouseManipulator
     {
         private Vector2 m_Start;
         protected bool m_Active;

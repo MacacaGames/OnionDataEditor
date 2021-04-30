@@ -1,10 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
+using LitJson;
+using System;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class JsonNode : TreeNode
+    internal class JsonNode : TreeNode
     {
         public enum JsonNodeType
         {
@@ -21,10 +24,10 @@ namespace OnionCollections.DataEditor.Editor
 
         public int Count => ChildCount;
 
-        public List<string > Keys { get; private set; }
+        public List<string> Keys { get; private set; } = new List<string>();
 
 
-
+        public bool isExpend = true;
 
         public string str { get; private set; }
         public int i { get; private set; }
@@ -68,6 +71,146 @@ namespace OnionCollections.DataEditor.Editor
             AddSingleChild(node);
         }
 
+
+        //
+
+
+
+        public void DrawFieldGUI()
+        {
+            switch (JsonType)
+            {
+                case JsonNodeType.Bool:
+                    bool b = EditorGUILayout.Toggle(this.b);
+                    Set(b);
+                    break;
+
+                case JsonNodeType.Int:
+                    int i = EditorGUILayout.IntField(this.i);
+                    Set(i);
+                    break;
+
+                case JsonNodeType.Float:
+                    float f = EditorGUILayout.FloatField(this.f);
+                    Set(f);
+                    break;
+
+                case JsonNodeType.String:
+                    string str = EditorGUILayout.TextField(this.str);
+                    Set(str);
+                    break;
+
+                default:
+                    EditorGUILayout.LabelField(displayName);
+                    break;
+
+            }
+        }
+
+        public void SetFromJsonData(JsonData jsonDataPointer, Action<JsonNode> onBind)
+        {
+            SetFromJsonDataExtension(this, jsonDataPointer, onBind);
+        }
+
+        static void SetFromJsonDataExtension(JsonNode jsonNode, JsonData jsonData, Action<JsonNode> onBind)
+        {
+            //Object
+            if (jsonData.IsObject)
+            {
+                BuildObject();
+            }
+
+            //Array
+            if (jsonData.IsArray)
+            {
+                BuildArray();
+            }
+
+            //Field - String
+            if (jsonData.IsString)
+            {
+                BuildString();
+            }
+
+            //Field - Int
+            if (jsonData.IsLong || jsonData.IsInt)
+            {
+                BuildInt();
+            }
+
+            //Field - Float
+            if (jsonData.IsDouble)
+            {
+                BuildFloat();
+            }
+
+            //Field - Bool
+            if (jsonData.IsBoolean)
+            {
+                BuildBool();
+            }
+            var n = jsonNode;
+
+            onBind(n);
+
+
+            void BuildArray()
+            {
+                jsonNode.JsonType = JsonNodeType.Array;
+                for (int i = 0; i < jsonData.Count; i++)
+                {
+                    var j = jsonData[i];
+                    var ch = new JsonNode()
+                    {
+                        displayName = $"[ {i} ]",
+                    };
+                    jsonNode.AddItem(ch);
+
+                    ch.SetFromJsonData(j, onBind);
+                }
+
+            }
+
+            void BuildObject()
+            {
+                jsonNode.JsonType = JsonNodeType.Object;
+                foreach (string key in jsonData.Keys)
+                {
+                    var j = jsonData[key];
+
+                    var ch = new JsonNode()
+                    {
+                        displayName = key,
+                        description = j.GetJsonType().ToString()
+                    };
+                    jsonNode.AddProperty(key, ch);
+
+                    ch.SetFromJsonData(j, onBind);
+                }
+            }
+
+            void BuildInt()
+            {
+                jsonNode.Set((int)jsonData);
+            }
+
+            void BuildString()
+            {
+                jsonNode.Set((string)jsonData);
+            }
+
+            void BuildFloat()
+            {
+                jsonNode.Set((float)jsonData);
+            }
+
+            void BuildBool()
+            {
+                jsonNode.Set((bool)jsonData);
+            }
+
+
+        }
 
     }
 }

@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    [OpenWithOnionDataEditor(true)]
+    [OpenWithOnionDataEditorAttribute(true)]
     internal class OnionEditorIconGroup : ScriptableObject
     {
 

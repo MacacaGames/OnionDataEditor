@@ -40,3 +40,6 @@ MonoBehaviour:
   - key: OnionDataEditorIcon
     defaultIcon: {fileID: 2800000, guid: 5508119df5918544780cbff6aa442f5d, type: 3}
     darkModeIcon: {fileID: 2800000, guid: 5508119df5918544780cbff6aa442f5d, type: 3}
+  - key: Gray
+    defaultIcon: {fileID: 2800000, guid: 4dde42d5fdfaeef46a0f56397cde2c34, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 4dde42d5fdfaeef46a0f56397cde2c34, type: 3}

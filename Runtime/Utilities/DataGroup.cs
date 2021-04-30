@@ -9,7 +9,7 @@ using OnionCollections.DataEditor;
 using UnityEditor;
 #endif
 
-[OpenWithOnionDataEditor(true)]
+[OpenWithOnionDataEditorAttribute(true)]
 [CreateAssetMenu(menuName = "Onion Data Editor/Data Group", fileName = "DataGroup")]
 public class DataGroup : QueryableData, IEnumerable<IQueryableData>
 {

@@ -127,7 +127,7 @@ namespace OnionCollections.DataEditor.Editor
 
             if (openWithDataEditorQuery.TryGetValue(t, out bool? queryResult) == false)
             {
-                var openAttr = t.GetCustomAttribute<OpenWithOnionDataEditor>(true);
+                var openAttr = t.GetCustomAttribute<OpenWithOnionDataEditorAttribute>(true);
                 queryResult = openAttr?.openWithDataEditor;
                 openWithDataEditorQuery.Add(t, queryResult);
             }

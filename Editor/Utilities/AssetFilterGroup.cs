@@ -6,7 +6,7 @@ using UnityEditor;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    [OpenWithOnionDataEditor(true)]
+    [OpenWithOnionDataEditorAttribute(true)]
     [CreateAssetMenu(menuName = "Onion Data Editor/Asset Group", fileName = "AssetGroup")]
     public class AssetFilterGroup : ScriptableObject
     {

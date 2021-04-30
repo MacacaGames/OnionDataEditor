@@ -6,10 +6,10 @@ namespace OnionCollections.DataEditor
     /// Asset default open with data editor if set true.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-    public class OpenWithOnionDataEditor : Attribute
+    public class OpenWithOnionDataEditorAttribute : Attribute
     {
         public bool openWithDataEditor { get; private set; }
-        public OpenWithOnionDataEditor(bool openWithDataEditor)
+        public OpenWithOnionDataEditorAttribute(bool openWithDataEditor)
         {
             this.openWithDataEditor = openWithDataEditor;
         }
