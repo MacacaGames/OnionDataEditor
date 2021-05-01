@@ -44,7 +44,7 @@ namespace OnionCollections.DataEditor.Editor
                             {
                                 PlayerPrefs.DeleteKey(n.Key);
                                 PlayerPrefs.Save();
-                                OnionDataEditorWindow.Fresh();
+                                OnionDataEditorWindow.RebuildNode();
                             },
                             $"Delete", OnionDataEditor.GetIconTexture("Trash")),
                             new OnionAction(() =>
@@ -154,7 +154,7 @@ namespace OnionCollections.DataEditor.Editor
             PlayerPrefs.SetString($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F).ToString());
             PlayerPrefs.Save();
 
-            OnionDataEditorWindow.Fresh();
+            OnionDataEditorWindow.RebuildNode();
         }
 
 
@@ -163,7 +163,7 @@ namespace OnionCollections.DataEditor.Editor
         void DeleteAll()
         {
             PlayerPrefs.DeleteAll();
-            OnionDataEditorWindow.Fresh();
+            OnionDataEditorWindow.RebuildNode();
         }
 
 

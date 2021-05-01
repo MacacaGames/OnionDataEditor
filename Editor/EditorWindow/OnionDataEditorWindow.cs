@@ -405,34 +405,6 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
-        public static void Fresh()
-        {
-            var window = GetWindow<OnionDataEditorWindow>();
-            window.OnFresh();
-        }
-
-        public static void UpdateTreeView()
-        {
-            var window = GetWindow<OnionDataEditorWindow>();
-
-            if (window.treeRoot != null)
-            {
-                if (window.treeViewState == null)
-                    window.treeView = new DataObjTreeView(window.treeRoot, new TreeViewState());
-                else
-                    window.treeView = new DataObjTreeView(window.treeRoot, window.treeView.state);
-            }
-        }
-
-        public static void SetSelectionAt(TreeNode node)
-        {
-            var window = GetWindow<OnionDataEditorWindow>();
-
-            window.selectedNode = node;
-            window.treeView.SelectAt(node);
-        }
-
-
 
         public void SetTarget(Object newTarget)
         {
@@ -634,6 +606,43 @@ namespace OnionCollections.DataEditor.Editor
                 var selectionObject = node.Target;
                 EditorGUIUtility.PingObject(selectionObject);   //Ping
             }
+        }
+
+
+        //
+
+
+        public static void RebuildNode()
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            window.OnFresh();
+        }
+
+        public static void UpdateTreeView()
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            if (window.treeRoot != null)
+            {
+                if (window.treeViewState == null)
+                    window.treeView = new DataObjTreeView(window.treeRoot, new TreeViewState());
+                else
+                    window.treeView = new DataObjTreeView(window.treeRoot, window.treeView.state);
+            }
+        }
+
+        public static void SetSelectionAt(TreeNode node)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            window.selectedNode = node;
+            window.treeView.SelectAt(node);
+        }
+
+        public static void ChangeTargetTo(Object newTarget)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            window.SetTarget(newTarget);
         }
 
 
