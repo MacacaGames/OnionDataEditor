@@ -1,6 +1,6 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="Onion.uss" />
-    <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row;">
+    <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row; background-color: rgba(56, 56, 56, 255);">
         <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.2); flex-direction: column; width: 40px; flex-shrink: 0;">
             <ui:VisualElement style="width: 30px; height: 30px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; align-items: center; justify-content: center;">
                 <ui:VisualElement name="oniondataeditor-icon" class="btn-icon" style="width: 16px; height: 16px; opacity: 0.05;" />
@@ -18,7 +18,6 @@
             <ui:Button name="btn-setting" class="btn-tab" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-setting-icon" class="btn-icon" style="width: 16px; height: 16px;" />
             </ui:Button>
-            <ui:VisualElement style="flex-shrink: 0; height: 2px;" />
         </ui:VisualElement>
         <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
             <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1; border-right-width: 1px; border-right-color: rgba(0, 0, 0, 0.1);">
@@ -44,7 +43,7 @@
             <ui:Label name="info-description" class="p" style="-unity-text-align: upper-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 0; padding-bottom: 5px; opacity: 0.5;" />
             <ui:ScrollView name="inspector-scroll" style="flex-grow: 1;" />
             <ui:VisualElement name="Spliter" class="spliter" style="height: 6px; display: none;" />
-            <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); height: 60px; border-top-width: 1px; border-top-color: rgba(0, 0, 0, 0.05);">
+            <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); height: 55px; border-top-width: 1px; border-top-color: rgba(0, 0, 0, 0.05); padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px;">
                 <ui:VisualElement name="data-info-btn-list" style="height: 35px; flex-direction: row;" />
             </ui:VisualElement>
         </ui:VisualElement>
