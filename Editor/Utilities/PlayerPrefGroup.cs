@@ -28,26 +28,68 @@ namespace OnionCollections.DataEditor.Editor
                 return FilterPlayerPrefByRegexs()
                     .Select(n =>
                     {
-                        return new TreeNode()
+                        ValuePackage valuePackage = new ValuePackage();
+
+                        TreeNode node = new TreeNode()
                         {
                             displayName = $"{n.Key} : {n.Value}",
+                            description = GetPrefType(n.Value),
                             icon = OnionDataEditor.GetIconTexture("Dot"),
-                            OnInspectorAction = GetPrefInspector(n.Key, n.Value),
-                            NodeActions = new List<OnionAction>
-                            {
-                                new OnionAction(() => { PlayerPrefs.DeleteKey(n.Key);PlayerPrefs.Save(); }, $"Delete {n.Key}")
-                            }
+                            OnInspectorAction = GetPrefInspector(n.Key, n.Value, valuePackage),
                         };
+
+                        node.NodeActions = new List<OnionAction>
+                        {
+                            new OnionAction(() =>
+                            {
+                                PlayerPrefs.DeleteKey(n.Key);
+                                PlayerPrefs.Save();
+                                OnionDataEditorWindow.Fresh();
+                            },
+                            $"Delete", OnionDataEditor.GetIconTexture("Trash")),
+                            new OnionAction(() =>
+                            {
+                                object v = null;
+                                switch (n.Value)
+                                {
+                                    case int i:
+                                        PlayerPrefs.SetInt(n.Key, valuePackage.i);
+                                        v = valuePackage.i;
+                                        break;
+
+                                    case float f:
+                                        PlayerPrefs.SetFloat(n.Key, valuePackage.f);
+                                        v = valuePackage.f;
+                                        break;
+
+                                    case string str:
+                                        PlayerPrefs.SetString(n.Key, valuePackage.str);
+                                        v = valuePackage.str;
+                                        break;
+                                }
+                                node.displayName = $"{n.Key} : {v}";
+                                PlayerPrefs.Save();
+                            },
+                            $"Save"),
+                        };
+
+                        return node;
                     });
             }
         }
 
+        class ValuePackage
+        {
+            public int i;
+            public float f;
+            public string str;
 
-        OnionAction GetPrefInspector(string key, object value)
+        }
+
+
+        OnionAction GetPrefInspector(string key, object value, ValuePackage valuePackage)
         {
             EditorGUIUtility.labelWidth = 150F;
-
-            const float btnWidth = 60F;
             switch (value)
             {
                 case int i:
@@ -56,11 +98,7 @@ namespace OnionCollections.DataEditor.Editor
                         using (new GUILayout.HorizontalScope())
                         {
                             i = EditorGUILayout.IntField(new GUIContent(key), i);
-                            if (GUILayout.Button("Save", GUILayout.Width(btnWidth)))
-                            {
-                                PlayerPrefs.SetInt(key, i);
-                                PlayerPrefs.Save();
-                            }
+                            valuePackage.i = i;
                         }
                     });
 
@@ -70,11 +108,7 @@ namespace OnionCollections.DataEditor.Editor
                         using (new GUILayout.HorizontalScope())
                         {
                             f = EditorGUILayout.FloatField(new GUIContent(key), f);
-                            if (GUILayout.Button("Save", GUILayout.Width(btnWidth)))
-                            {
-                                PlayerPrefs.SetFloat(key, f);
-                                PlayerPrefs.Save();
-                            }
+                            valuePackage.f = f;
                         }
                     });
 
@@ -84,11 +118,7 @@ namespace OnionCollections.DataEditor.Editor
                         using (new GUILayout.HorizontalScope())
                         {
                             str = EditorGUILayout.TextField(new GUIContent(key), str);
-                            if (GUILayout.Button("Save", GUILayout.Width(btnWidth)))
-                            {
-                                PlayerPrefs.SetString(key, str);
-                                PlayerPrefs.Save();
-                            }
+                            valuePackage.str = str;
                         }
                     });
 
@@ -97,6 +127,23 @@ namespace OnionCollections.DataEditor.Editor
             }            
         }
 
+        string GetPrefType(object value)
+        {
+            switch (value)
+            {
+                case int _:
+                    return "Int";
+
+                case float _:
+                    return "Float";
+
+                case string _:
+                    return "String";
+
+                default:
+                    return $"Unknown({value.GetType().Name})";
+            }
+        }
 
 
         [NodeAction(iconName = "Edit")]
