@@ -411,15 +411,27 @@ namespace OnionCollections.DataEditor.Editor
             window.OnFresh();
         }
 
-        void FreshTreeView()
+        public static void UpdateTreeView()
         {
-            if (treeRoot != null)
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            if (window.treeRoot != null)
             {
-                treeRoot.CreateTreeView(out treeView);
-                if (treeViewState == null)
-                    treeViewState = treeView.state;
+                if (window.treeViewState == null)
+                    window.treeView = new DataObjTreeView(window.treeRoot, new TreeViewState());
+                else
+                    window.treeView = new DataObjTreeView(window.treeRoot, window.treeView.state);
             }
         }
+
+        public static void SetSelectionAt(TreeNode node)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            window.selectedNode = node;
+            window.treeView.SelectAt(node);
+        }
+
 
 
         public void SetTarget(Object newTarget)
@@ -442,7 +454,15 @@ namespace OnionCollections.DataEditor.Editor
             {
                 treeRoot = newNode;
 
-                FreshTreeView();
+
+                if (treeRoot != null)
+                {
+                    treeRoot.CreateTreeView(out treeView);
+
+
+                    if (treeViewState == null)
+                        treeViewState = treeView.state;
+                }
 
                 //選擇Root
                 selectedNode = treeRoot;

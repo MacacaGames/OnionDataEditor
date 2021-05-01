@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using LitJson;
 using System;
+using System.Linq;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -45,6 +46,7 @@ namespace OnionCollections.DataEditor.Editor
 
             void Bind(JsonNode jsonNode)
             {
+                jsonNode.description = jsonNode.JsonType.ToString();
 
                 //Object
                 if (jsonNode.JsonType == JsonNode.JsonNodeType.Object)
@@ -55,6 +57,7 @@ namespace OnionCollections.DataEditor.Editor
                     jsonNode.NodeActions = new List<OnionAction> 
                     {
                         saveAction,
+                        GetRemoveNodeAction(jsonNode),
 
                     };
 
@@ -68,6 +71,32 @@ namespace OnionCollections.DataEditor.Editor
                     jsonNode.NodeActions = new List<OnionAction> 
                     {
                         saveAction,
+                        GetRemoveNodeAction(jsonNode),
+                        new OnionAction(() =>
+                        {
+                            if(jsonNode.ChildCount == 0)
+                            {
+                                var menu = new GenericMenu();
+                                foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
+                                {
+                                    if(enumType == JsonNode.JsonNodeType.None)
+                                        continue;
+
+                                    menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
+                                    {
+                                        AddNewArrayItem(jsonNode, enumType);
+                                    });
+                                }
+                                menu.ShowAsContext();
+                            }
+                            else
+                            {
+                                JsonNode.JsonNodeType arrayItemType = (jsonNode.GetChildren().First() as JsonNode).JsonType;
+                                AddNewArrayItem(jsonNode, arrayItemType);
+                            }
+                        },
+                        "Add",
+                        OnionDataEditor.GetIconTexture("Add")),
                     };
 
                     return;
@@ -75,9 +104,44 @@ namespace OnionCollections.DataEditor.Editor
 
                 //Field
                 jsonNode.OnInspectorAction = new OnionAction(() => DrawFieldGUI(jsonNode));
-                jsonNode.NodeActions = new List<OnionAction> { saveAction };
+                jsonNode.NodeActions = new List<OnionAction> 
+                { 
+                    saveAction,
+                    GetRemoveNodeAction(jsonNode),
+                };
 
             }
+
+            OnionAction GetRemoveNodeAction(JsonNode targetNode)
+            {
+                return new OnionAction(() =>
+                {
+                    JsonNode parent = (targetNode.Parent as JsonNode);
+                    if (parent != null)
+                    {
+                        parent.Remove(targetNode);
+                        parent.UpdateItemIndexDisplayName();
+                        OnionDataEditorWindow.UpdateTreeView();
+                        OnionDataEditorWindow.SetSelectionAt(parent);
+                    }
+                },
+                "Remove",
+                OnionDataEditor.GetIconTexture("Trash"));
+            }
+
+            void AddNewArrayItem(JsonNode arrayNode, JsonNode.JsonNodeType jsonNodeType)
+            {
+                var newArrayNode = new JsonNode()
+                {
+                    JsonType = jsonNodeType,
+                };
+                Bind(newArrayNode);
+                arrayNode.AddItem(newArrayNode);
+                arrayNode.UpdateItemIndexDisplayName();
+                OnionDataEditorWindow.UpdateTreeView();
+            }
+
+            //
 
             void DrawCollectionGUI(JsonNode jsonNode, bool isArray)
             {
@@ -247,7 +311,9 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     File.WriteAllText(path, resultJsonText, Encoding.UTF8);
                     EditorUtility.SetDirty(target);
+                    AssetDatabase.Refresh();
 
+                    //Debug.Log(resultJsonText);
                     Debug.Log("Save success");
                 }
                 catch (Exception e)

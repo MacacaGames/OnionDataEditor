@@ -1,10 +1,10 @@
-﻿#if(UNITY_EDITOR)
-
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
+using System.Linq;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -203,6 +203,10 @@ namespace OnionCollections.DataEditor.Editor
         {
             base.ContextClickedItem(id);
 
+            if(Event.current == null)
+            {
+                return;
+            }
 
             if (Event.current.isMouse && Event.current.button == 1)
             {
@@ -252,6 +256,18 @@ namespace OnionCollections.DataEditor.Editor
                 EditorWindow.GetWindow<OnionDataEditorWindow>().OnTriggerItem(treeQuery[selectedIds[0]]);
             }
         }
+
+        public void SelectAt(TreeNode node)
+        {
+            var queryResult = treeQuery.Where(n => n.Value == node);
+            if (queryResult.Any())
+            {
+                int id = queryResult.First().Key;
+                ContextClickedItem(id);
+                SelectionChanged(new List<int> { id });
+
+                SetSelection(new List<int> { id });
+            }
+        }
     }
 }
-#endif

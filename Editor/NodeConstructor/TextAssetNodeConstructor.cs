@@ -77,8 +77,8 @@ namespace OnionCollections.DataEditor.Editor
                 File.WriteAllText(path, editingContent, Encoding.UTF8);
 
                 EditorUtility.DisplayDialog("Onion Data Editor", "Saved Success!", "OK");
-
                 EditorUtility.SetDirty(textAsset);
+                AssetDatabase.Refresh();
             }
             catch (System.Exception e)
             {

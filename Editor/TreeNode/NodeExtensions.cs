@@ -229,6 +229,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
+
         #region Constructor
 
         readonly static PseudoNodeConstructor pseudoNodeConstructor = new PseudoNodeConstructor();

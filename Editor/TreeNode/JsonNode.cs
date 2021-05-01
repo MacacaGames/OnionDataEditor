@@ -20,7 +20,7 @@ namespace OnionCollections.DataEditor.Editor
             Bool = 6,
         }
 
-        public JsonNodeType JsonType { get; private set; } = JsonNodeType.None;
+        public JsonNodeType JsonType { get; set; } = JsonNodeType.None;
 
         public int Count => ChildCount;
 
@@ -65,12 +65,40 @@ namespace OnionCollections.DataEditor.Editor
             AddSingleChild(node);
         }
 
+
         public void AddItem(JsonNode node)
         {
             JsonType = JsonNodeType.Array;
             AddSingleChild(node);
         }
 
+        public void Remove(JsonNode node)
+        {
+            if (JsonType == JsonNodeType.Array)
+            {
+                children.Remove(node);
+            }
+            else if(JsonType == JsonNodeType.Object)
+            {
+                int index = children.IndexOf(node);
+                if (index >= 0)
+                {
+                    children.RemoveAt(index);
+                    Keys.RemoveAt(index);
+                }
+            }
+        }
+
+        public void UpdateItemIndexDisplayName()
+        {
+            if (JsonType != JsonNodeType.Array)
+                return;
+
+            for(int i = 0; i < ChildCount; i++)
+            {
+                children[i].displayName = $"[ {i} ]";
+            }
+        }
 
         //
 
@@ -160,15 +188,13 @@ namespace OnionCollections.DataEditor.Editor
                 for (int i = 0; i < jsonData.Count; i++)
                 {
                     var j = jsonData[i];
-                    var ch = new JsonNode()
-                    {
-                        displayName = $"[ {i} ]",
-                    };
+                    var ch = new JsonNode();
                     jsonNode.AddItem(ch);
 
                     ch.ImportFromJsonData(j, onBind);
                 }
 
+                jsonNode.UpdateItemIndexDisplayName();
             }
 
             void BuildObject()
@@ -180,8 +206,7 @@ namespace OnionCollections.DataEditor.Editor
 
                     var ch = new JsonNode()
                     {
-                        displayName = key,
-                        description = j.GetJsonType().ToString()
+                        displayName = key
                     };
                     jsonNode.AddProperty(key, ch);
 
@@ -224,6 +249,7 @@ namespace OnionCollections.DataEditor.Editor
                 case JsonNodeType.Object:
 
                     var objData = new JsonData();
+                    objData.SetJsonType(LitJson.JsonType.Object);
                     if (jsonNode.Keys.Count > 0)
                     {
                         for (int i = 0; i < jsonNode.Keys.Count; i++)
@@ -233,27 +259,20 @@ namespace OnionCollections.DataEditor.Editor
                             objData[key] = value;
                         }
                     }
-                    else
-                    {
-                        objData.SetJsonType(LitJson.JsonType.Object);
-                    }
                     return objData;
 
 
                 case JsonNodeType.Array:
 
                     var arrayData = new JsonData();
+                    arrayData.SetJsonType(LitJson.JsonType.Array);
                     if (jsonNode.ChildCount > 0)
                     {
                         for (int i = 0; i < jsonNode.ChildCount; i++)
                         {
                             JsonData value = ExportToJsonDataExtension(jsonNode.children[i] as JsonNode);
-                            arrayData[i] = value;
+                            arrayData.Add(value);
                         }
-                    }
-                    else
-                    {
-                        arrayData.SetJsonType(LitJson.JsonType.Array);
                     }
                     return arrayData;
 
@@ -273,8 +292,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
                 default:
-
-                    return new JsonData();
+                    throw new Exception($"Unknown json data type in {jsonNode.displayName}");
             }
         }
 
