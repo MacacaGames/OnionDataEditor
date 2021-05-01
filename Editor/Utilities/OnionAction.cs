@@ -1,9 +1,9 @@
 ﻿
-#if(UNITY_EDITOR)
-
 using System;
 using System.Reflection;
+using UnityEngine;
 using Object = UnityEngine.Object;
+
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -11,22 +11,21 @@ namespace OnionCollections.DataEditor.Editor
     {
         public Action action { get; private set; }
         public string actionName { get; private set; }
+        public Texture actionIcon { get; private set; }
 
-        public OnionAction(Action action)
-        {
-            this.action = action;
-        }
 
-        public OnionAction(Action action, string actionName)
+        public OnionAction(Action action, string actionName = null, Texture actionIcon = null)
         {
             this.action = action;
             this.actionName = actionName;
+            this.actionIcon = actionIcon;
         }
 
-        public OnionAction(MethodInfo method, Object target, string actionName)
+        public OnionAction(MethodInfo method, Object target, string actionName = null, Texture actionIcon = null)
         {
             action = CreateOpenDelegate(method, target);
             this.actionName = actionName;
+            this.actionIcon = actionIcon;
         }
 
         private static Action CreateOpenDelegate(MethodInfo method, Object target)
@@ -35,5 +34,3 @@ namespace OnionCollections.DataEditor.Editor
         }
     }
 }
-
-#endif

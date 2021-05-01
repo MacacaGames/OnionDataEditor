@@ -59,6 +59,9 @@ namespace OnionCollections.DataEditor.Editor
         static OnionEditorIconGroup iconGroup = null;
         internal static Texture2D GetIconTexture(string iconKey)
         {
+            if (string.IsNullOrEmpty(iconKey))
+                return null;
+
             if(iconGroup == null)
             {
                 iconGroup = AssetDatabase.LoadAssetAtPath<OnionEditorIconGroup>($"{Path}/Editor/IconGroup.asset");

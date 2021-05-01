@@ -562,12 +562,21 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     foreach (var action in n.NodeActions)
                     {
-                        Button actionBtn = new Button()
-                        {
-                            text = action.actionName,
-                        };
+                        Button actionBtn = new Button();
+                        //{
+                        //    text = action.actionName,
+                        //};
                         actionBtn.clickable.clicked += () => action.action();
                         actionBtn.AddToClassList("onion-btn");
+
+                        if (action.actionIcon != null)
+                        {
+                            actionBtn.Add(new Image() { image = action.actionIcon });
+                        }
+                        actionBtn.Add(new Label() { text = action.actionName });
+
+
+
                         actionBtns.Add(actionBtn);
 
                         container.Add(actionBtn);

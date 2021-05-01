@@ -451,7 +451,10 @@ namespace OnionCollections.DataEditor.Editor
                     .Where(_ => _.GetGenericArguments().Length == 0)
                     .Select(_ => (methodInfo: _, attr: _.GetCustomAttribute<NodeActionAttribute>()))
                     .Where(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(OnionDataEditor.Setting.userTags).Any())
-                    .Select(_ => new OnionAction(_.methodInfo, target, _.attr.actionName ?? _.methodInfo.Name));
+                    .Select(_ => new OnionAction(
+                        _.methodInfo, target,
+                        _.attr.actionName ?? _.methodInfo.Name,
+                        OnionDataEditor.GetIconTexture(_.attr.iconName)));
 
             }
             return result;

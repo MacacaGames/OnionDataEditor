@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 
 namespace OnionCollections.DataEditor
 {
@@ -9,7 +10,8 @@ namespace OnionCollections.DataEditor
     public class NodeActionAttribute : Attribute
     {
         public string actionName = null;
-
+        public string iconName = null;
+        
         /// <summary>
         /// NodeActionAttribute enable function for users by user tags.
         /// </summary>

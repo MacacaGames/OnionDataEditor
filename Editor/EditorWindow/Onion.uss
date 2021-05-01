@@ -39,12 +39,21 @@
 #data-info-btn-list .onion-btn {
     min-width: 80px;
     max-width: 250px;
-    height: 34px;
+    height: 30px;
     border-radius: 15px;
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
     border-top-right-radius: 12px;
     border-bottom-right-radius: 12px;
+    flex-direction: row;
+    align-items: center;
+}
+
+#data-info-btn-list .onion-btn .unity-image {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-right: 3px;
 }
 
 .card {
