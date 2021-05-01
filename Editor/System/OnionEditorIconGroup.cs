@@ -17,11 +17,11 @@ namespace OnionCollections.DataEditor.Editor
         [System.Serializable]
         public class IconInfo : IQueryableData
         {
-            public string key;
+            public string id;
             public Texture2D defaultIcon;
             public Texture2D darkModeIcon;
 
-            public string GetID() => key;
+            public string GetID() => id;
         }
 
 

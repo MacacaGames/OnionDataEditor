@@ -107,12 +107,12 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        public void SetFromJsonData(JsonData jsonDataPointer, Action<JsonNode> onBind)
+        public void ImportFromJsonData(JsonData jsonDataPointer, Action<JsonNode> onBind)
         {
-            SetFromJsonDataExtension(this, jsonDataPointer, onBind);
+            ImportFromJsonDataExtension(this, jsonDataPointer, onBind);
         }
 
-        static void SetFromJsonDataExtension(JsonNode jsonNode, JsonData jsonData, Action<JsonNode> onBind)
+        static void ImportFromJsonDataExtension(JsonNode jsonNode, JsonData jsonData, Action<JsonNode> onBind)
         {
             //Object
             if (jsonData.IsObject)
@@ -166,7 +166,7 @@ namespace OnionCollections.DataEditor.Editor
                     };
                     jsonNode.AddItem(ch);
 
-                    ch.SetFromJsonData(j, onBind);
+                    ch.ImportFromJsonData(j, onBind);
                 }
 
             }
@@ -185,7 +185,7 @@ namespace OnionCollections.DataEditor.Editor
                     };
                     jsonNode.AddProperty(key, ch);
 
-                    ch.SetFromJsonData(j, onBind);
+                    ch.ImportFromJsonData(j, onBind);
                 }
             }
 
@@ -211,6 +211,74 @@ namespace OnionCollections.DataEditor.Editor
 
 
         }
+
+        public JsonData ExportToJsonData()
+        {
+            return ExportToJsonDataExtension(this);
+        }
+
+        static JsonData ExportToJsonDataExtension(JsonNode jsonNode)
+        {
+            switch (jsonNode.JsonType)
+            {
+                case JsonNodeType.Object:
+
+                    var objData = new JsonData();
+                    if (jsonNode.Keys.Count > 0)
+                    {
+                        for (int i = 0; i < jsonNode.Keys.Count; i++)
+                        {
+                            string key = jsonNode.Keys[i];
+                            JsonData value = ExportToJsonDataExtension(jsonNode.children[i] as JsonNode);
+                            objData[key] = value;
+                        }
+                    }
+                    else
+                    {
+                        objData.SetJsonType(LitJson.JsonType.Object);
+                    }
+                    return objData;
+
+
+                case JsonNodeType.Array:
+
+                    var arrayData = new JsonData();
+                    if (jsonNode.ChildCount > 0)
+                    {
+                        for (int i = 0; i < jsonNode.ChildCount; i++)
+                        {
+                            JsonData value = ExportToJsonDataExtension(jsonNode.children[i] as JsonNode);
+                            arrayData[i] = value;
+                        }
+                    }
+                    else
+                    {
+                        arrayData.SetJsonType(LitJson.JsonType.Array);
+                    }
+                    return arrayData;
+
+
+                case JsonNodeType.String:
+                    return new JsonData(jsonNode.str);
+
+
+                case JsonNodeType.Int:
+                    return new JsonData(jsonNode.i);
+
+                case JsonNodeType.Float:
+                    return new JsonData(jsonNode.f);
+
+                case JsonNodeType.Bool:
+                    return new JsonData(jsonNode.b);
+
+
+                default:
+
+                    return new JsonData();
+            }
+        }
+
+
 
     }
 }

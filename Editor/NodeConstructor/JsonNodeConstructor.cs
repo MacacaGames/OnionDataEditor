@@ -4,16 +4,18 @@ using UnityEngine;
 using UnityEditor;
 using LitJson;
 using System;
-using System.Linq;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace OnionCollections.DataEditor.Editor
 {
     internal class JsonNodeConstructor : NodeConstructorBase
     {
 
-        GUIStyle objectOrArrayConatiner;
-        GUIStyle objectOrArrayTitle;
-        GUIStyle objectOrArrayTitleChip;
+        static GUIStyle objectOrArrayConatiner;
+        static GUIStyle objectOrArrayTitle;
+        static GUIStyle objectOrArrayTitleChip;
 
         public override TreeNode Construct(TreeNode node, UnityEngine.Object target)
         {
@@ -29,20 +31,33 @@ namespace OnionCollections.DataEditor.Editor
 
             node.AddSingleChild(root);
 
+            var saveAction = new OnionAction(() => Save(root), "Save");
+
+            node.NodeActions = new List<OnionAction> { saveAction };
+
             JsonData jsonDataRoot = JsonMapper.ToObject((target as TextAsset).text);
 
-            root.SetFromJsonData(jsonDataRoot, Bind);
+            root.ImportFromJsonData(jsonDataRoot, Bind);
 
             return node;
-            
+
             //
 
             void Bind(JsonNode jsonNode)
             {
+
                 //Object
                 if (jsonNode.JsonType == JsonNode.JsonNodeType.Object)
                 {
+                    //var addProperty
+
                     jsonNode.OnInspectorAction = new OnionAction(() => DrawCollectionGUI(jsonNode, false));
+                    jsonNode.NodeActions = new List<OnionAction> 
+                    {
+                        saveAction,
+
+                    };
+
                     return;
                 }
 
@@ -50,11 +65,17 @@ namespace OnionCollections.DataEditor.Editor
                 if (jsonNode.JsonType == JsonNode.JsonNodeType.Array)
                 {
                     jsonNode.OnInspectorAction = new OnionAction(() => DrawCollectionGUI(jsonNode, true));
+                    jsonNode.NodeActions = new List<OnionAction> 
+                    {
+                        saveAction,
+                    };
+
                     return;
                 }
 
                 //Field
                 jsonNode.OnInspectorAction = new OnionAction(() => DrawFieldGUI(jsonNode));
+                jsonNode.NodeActions = new List<OnionAction> { saveAction };
 
             }
 
@@ -103,8 +124,9 @@ namespace OnionCollections.DataEditor.Editor
                             GUILayout.Space(5);
                             GUI.color = new Color(1, 1, 1, 0.1F);
                             GUILayout.Label(
-                                "", 
-                                new GUIStyle() { 
+                                "",
+                                new GUIStyle()
+                                {
                                     normal = { background = OnionDataEditor.GetIconTexture("Gray") },
                                     stretchHeight = true,
                                 },
@@ -196,17 +218,46 @@ namespace OnionCollections.DataEditor.Editor
                 };
             }
 
+
+            void Save(JsonNode exportJsonNode)
+            {
+                var n = exportJsonNode.ExportToJsonData();
+
+                var sb = new StringBuilder();
+                JsonWriter writer = new JsonWriter(sb)
+                {
+                    PrettyPrint = true,
+                };
+
+                JsonMapper.ToJson(n, writer);
+
+                string resultJsonText = sb.ToString();
+
+                Regex reg = new Regex(@"(?i)\\[uU]([0-9a-f]{4})");
+                resultJsonText = reg.Replace(resultJsonText, (Match m) => { return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString(); });
+
+
+                string assetPath = AssetDatabase.GetAssetPath(target).Substring("Asset/".Length);
+
+                string projectPath = Application.dataPath;
+
+                string path = $"{projectPath}{assetPath}";
+
+                try
+                {
+                    File.WriteAllText(path, resultJsonText, Encoding.UTF8);
+                    EditorUtility.SetDirty(target);
+
+                    Debug.Log("Save success");
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                }
+
+            }
+
         }
-
-
-
-
-
-
-
-
-
-
 
 
     }

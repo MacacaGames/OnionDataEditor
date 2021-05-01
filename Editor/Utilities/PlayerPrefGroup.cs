@@ -106,6 +106,8 @@ namespace OnionCollections.DataEditor.Editor
             PlayerPrefs.SetFloat($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F));
             PlayerPrefs.SetString($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F).ToString());
             PlayerPrefs.Save();
+
+            OnionDataEditorWindow.Fresh();
         }
 
 
@@ -114,6 +116,7 @@ namespace OnionCollections.DataEditor.Editor
         void DeleteAll()
         {
             PlayerPrefs.DeleteAll();
+            OnionDataEditorWindow.Fresh();
         }
 
 

@@ -233,25 +233,6 @@ namespace OnionCollections.DataEditor.Editor
 
             //
             
-            void OnFresh()
-            {
-                if(treeRoot == null)
-                {
-                    SetTarget(OnionDataEditor.Bookmarks);
-                    return;
-                }
-
-                if (treeRoot.OnRebuildNode == null)
-                {
-                    treeRoot.InitSetting();
-                }
-                else
-                {
-                    treeRoot.OnRebuildNode.action.Invoke();
-                }
-
-                OnTargetChange(treeRoot);
-            }
 
             void OnToggleBookmark()
             {
@@ -295,6 +276,26 @@ namespace OnionCollections.DataEditor.Editor
             //    }
             //}
 
+        }
+
+        void OnFresh()
+        {
+            if (treeRoot == null)
+            {
+                SetTarget(OnionDataEditor.Bookmarks);
+                return;
+            }
+
+            if (treeRoot.OnRebuildNode == null)
+            {
+                treeRoot.InitSetting();
+            }
+            else
+            {
+                treeRoot.OnRebuildNode.action.Invoke();
+            }
+
+            OnTargetChange(treeRoot);
         }
 
         void SwitchTab(Tab tab)
@@ -404,16 +405,22 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
+        public static void Fresh()
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            window.OnFresh();
+        }
 
-        //public void FreshTreeView()
-        //{
-        //    if (treeRoot != null)
-        //    {
-        //        treeRoot.CreateTreeView(out treeView);
-        //        if (treeViewState == null)
-        //            treeViewState = treeView.state;
-        //    }
-        //}
+        void FreshTreeView()
+        {
+            if (treeRoot != null)
+            {
+                treeRoot.CreateTreeView(out treeView);
+                if (treeViewState == null)
+                    treeViewState = treeView.state;
+            }
+        }
+
 
         public void SetTarget(Object newTarget)
         {
@@ -434,10 +441,8 @@ namespace OnionCollections.DataEditor.Editor
             if (newNode != null)
             {
                 treeRoot = newNode;
-                treeRoot.CreateTreeView(out treeView);
 
-                if (treeViewState == null)
-                    treeViewState = treeView.state;
+                FreshTreeView();
 
                 //選擇Root
                 selectedNode = treeRoot;
@@ -496,7 +501,7 @@ namespace OnionCollections.DataEditor.Editor
             DisplayInfo(newNode);
         }
         
-        bool IsSystemTarget(TreeNode node)
+        static bool IsSystemTarget(TreeNode node)
         {
             return
                 OnionDataEditor.IsBookmark(node) ||

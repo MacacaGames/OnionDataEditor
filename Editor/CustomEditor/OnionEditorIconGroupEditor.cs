@@ -31,7 +31,7 @@ public class OnionEditorIconGroupEditor : Editor
             {
                 var rects = r.ExtendLeft(-leftPadding).HorizontalSplit(3, space);
 
-                EditorGUI.LabelField(rects[0], new GUIContent("Key"));
+                EditorGUI.LabelField(rects[0], new GUIContent("ID"));
 
                 EditorGUI.LabelField(rects[1], new GUIContent("Default"));
 
@@ -45,7 +45,7 @@ public class OnionEditorIconGroupEditor : Editor
             {
                 var rects = r.HorizontalSplit(3, space);
 
-                EditorGUI.PropertyField(rects[0], sp.FindPropertyRelative("key"), GUIContent.none);
+                EditorGUI.PropertyField(rects[0], sp.FindPropertyRelative("id"), GUIContent.none);
 
                 EditorGUI.PropertyField(rects[1], sp.FindPropertyRelative("defaultIcon"), GUIContent.none);
 

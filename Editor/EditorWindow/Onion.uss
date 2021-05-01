@@ -56,6 +56,11 @@
     margin-right: 3px;
 }
 
+#data-info-btn-list .onion-btn .unity-label {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
 .card {
     margin: 5;
     background-color: rgba(135, 135, 135, 0.15);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.IO;
+using System.Text;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -73,7 +74,7 @@ namespace OnionCollections.DataEditor.Editor
 
             try
             {
-                File.WriteAllText(path, editingContent);
+                File.WriteAllText(path, editingContent, Encoding.UTF8);
 
                 EditorUtility.DisplayDialog("Onion Data Editor", "Saved Success!", "OK");
 
