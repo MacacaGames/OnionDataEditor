@@ -196,7 +196,7 @@ namespace OnionCollections.DataEditor.Editor
                                 },
                                 GUILayout.Width(1));
                             GUI.color = Color.white;
-                            GUILayout.Space(5);
+                            GUILayout.Space(10);
 
                             using (new GUILayout.VerticalScope())
                             {
@@ -246,9 +246,15 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     using (new GUILayout.HorizontalScope(GUILayout.Width(200)))
                     {
-                        GUILayout.Space(14);
+                        GUI.color = new Color(1, 1, 1, 0.5F);
+                        GUILayout.Label(OnionDataEditor.GetIconTexture("Dash"),
+                            new GUIStyle(EditorStyles.label) { margin = new RectOffset(0, 0, 4, 1) },
+                            GUILayout.Width(14), GUILayout.Height(14));
+                        GUI.color = Color.white;
+
                         GUILayout.Label(
                             new GUIContent(jsonNode.displayName),
+                            new GUIStyle(EditorStyles.label) { margin = new RectOffset(0, 0, 1, 1) },
                             GUILayout.Height(EditorGUIUtility.singleLineHeight));
                         GUILayout.FlexibleSpace();
                     }
@@ -268,7 +274,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 objectOrArrayTitle = new GUIStyle(EditorStyles.foldoutHeader)
                 {
-                    margin = new RectOffset(0, 0, 3, 3),
+                    margin = new RectOffset(0, 0, 4, 4),
                     stretchWidth = false,
                     fontStyle = FontStyle.Normal,
                 };
