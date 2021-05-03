@@ -88,6 +88,14 @@
     border-bottom-width: 1px;
 }
 
+.pointer {
+    cursor: link;
+}
+
+.pointer * {
+    cursor: link;
+}
+
 .onion-btn:hover {
     background-color: rgba(115, 149, 166, 0.2);
     border-left-color: rgba(0, 0, 0, 0);

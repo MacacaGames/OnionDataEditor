@@ -560,11 +560,10 @@ namespace OnionCollections.DataEditor.Editor
                     foreach (var action in n.NodeActions)
                     {
                         Button actionBtn = new Button();
-                        //{
-                        //    text = action.actionName,
-                        //};
+
                         actionBtn.clickable.clicked += () => action.action();
                         actionBtn.AddToClassList("onion-btn");
+                        actionBtn.AddToClassList("pointer");
 
                         if (action.actionIcon != null)
                         {
