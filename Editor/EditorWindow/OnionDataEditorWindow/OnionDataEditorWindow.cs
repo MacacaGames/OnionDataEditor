@@ -97,7 +97,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             //建構
             var root = this.rootVisualElement;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "/Editor/EditorWindow/Onion.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "/Editor/EditorWindow/OnionDataEditorWindow/Onion.uxml");
             TemplateContainer cloneTree = visualTree.CloneTree();
             cloneTree.style.flexGrow = 1;
             root.Add(cloneTree);

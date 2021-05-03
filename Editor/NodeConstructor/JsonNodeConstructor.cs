@@ -51,13 +51,15 @@ namespace OnionCollections.DataEditor.Editor
                 //Object
                 if (jsonNode.JsonType == JsonNode.JsonNodeType.Object)
                 {
-                    //var addProperty
-
                     jsonNode.OnInspectorAction = new OnionAction(() => DrawCollectionGUI(jsonNode, false));
                     jsonNode.NodeActions = new List<OnionAction> 
                     {
                         saveAction,
                         GetRemoveNodeAction(jsonNode),
+                        //new OnionAction(() =>
+                        //{
+                        //    CommonTextInputWindow.Open("Add property", str => { Debug.Log($"Add {str}"); });
+                        //}, "Add"),
 
                     };
 
@@ -256,6 +258,7 @@ namespace OnionCollections.DataEditor.Editor
                             new GUIContent(jsonNode.displayName),
                             new GUIStyle(EditorStyles.label) { margin = new RectOffset(0, 0, 1, 1) },
                             GUILayout.Height(EditorGUIUtility.singleLineHeight));
+
                         GUILayout.FlexibleSpace();
                     }
 
@@ -333,4 +336,6 @@ namespace OnionCollections.DataEditor.Editor
 
 
     }
+
+
 }

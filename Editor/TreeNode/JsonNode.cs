@@ -135,9 +135,15 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        public void ImportFromJsonData(JsonData jsonDataPointer, Action<JsonNode> onBind)
+        public void ImportFromJsonData(JsonData jsonData, Action<JsonNode> onBind)
         {
-            ImportFromJsonDataExtension(this, jsonDataPointer, onBind);
+            ImportFromJsonDataExtension(this, jsonData, onBind);
+        }
+
+        public void ImportFromJsonText(string jsonText, Action<JsonNode> onBind)
+        {
+            JsonData jsonData = JsonMapper.ToObject(jsonText);
+            ImportFromJsonDataExtension(this, jsonData, onBind);
         }
 
         static void ImportFromJsonDataExtension(JsonNode jsonNode, JsonData jsonData, Action<JsonNode> onBind)
@@ -295,6 +301,7 @@ namespace OnionCollections.DataEditor.Editor
                     throw new Exception($"Unknown json data type in {jsonNode.displayName}");
             }
         }
+
 
 
 

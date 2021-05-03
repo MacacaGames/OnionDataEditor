@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <ui:VisualElement name="Root" style="padding-left: 20px; padding-right: 20px; padding-top: 0; padding-bottom: 0; flex-grow: 1; justify-content: center;">
+        <ui:VisualElement style="flex-direction: row;">
+            <ui:TextField picking-mode="Ignore" name="TextField" style="flex-grow: 1;" />
+            <ui:Button text="Ok" display-tooltip-when-elided="true" name="Btn-Ok" style="width: 40px;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
