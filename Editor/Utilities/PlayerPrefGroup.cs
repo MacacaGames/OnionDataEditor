@@ -146,12 +146,20 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        [NodeAction(iconName = "Edit")]
+        [NodeAction(actionName = "Add Random (Test)", iconName = "Edit")]
         void AddRandom()
         {
-            PlayerPrefs.SetInt($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0, 100));
-            PlayerPrefs.SetFloat($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F));
-            PlayerPrefs.SetString($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F).ToString());
+            int times = UnityEngine.Random.Range(1, 5);
+            for (int i = 0; i < times; i++)
+            {
+                int choose = UnityEngine.Random.Range(0, 3);
+                if (choose == 0)
+                    PlayerPrefs.SetInt($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0, 100));
+                else if (choose == 1)
+                    PlayerPrefs.SetFloat($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F));
+                else if (choose == 2)
+                    PlayerPrefs.SetString($"KEY{UnityEngine.Random.Range(0, 100)}", UnityEngine.Random.Range(0F, 100F).ToString());
+            }
             PlayerPrefs.Save();
 
             OnionDataEditorWindow.RebuildNode();
@@ -159,7 +167,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-        [NodeAction(iconName = "Trash")]
+        [NodeAction(actionName = "Delete All", iconName = "Trash")]
         void DeleteAll()
         {
             PlayerPrefs.DeleteAll();
