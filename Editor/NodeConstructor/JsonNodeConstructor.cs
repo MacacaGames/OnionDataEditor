@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-using LitJson;
+//using LitJson;
 using System;
 using System.Linq;
 using System.IO;
@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace OnionCollections.DataEditor.Editor
 {
+#if (true || ONIONDATAEDITOR_USE_JSON)
     internal class JsonNodeConstructor : NodeConstructorBase
     {
 
@@ -32,13 +33,11 @@ namespace OnionCollections.DataEditor.Editor
 
             node.AddSingleChild(root);
 
-            var saveAction = new OnionAction(() => Save(root), "Save");
+            var saveAction = new OnionAction(() => JsonBridge.Save(root, target), "Save");
 
             node.NodeActions = new List<OnionAction> { saveAction };
 
-            JsonData jsonDataRoot = JsonMapper.ToObject((target as TextAsset).text);
-
-            root.ImportFromJsonData(jsonDataRoot, Bind);
+            JsonBridge.BuildNode(root, target, Bind);
 
             return node;
 
@@ -292,50 +291,11 @@ namespace OnionCollections.DataEditor.Editor
             }
 
 
-            void Save(JsonNode exportJsonNode)
-            {
-                var n = exportJsonNode.ExportToJsonData();
-
-                var sb = new StringBuilder();
-                JsonWriter writer = new JsonWriter(sb)
-                {
-                    PrettyPrint = true,
-                };
-
-                JsonMapper.ToJson(n, writer);
-
-                string resultJsonText = sb.ToString();
-
-                Regex reg = new Regex(@"(?i)\\[uU]([0-9a-f]{4})");
-                resultJsonText = reg.Replace(resultJsonText, (Match m) => { return ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString(); });
-
-
-                string assetPath = AssetDatabase.GetAssetPath(target).Substring("Asset/".Length);
-
-                string projectPath = Application.dataPath;
-
-                string path = $"{projectPath}{assetPath}";
-
-                try
-                {
-                    File.WriteAllText(path, resultJsonText, Encoding.UTF8);
-                    EditorUtility.SetDirty(target);
-                    AssetDatabase.Refresh();
-
-                    //Debug.Log(resultJsonText);
-                    Debug.Log("Save success");
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError(e.Message);
-                }
-
-            }
 
         }
 
 
     }
 
-
+#endif
 }
