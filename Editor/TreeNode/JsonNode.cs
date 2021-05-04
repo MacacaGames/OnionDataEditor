@@ -9,16 +9,15 @@ namespace OnionCollections.DataEditor.Editor
     {
         public enum JsonNodeType
         {
-            None = 0,
+            Null = 0,
             Object = 1,
             Array = 2,
             String = 3,
-            Int = 4,
-            Float = 5,
-            Bool = 6,
+            Number = 4,
+            Bool = 5,
         }
 
-        public JsonNodeType JsonType { get; set; } = JsonNodeType.None;
+        public JsonNodeType JsonType { get; set; } = JsonNodeType.Null;
 
         public int Count => ChildCount;
 
@@ -28,8 +27,8 @@ namespace OnionCollections.DataEditor.Editor
         public bool isExpend = true;
 
         public string str { get; private set; }
-        public int i { get; private set; }
         public float f { get; private set; }
+        public float n => f;
         public bool b { get; private set; }
 
         public void Set(string str)
@@ -38,15 +37,10 @@ namespace OnionCollections.DataEditor.Editor
             this.str = str;
         }
 
-        public void Set(int i)
-        {
-            JsonType = JsonNodeType.Int;
-            this.i = i;
-        }
 
         public void Set(float f)
         {
-            JsonType = JsonNodeType.Float;
+            JsonType = JsonNodeType.Number;
             this.f = f;
         }
 
@@ -92,9 +86,19 @@ namespace OnionCollections.DataEditor.Editor
             if (JsonType != JsonNodeType.Array)
                 return;
 
-            for(int i = 0; i < ChildCount; i++)
+            for (int i = 0; i < ChildCount; i++)
             {
                 children[i].displayName = $"[ {i} ]";
+            }
+        }
+        public void UpdatePropertyDisplayName()
+        {
+            if (JsonType != JsonNodeType.Object)
+                return;
+
+            for (int i = 0; i < ChildCount; i++)
+            {
+                children[i].displayName = Keys[i];
             }
         }
 
@@ -111,12 +115,8 @@ namespace OnionCollections.DataEditor.Editor
                     Set(b);
                     break;
 
-                case JsonNodeType.Int:
-                    int i = EditorGUILayout.IntField(this.i);
-                    Set(i);
-                    break;
 
-                case JsonNodeType.Float:
+                case JsonNodeType.Number:
                     float f = EditorGUILayout.FloatField(this.f);
                     Set(f);
                     break;
@@ -125,6 +125,11 @@ namespace OnionCollections.DataEditor.Editor
                     string str = EditorGUILayout.TextField(this.str);
                     Set(str);
                     break;
+
+                case JsonNodeType.Null:
+                    EditorGUILayout.LabelField($"null", new GUIStyle(EditorStyles.helpBox) { stretchWidth = false });
+                    break;
+
 
                 default:
                     EditorGUILayout.LabelField(displayName);

@@ -33,7 +33,11 @@ namespace OnionCollections.DataEditor.Editor
 
             node.AddSingleChild(root);
 
-            var saveAction = new OnionAction(() => JsonBridge.Save(root, target), "Save");
+            var saveAction = new OnionAction(() =>
+            {
+                string jsonText = JsonBridge.GetJsonText(root);
+                Save(jsonText);
+            }, "Save");
 
             node.NodeActions = new List<OnionAction> { saveAction };
 
@@ -55,10 +59,27 @@ namespace OnionCollections.DataEditor.Editor
                     {
                         saveAction,
                         GetRemoveNodeAction(jsonNode),
-                        //new OnionAction(() =>
-                        //{
-                        //    CommonTextInputWindow.Open("Add property", str => { Debug.Log($"Add {str}"); });
-                        //}, "Add"),
+                        new OnionAction(() =>
+                        {
+                            var menu = new GenericMenu();
+                            foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
+                            {
+                                menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
+                                {
+                                    CommonTextInputWindow.Open("Add property", propertyName => 
+                                    {
+                                        if(string.IsNullOrEmpty(propertyName) == false)
+                                        {
+                                            AddNewObjectProperty(jsonNode, propertyName, enumType);
+                                        }
+                                    });
+                                });
+                            }
+                            menu.ShowAsContext();
+
+                        }, 
+                        "Add Property",
+                        OnionDataEditor.GetIconTexture("Add")),
 
                     };
 
@@ -80,9 +101,6 @@ namespace OnionCollections.DataEditor.Editor
                                 var menu = new GenericMenu();
                                 foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
                                 {
-                                    if(enumType == JsonNode.JsonNodeType.None)
-                                        continue;
-
                                     menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
                                     {
                                         AddNewArrayItem(jsonNode, enumType);
@@ -96,7 +114,7 @@ namespace OnionCollections.DataEditor.Editor
                                 AddNewArrayItem(jsonNode, arrayItemType);
                             }
                         },
-                        "Add",
+                        "Add Item",
                         OnionDataEditor.GetIconTexture("Add")),
                     };
 
@@ -139,6 +157,18 @@ namespace OnionCollections.DataEditor.Editor
                 Bind(newArrayNode);
                 arrayNode.AddItem(newArrayNode);
                 arrayNode.UpdateItemIndexDisplayName();
+                OnionDataEditorWindow.UpdateTreeView();
+            }
+
+            void AddNewObjectProperty(JsonNode objectNode, string propertyName, JsonNode.JsonNodeType jsonNodeType)
+            {
+                var newObjectNode = new JsonNode()
+                {
+                    JsonType = jsonNodeType,
+                };
+                Bind(newObjectNode);
+                objectNode.AddProperty(propertyName, newObjectNode);
+                objectNode.UpdatePropertyDisplayName();
                 OnionDataEditorWindow.UpdateTreeView();
             }
 
@@ -290,7 +320,28 @@ namespace OnionCollections.DataEditor.Editor
                 };
             }
 
+            void Save(string jsonText)
+            {
+                string assetPath = AssetDatabase.GetAssetPath(target).Substring("Asset/".Length);
 
+                string projectPath = Application.dataPath;
+
+                string path = $"{projectPath}{assetPath}";
+
+                try
+                {
+                    File.WriteAllText(path, jsonText, Encoding.UTF8);
+                    EditorUtility.SetDirty(target);
+                    AssetDatabase.Refresh();
+
+                    //Debug.Log(resultJsonText);
+                    Debug.Log("Save success");
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.Message);
+                }
+            }
 
         }
 
