@@ -81,20 +81,22 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     node.ClearChildren();
 
-                    var bookmarkNodes = bookmarkPaths.Select(path =>
-                    {
-                        Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
-                        TreeNode n = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
+                    var bookmarkNodes = bookmarkPaths
+                        .Distinct()
+                        .Select(path =>
                         {
-                            OnDoubleClickAction = new OnionAction(() =>
+                            Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
+                            TreeNode n = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
                             {
-                                var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
-                                onionWindow.SetTarget(obj);
-                            })
-                        };
-                        return n;
-                    })
-                    .Where(n => n.IsNull == false);
+                                OnDoubleClickAction = new OnionAction(() =>
+                                {
+                                    var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
+                                    onionWindow.SetTarget(obj);
+                                })
+                            };
+                            return n;
+                        })
+                        .Where(n => n.IsNull == false);
 
                     node.AddChildren(bookmarkNodes);
                 }

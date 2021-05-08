@@ -64,6 +64,17 @@ namespace OnionCollections.DataEditor.Editor
                 }
 
 
+                if(folders.Any() == false && string.IsNullOrEmpty(filter))
+                {
+                    return new[]
+                    {
+                        new TreeNode()
+                        {
+                            displayName = "Add at least one filter or search folder."
+                        }
+                    };
+                }
+
                 string[] findResult = null;
 
                 if (folders.Any())
@@ -86,6 +97,7 @@ namespace OnionCollections.DataEditor.Editor
                         }
                     };
                 }
+
 
                 bool isTooMuchResult = findResult.Length > maxResultAmount;
 
