@@ -226,7 +226,7 @@ namespace OnionCollections.DataEditor.Editor
             if (File.Exists(playerPrefsPath))
             {
                 // Parse the plist then cast it to a Dictionary
-                object plist = Plist.readPlist(playerPrefsPath);
+                object plist = PlistCS.Plist.readPlist(playerPrefsPath);
 
                 Dictionary<string, object> parsed = plist as Dictionary<string, object>;
 
@@ -235,14 +235,14 @@ namespace OnionCollections.DataEditor.Editor
                 int i = 0;
                 foreach (KeyValuePair<string, object> pair in parsed)
                 {
-                    if (pair.Value.GetType() == typeof(double))
+                    if (pair.Value is double dValue)
                     {
                         // Some float values may come back as double, so convert them back to floats
-                        tempPlayerPrefs[i] = new PlayerPrefPair() { Key = pair.Key, Value = (float)(double)pair.Value };
+                        tempPlayerPrefs[i] = new PlayerPrefPair { Key = pair.Key, Value = (float)dValue };
                     }
                     else
                     {
-                        tempPlayerPrefs[i] = new PlayerPrefPair() { Key = pair.Key, Value = pair.Value };
+                        tempPlayerPrefs[i] = new PlayerPrefPair { Key = pair.Key, Value = pair.Value };
                     }
 
                     i++;
