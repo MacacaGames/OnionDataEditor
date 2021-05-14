@@ -71,7 +71,7 @@ namespace OnionCollections.DataEditor.Editor
                     break;
                 //偽
                 case RowState.Pseudo:
-                    style.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.9F);
+                    style.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 1F);
                     break;
                 //警告
                 case RowState.Error:
@@ -103,20 +103,21 @@ namespace OnionCollections.DataEditor.Editor
                 int padding = 1;
                 float iconHeight = args.rowRect.height - padding * 2;
 
-                Rect iconRect = args.rowRect;
-                iconRect.x += GetContentIndent(args.item);
-                iconRect.y += padding;
-                iconRect.width = iconHeight + 10;
-                iconRect.height = iconHeight;
-
+                Rect iconRect = new Rect(args.rowRect)
+                    .ExtendLeft(-GetContentIndent(args.item))
+                    .ExtendUp(-padding)
+                    .SetSize(iconHeight, iconHeight);
+                
+                
                 GUI.Label(iconRect, node.icon);
             }
 
 
             //text
-            Rect labelRect = args.rowRect;
-            labelRect.x += GetContentIndent(args.item) + (hasIcon ? (args.rowRect.height + 4F) : 2F);
-            labelRect.width = args.rowRect.width;
+            Rect labelRect = new Rect(args.rowRect)
+                .ExtendLeft(-GetContentIndent(args.item))
+                .ExtendLeft(-(hasIcon ? (args.rowRect.height + 4F) : 2F));
+
             GUI.Label(labelRect, node.displayName, style);
 
 
@@ -125,7 +126,10 @@ namespace OnionCollections.DataEditor.Editor
             if (treeQuery[args.item.id].ChildCount > 0 || isHideElementNodes)
             {
                 const float tagWidth = 150F;
-                Rect rightRect = new Rect(args.rowRect.width - tagWidth, args.rowRect.y, tagWidth, args.rowRect.height);
+                Rect rightRect = new Rect(args.rowRect)
+                    .ExtendLeft(-args.rowRect.width)
+                    .ExtendLeft(tagWidth);
+
                 GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
                 labelStyle.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.5F);
                 labelStyle.alignment = TextAnchor.MiddleRight;
@@ -144,15 +148,20 @@ namespace OnionCollections.DataEditor.Editor
             if (node.tagColor.a > 0F)
             {
                 const float colorTagWidth = 3F;
-                Rect colorTagRect = new Rect(args.rowRect.width - colorTagWidth, args.rowRect.y, colorTagWidth, args.rowRect.height - 1);
+                Rect colorTagRect = new Rect(args.rowRect)
+                    .ExtendLeft(-args.rowRect.width)
+                    .ExtendLeft(colorTagWidth)
+                    .ExtendDown(-1);
+
                 EditorGUI.DrawRect(colorTagRect, node.tagColor);
             }
 
             //Line
-            Rect lineRect = args.rowRect;
-            lineRect.x += GetContentIndent(args.item);
-            lineRect.y += lineRect.height - 1;
-            lineRect.height = 1;
+            Rect lineRect = new Rect(args.rowRect)
+                .ExtendLeft(-GetContentIndent(args.item))
+                .ExtendUp(-args.rowRect.height)
+                .ExtendUp(1);
+
             EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 0.05F));      //線
         }
         public override IList<TreeViewItem> GetRows()

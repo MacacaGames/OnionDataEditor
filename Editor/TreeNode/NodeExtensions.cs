@@ -189,9 +189,9 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
+
+
         readonly static Dictionary<Type, ObjectNodeDefine> objectNodeDefineQuery = new Dictionary<Type, ObjectNodeDefine>();
-
-
 
         static ObjectNodeDefine GetObjectNodeDefine(Object target)
         {
@@ -209,10 +209,10 @@ namespace OnionCollections.DataEditor.Editor
         static ObjectNodeDefine GetCustomDefine(Object target)
         {
             Type type = target.GetType();
-            var customDefine = OnionDataEditor.Setting.objectNodeDefines.SingleOrDefault(n => n.objectType == type.FullName);
-
-            if (customDefine == null)
-                return null;
+            var customDefine = OnionDataEditor
+                                .Setting
+                                .objectNodeDefines
+                                .FirstOrDefault(n => n.objectType == type.FullName);
 
             return customDefine;
         }
@@ -227,6 +227,7 @@ namespace OnionCollections.DataEditor.Editor
             MemberInfo titleInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeTitleAttribute));
             MemberInfo descriptionInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeDescriptionAttribute));
             MemberInfo iconInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeIconAttribute));
+            MemberInfo colorTagInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeColorTagAttribute));
             //++
 
             autoDefine = new ObjectNodeDefine
@@ -235,6 +236,7 @@ namespace OnionCollections.DataEditor.Editor
                 titlePropertyName = titleInfo?.Name ?? null,
                 descriptionPropertyName = descriptionInfo?.Name ?? null,
                 iconPorpertyName = iconInfo?.Name ?? null,
+                tagColorPorpertyName = colorTagInfo?.Name ?? null,
                 //++
             };
 
@@ -447,6 +449,7 @@ namespace OnionCollections.DataEditor.Editor
             return defaultValue;
         }
 
+
         static MemberInfo GetTargetAttributeAttachMemberInfo(Object target, Type attrType)
         {
             Type dataObjType = target.GetType();
@@ -481,17 +484,6 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
 
-
-        readonly static Dictionary<string, string> extensionIconQuery = new Dictionary<string, string>
-        {
-            [".cs"] = "cs Script Icon",
-            [".prefab"] = "Prefab Icon",
-            [".assembly"] = "AssemblyDefinitionAsset Icon",
-            [".uxml"] = "UxmlScript Icon",
-            [".uss"] = "UssScript Icon",
-        };
-
-
         static MemberInfo GetMemberInfoByName(this Object target, string memberName)
         {
             Type type = target.GetType();
@@ -507,7 +499,16 @@ namespace OnionCollections.DataEditor.Editor
             return member;
         }
 
-        //
+
+        readonly static Dictionary<string, string> extensionIconQuery = new Dictionary<string, string>
+        {
+            [".cs"] = "cs Script Icon",
+            [".prefab"] = "Prefab Icon",
+            [".assembly"] = "AssemblyDefinitionAsset Icon",
+            [".uxml"] = "UxmlScript Icon",
+            [".uss"] = "UssScript Icon",
+        };
+
 
         internal static string GetTargetTitle(this Object target)
         {
