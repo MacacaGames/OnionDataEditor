@@ -35,7 +35,7 @@ namespace OnionCollections.DataEditor.Editor
             if (attr is NodeElementAttribute)
             {
                 return
-                    GetSingleOrMultipleType<Object>()
+                    GetSingleOrMultipleType<Object>(target, member)
                     .Select(_ => new TreeNode(_));
             }
 
@@ -47,7 +47,7 @@ namespace OnionCollections.DataEditor.Editor
                     displayName = groupAttr.displayName,
                 };
 
-                IEnumerable<TreeNode> node = GetSingleOrMultipleType<Object>()
+                IEnumerable<TreeNode> node = GetSingleOrMultipleType<Object>(target, member)
                     .Select(_ => new TreeNode(_));
 
                 groupedNode.AddChildren(node);
@@ -71,36 +71,37 @@ namespace OnionCollections.DataEditor.Editor
             //NodeCustomElement
             if (attr is NodeCustomElementAttribute)
             {
-                return GetSingleOrMultipleType<TreeNode>();
+                return GetSingleOrMultipleType<TreeNode>(target, member);
             }
 
             throw new Exception($"Unknown Attribute {target.name}.{member.Name}(Attr:{attr})");
 
 
-            //取得指定型別的T或IEnumerable<T>
-            IEnumerable<T> GetSingleOrMultipleType<T>() where T : class
-            {
-                Type memberType = member.GetMemberInfoType();
-
-                //Single
-                if (memberType == typeof(T) || memberType.IsSubclassOf(typeof(T)))
-                {
-                    if (member.TryGetValue(target, out T resultCustomSingle))
-                    {
-                        return new List<T> { resultCustomSingle };
-                    }
-                }
-                //Multiple
-                if (typeof(IEnumerable).IsAssignableFrom(memberType))
-                {
-                    if (member.TryGetValue(target, out IEnumerable<T> resultCustom))
-                        return resultCustom;
-                }
-
-                return Enumerable.Empty<T>();
-            }
 
         }
+
+        static IEnumerable<T> GetSingleOrMultipleType<T>(Object target, MemberInfo member) where T : class
+        {
+            Type memberType = member.GetMemberInfoType();
+
+            //Single
+            if (memberType == typeof(T) || memberType.IsSubclassOf(typeof(T)))
+            {
+                if (member.TryGetValue(target, out T resultCustomSingle))
+                {
+                    return new List<T> { resultCustomSingle };
+                }
+            }
+            //Multiple
+            if (typeof(IEnumerable).IsAssignableFrom(memberType))
+            {
+                if (member.TryGetValue(target, out IEnumerable<T> resultCustom))
+                    return resultCustom;
+            }
+
+            return Enumerable.Empty<T>();
+        }
+
 
         internal static List<TreeNode> GetElements(this TreeNode rootNode)
         {
@@ -114,7 +115,35 @@ namespace OnionCollections.DataEditor.Editor
 
             Type dataObjType = rootNode.Target.GetType();
 
-            if (rootNode.Target is GameObject go)
+            //CustomDefine
+            var customDefine = GetCustomDefine(rootNode.Target);
+            if (customDefine != null && customDefine.HasElement == true)
+            {
+                if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
+                {
+                    members = dataObjType.GetMembers(defaultBindingFlags);
+                    memberCache.Add(dataObjType, members);
+                }
+
+
+                foreach (var elementPropertyName in customDefine.elementPropertyNames)
+                {
+                    var member = members.SingleOrDefault(n => n.Name == elementPropertyName);
+
+                    if (member == null)
+                        continue;
+
+                    var el = GetSingleOrMultipleType<Object>(rootNode.Target, member)
+                        .Select(_ => new TreeNode(_));
+
+                    nodeList.AddRange(el);
+                }
+
+                return nodeList;
+            }
+
+            //GameObject
+            else if (rootNode.Target is GameObject go)
             {
                 if (go.TryGetComponent(out IOnionDataEditorGameObjectAgent gameobjectAgent) == false)
                 {
@@ -133,6 +162,8 @@ namespace OnionCollections.DataEditor.Editor
 
                 nodeList.AddRange(nodes);
             }
+
+            //Default
             else
             {
                 if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
@@ -157,6 +188,63 @@ namespace OnionCollections.DataEditor.Editor
             return nodeList;
 
         }
+
+        readonly static Dictionary<Type, ObjectNodeDefine> objectNodeDefineQuery = new Dictionary<Type, ObjectNodeDefine>();
+
+
+
+        static ObjectNodeDefine GetObjectNodeDefine(Object target)
+        {
+            var autoDefine = GetAutoDefine(target);
+            var customDefine = GetCustomDefine(target);
+
+            if(customDefine != null)
+            {
+                return autoDefine.OverrideWith(customDefine);                 
+            }
+
+            return autoDefine;
+        }
+        
+        static ObjectNodeDefine GetCustomDefine(Object target)
+        {
+            Type type = target.GetType();
+            var customDefine = OnionDataEditor.Setting.objectNodeDefines.SingleOrDefault(n => n.objectType == type.FullName);
+
+            if (customDefine == null)
+                return null;
+
+            return customDefine;
+        }
+
+        static ObjectNodeDefine GetAutoDefine(Object target)
+        {
+            Type type = target.GetType();
+
+            if (objectNodeDefineQuery.TryGetValue(type, out ObjectNodeDefine autoDefine))
+                return autoDefine;
+
+            MemberInfo titleInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeTitleAttribute));
+            MemberInfo descriptionInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeDescriptionAttribute));
+            MemberInfo iconInfo = GetTargetAttributeAttachMemberInfo(target, typeof(NodeIconAttribute));
+            //++
+
+            autoDefine = new ObjectNodeDefine
+            {
+                objectType = type.FullName,
+                titlePropertyName = titleInfo?.Name ?? null,
+                descriptionPropertyName = descriptionInfo?.Name ?? null,
+                iconPorpertyName = iconInfo?.Name ?? null,
+                //++
+            };
+
+            objectNodeDefineQuery.Add(type, autoDefine);
+
+            return autoDefine;
+        }
+
+
+
 
         /// <summary>Auto create nodes tree under the target node.</summary>
         public static void GetElementTree(this TreeNode targetNode, int depth = 0)
@@ -286,7 +374,7 @@ namespace OnionCollections.DataEditor.Editor
 
         #region 取得target身上的特定屬性Attribute
 
-        //取得屬性值的通用方法
+        [Obsolete]
         static T TryGetTargetAttrValue<T>(Object target, Type attrType) where T : class
         {
             Type dataObjType = target.GetType();
@@ -323,6 +411,7 @@ namespace OnionCollections.DataEditor.Editor
             return null;
         }
 
+        [Obsolete]
         static T GetTargetAttrValue<T>(Object target, Type attrType, T defaultValue) where T : struct
         {
             Type dataObjType = target.GetType();
@@ -350,7 +439,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 if (attrResult == true)
                 {
-                    T r = member.GetValue<T>(target);
+                    T r = member.GetStructValue<T>(target);
                     return r;
                 }
             }
@@ -358,6 +447,39 @@ namespace OnionCollections.DataEditor.Editor
             return defaultValue;
         }
 
+        static MemberInfo GetTargetAttributeAttachMemberInfo(Object target, Type attrType)
+        {
+            Type dataObjType = target.GetType();
+
+            if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
+            {
+                members = dataObjType.GetMembers(defaultBindingFlags);
+                memberCache.Add(dataObjType, members);
+            }
+
+            foreach (var member in members)
+            {
+                var key = (dataObjType, member.ReflectedType, member.Name, attrType);
+                if (attrResultCache.TryGetValue(key, out bool attrResult) == false)
+                {
+                    //Debug.Log(key);
+                    //重找一次這個member有沒有這個attribut，並記錄結果
+                    if (member.GetCustomAttribute(attrType, true) != null)
+                        attrResult = true;
+                    else
+                        attrResult = false;
+
+                    attrResultCache.Add(key, attrResult);
+                }
+
+                if (attrResult == true)
+                {
+                    return member;
+                }
+            }
+
+            return null;
+        }
 
 
         readonly static Dictionary<string, string> extensionIconQuery = new Dictionary<string, string>
@@ -370,29 +492,52 @@ namespace OnionCollections.DataEditor.Editor
         };
 
 
+        static MemberInfo GetMemberInfoByName(this Object target, string memberName)
+        {
+            Type type = target.GetType();
+
+            if (memberCache.TryGetValue(type, out MemberInfo[] members) == false)
+            {
+                members = type.GetMembers(defaultBindingFlags);
+                memberCache.Add(type, members);
+            }
+
+            var member = members.SingleOrDefault(n => n.Name == memberName);
+
+            return member;
+        }
+
+        //
+
         internal static string GetTargetTitle(this Object target)
         {
-            var result = TryGetTargetAttrValue<string>(target, typeof(NodeTitleAttribute));
-            return result;
+            var define = GetObjectNodeDefine(target);
+            var memberInfo = target.GetMemberInfoByName(define.titlePropertyName);
+            return memberInfo?.GetValue<string>(target);
         }
 
         internal static string GetTargetDescription(this Object target)
         {
-            var result = TryGetTargetAttrValue<string>(target, typeof(NodeDescriptionAttribute));
-            return result;
+            var define = GetObjectNodeDefine(target);
+            var memberInfo = target.GetMemberInfoByName(define.descriptionPropertyName);
+            return memberInfo?.GetValue<string>(target);
         }
 
         internal static Texture GetTargetIcon(this Object target)
         {
+            var define = GetObjectNodeDefine(target);
+            var memberInfo = target.GetMemberInfoByName(define.iconPorpertyName);
+
+
             //Try get texture
-            var textureResult = TryGetTargetAttrValue<Texture>(target, typeof(NodeIconAttribute));
+            var textureResult = memberInfo?.GetValue<Texture>(target);
             if (textureResult != null)
             {
                 return textureResult;
             }
 
             //Try get sprite
-            var spriteResult = TryGetTargetAttrValue<Sprite>(target, typeof(NodeIconAttribute));
+            var spriteResult = memberInfo?.GetValue<Sprite>(target);
             if (spriteResult != null)
             {
                 return spriteResult.texture;
@@ -438,8 +583,9 @@ namespace OnionCollections.DataEditor.Editor
 
         internal static Color GetTargetTagColor(this Object target)
         {
-            var result = GetTargetAttrValue(target, typeof(NodeColorTagAttribute), new Color(0, 0, 0, 0));
-            return result;
+            var define = GetObjectNodeDefine(target);
+            var memberInfo = target.GetMemberInfoByName(define.tagColorPorpertyName);
+            return memberInfo?.GetStructValue<Color>(target) ?? new Color(0, 0, 0, 0);
         }
 
         internal static IEnumerable<OnionAction> GetTargetActions(this Object target)
@@ -503,7 +649,26 @@ namespace OnionCollections.DataEditor.Editor
         #region Dependent
 
         /// <summary>取得MemberInfo的值。</summary>
-        internal static T GetValue<T>(this MemberInfo memberInfo, object forObject) where T : new()
+        internal static T GetValue<T>(this MemberInfo memberInfo, object forObject) where T: class
+        {
+            object tempValue = null;
+
+            switch (memberInfo.MemberType)
+            {
+                case MemberTypes.Field:
+                    tempValue = ((FieldInfo)memberInfo).GetValue(forObject);
+                    break;
+                case MemberTypes.Property:
+                    tempValue = ((PropertyInfo)memberInfo).GetValue(forObject);
+                    break;
+            }
+
+            T resultValue = (T)tempValue;
+
+            return resultValue;
+        }
+
+        internal static T GetStructValue<T>(this MemberInfo memberInfo, object forObject) where T : struct
         {
             object tempValue = null;
 

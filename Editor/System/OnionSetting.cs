@@ -30,6 +30,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             yield return BookmarksNode;
             yield return UserTagsNode;
+            yield return CustomObjectNodeDefineNode;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -225,9 +226,112 @@ namespace OnionCollections.DataEditor.Editor
                 return node;
             }
         }
-        
+
         #endregion
 
+
+        #region CustomObjectNodeDefine
+
+
+        [SerializeField]
+        public ObjectNodeDefine[] objectNodeDefines = new ObjectNodeDefine[0];
+
+        public TreeNode CustomObjectNodeDefineNode
+        {
+            get
+            {
+                const string propertyTitle = "Custom Object Node Define";
+                SerializedObject so = new SerializedObject(this);
+                SerializedProperty listSp = so.FindProperty("objectNodeDefines");
+
+                var node = new TreeNode()
+                {
+                    displayName = propertyTitle,
+                    icon = OnionDataEditor.GetIconTexture("Add"),
+                    OnInspectorAction = new OnionAction(()=>
+                    {
+                        using (var ch = new EditorGUI.ChangeCheckScope())
+                        {
+                            EditorGUILayout.PropertyField(listSp);
+                            if(ch.changed == true)
+                            {
+                                so.ApplyModifiedProperties();
+                            }
+                        }
+                    }),
+                    tags = new[] { "CustomObjectNodeDefine" },
+                };
+
+                var children = new List<TreeNode>();
+                for (int i = 0; i < objectNodeDefines.Length; i++)
+                {
+                    int iCache = i;
+                    var chNode = new TreeNode()
+                    {
+                        displayName = objectNodeDefines[i].objectType,
+                        OnInspectorAction = new OnionAction(() =>
+                        {
+                            using (var ch = new EditorGUI.ChangeCheckScope())
+                            {
+                                EditorGUILayout.PropertyField(listSp.GetArrayElementAtIndex(iCache));
+                                if (ch.changed == true)
+                                {
+                                    so.ApplyModifiedProperties();
+                                }
+                            }
+                        }),
+                    };
+                    node.AddSingleChild(chNode);
+                }
+
+                return node;
+            }
+        }
+
+        #endregion
     }
 
+
+
+    [System.Serializable]
+    internal class ObjectNodeDefine
+    {
+        public string objectType;
+
+
+        public string titlePropertyName;
+        public bool HasTitle => string.IsNullOrEmpty(titlePropertyName) == false;
+
+        public string descriptionPropertyName;
+        public bool HasDescription => string.IsNullOrEmpty(descriptionPropertyName) == false;
+
+        public string iconPorpertyName;
+        public bool HasIcon => string.IsNullOrEmpty(iconPorpertyName) == false;
+
+        public string tagColorPorpertyName;
+        public bool HasTagColor => string.IsNullOrEmpty(tagColorPorpertyName) == false;
+
+        public string[] elementPropertyNames;
+        public bool HasElement => elementPropertyNames != null && elementPropertyNames.Length > 0;
+
+
+
+        public ObjectNodeDefine OverrideWith(ObjectNodeDefine overrideDefine)
+        {
+            if (objectType != overrideDefine.objectType)
+                throw new System.Exception("Override type is not equal.");
+
+
+            return new ObjectNodeDefine
+            {
+                objectType = objectType,
+                titlePropertyName = overrideDefine.HasTitle ? overrideDefine.titlePropertyName : titlePropertyName,
+                descriptionPropertyName = overrideDefine.HasDescription ? overrideDefine.descriptionPropertyName : descriptionPropertyName,
+                iconPorpertyName = overrideDefine.HasIcon ? overrideDefine.iconPorpertyName : iconPorpertyName,
+                elementPropertyNames = overrideDefine.HasElement ? overrideDefine.elementPropertyNames : elementPropertyNames,
+                tagColorPorpertyName = overrideDefine.HasTagColor ? overrideDefine.tagColorPorpertyName : tagColorPorpertyName,
+
+            };
+        }
+    }
 }
