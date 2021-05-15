@@ -14,7 +14,7 @@ namespace OnionCollections.DataEditor.Editor
         public bool Active => isActive;
 
         [NodeTitle]
-        public string GetDisplayName
+        public string Title
         {
             get
             {
@@ -28,6 +28,7 @@ namespace OnionCollections.DataEditor.Editor
                     return define.objectType.Substring(startIndex + 1);
             }
         }
+
 
         [SerializeField]
         ObjectNodeDefine define;

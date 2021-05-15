@@ -313,7 +313,7 @@ namespace OnionCollections.DataEditor.Editor
                         GUI.color = v ? Color.white : new Color(1, 1, 1, 0.5F);
 
                         //Name
-                        EditorGUI.LabelField(typeNameRect, objectNodeDefineObjects[inx].GetDisplayName);
+                        EditorGUI.LabelField(typeNameRect, objectNodeDefineObjects[inx].Title);
 
                         //Property
                         EditorGUI.PropertyField(propertyRect, sp, GUIContent.none);
