@@ -12,7 +12,7 @@ namespace OnionCollections.DataEditor.Editor
     public static class OnionDataEditor
     {
         const string RootPath = "OnionDataEditor";
-        const string ResourcePath = "OnionDataEditor";
+        const string ResourcePath = "OnionDataEditorResource";
 
         public static string Path
         {
@@ -84,24 +84,32 @@ namespace OnionCollections.DataEditor.Editor
 
         static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject
         {
-            var result = Resources.Load<T>($"{ResourcePath}/{assetName}");
+            string[] guids = AssetDatabase.FindAssets($"t:{nameof(T)}");
 
-            if (result == null)
+            if (guids.Length > 0)
+            {
+                string path = AssetDatabase.GUIDToAssetPath(guids[0]);
+                var result = AssetDatabase.LoadAssetAtPath<T>(path);
+
+                return result;
+            }
+            else
             {
                 DirectoryVisitor directoryVisitor = new DirectoryVisitor("Assets/")
-                    .CreateFolderIfNotExist("Resources")
-                    .Enter("Resources")
                     .CreateFolderIfNotExist(ResourcePath)
                     .Enter(ResourcePath);
 
                 var assetIns = ScriptableObject.CreateInstance<T>();
-                Debug.Log($"Auto create asset : {directoryVisitor}{assetName}.asset");
 
-                AssetDatabase.CreateAsset(assetIns, $"{directoryVisitor}/{assetName}.asset");
-                result = Resources.Load<T>($"{ResourcePath}/{assetName}");
+                string path = $"{directoryVisitor}{assetName}.asset";
+                Debug.Log($"Auto create asset : {path}");
+
+                AssetDatabase.CreateAsset(assetIns, path);
+                var result = AssetDatabase.LoadAssetAtPath<T>(path);
+                
+                return result;
             }
 
-            return result;
         }
 
 
