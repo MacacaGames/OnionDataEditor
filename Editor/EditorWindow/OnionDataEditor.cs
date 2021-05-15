@@ -84,7 +84,7 @@ namespace OnionCollections.DataEditor.Editor
 
         static T AutoCreateLoad<T>(string assetName) where T : ScriptableObject
         {
-            string[] guids = AssetDatabase.FindAssets($"t:{nameof(T)}");
+            string[] guids = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
 
             if (guids.Length > 0)
             {

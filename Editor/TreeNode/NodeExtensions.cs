@@ -205,13 +205,14 @@ namespace OnionCollections.DataEditor.Editor
 
             return autoDefine;
         }
-        
+
         static ObjectNodeDefine GetCustomDefine(Object target)
         {
             Type type = target.GetType();
             var customDefine = OnionDataEditor
                                 .Setting
                                 .objectNodeDefineObjects
+                                .Where(dObj => dObj != null && dObj.Active)
                                 .Select(dObj => dObj.GetDefine())
                                 .FirstOrDefault(n => n.objectType == type.FullName);
 

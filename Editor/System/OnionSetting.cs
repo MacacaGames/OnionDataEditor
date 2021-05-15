@@ -58,7 +58,7 @@ namespace OnionCollections.DataEditor.Editor
                     {
                         title = bookmarkTitle,
                         titleIcon = OnionDataEditor.GetIconTexture("Bookmark_Fill"),
-                        customGUI = inspectGUI,
+                        customGUI = InspectGUI,
                     };
                 }
 
@@ -102,7 +102,7 @@ namespace OnionCollections.DataEditor.Editor
                     node.AddChildren(bookmarkNodes);
                 }
 
-                void inspectGUI(Rect r, SerializedProperty sp, int inx)
+                void InspectGUI(Rect r, SerializedProperty sp, int inx)
                 {
                     Object obj = AssetDatabase.LoadAssetAtPath<Object>(bookmarkPaths[inx]);
 
@@ -238,19 +238,6 @@ namespace OnionCollections.DataEditor.Editor
 
         OnionReorderableList objectNodeDefineObjectList;
 
-        public ObjectNodeDefineObject[] GetObjectNodeDefineObjectsInProject()
-        {
-            string[] guids = AssetDatabase.FindAssets($"t:{nameof(ObjectNodeDefineObject)}");
-
-            var result = guids
-                .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
-                .Select(path => AssetDatabase.LoadAssetAtPath<ObjectNodeDefineObject>(path))
-                .Where(n => n != null)
-                .ToArray();
-
-            return result;
-        }
-
         public TreeNode CustomObjectNodeDefineNode
         {
             get
@@ -264,6 +251,7 @@ namespace OnionCollections.DataEditor.Editor
                     {
                         title = propertyTitle,
                         titleIcon = OnionDataEditor.GetIconTexture("Tag"),
+                        customGUI = InspectGUI,
                     };
                 }
 
@@ -284,6 +272,73 @@ namespace OnionCollections.DataEditor.Editor
                 UpdateNodeChildren();
 
                 return node;
+
+
+
+                void InspectGUI(Rect r, SerializedProperty sp, int inx)
+                {
+                    float activeWidth = r.height;
+                    float typeNameWidth = 150F;
+
+                    Rect activeRect = new Rect(r)
+                        .SetWidth(activeWidth);
+
+                    Rect typeNameRect = new Rect(r)
+                        .MoveRight(activeWidth)
+                        .SetWidth(typeNameWidth);
+
+                    Rect propertyRect = new Rect(r)
+                        .ExtendLeft(-activeWidth)
+                        .ExtendLeft(-typeNameWidth);
+
+                    if (sp.objectReferenceValue != null)
+                    {
+
+                        var itemSo = new SerializedObject(sp.objectReferenceValue);
+
+                        bool v = itemSo.FindProperty("isActive").boolValue;
+                        using (var ch = new EditorGUI.ChangeCheckScope())
+                        {
+                            //Active
+                            v = EditorGUI.Toggle(activeRect, v);
+
+                            if (ch.changed)
+                            {
+                                itemSo.FindProperty("isActive").boolValue = v;
+                                itemSo.ApplyModifiedProperties();
+                            }
+                        }
+
+
+                        GUI.color = v ? Color.white : new Color(1, 1, 1, 0.5F);
+
+                        //Name
+                        EditorGUI.LabelField(typeNameRect, objectNodeDefineObjects[inx].GetDisplayName);
+
+                        //Property
+                        EditorGUI.PropertyField(propertyRect, sp, GUIContent.none);
+
+                        GUI.color = Color.white;
+                    }
+                    else
+                    {
+                        EditorGUI.PropertyField(propertyRect, sp, GUIContent.none);
+                    }
+                }
+
+
+                ObjectNodeDefineObject[] GetObjectNodeDefineObjectsInProject()
+                {
+                    string[] guids = AssetDatabase.FindAssets($"t:{nameof(ObjectNodeDefineObject)}");
+
+                    var result = guids
+                        .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
+                        .Select(path => AssetDatabase.LoadAssetAtPath<ObjectNodeDefineObject>(path))
+                        .Where(n => n != null)
+                        .ToArray();
+
+                    return result;
+                }
 
                 void GetAllDefineInProject()
                 {
