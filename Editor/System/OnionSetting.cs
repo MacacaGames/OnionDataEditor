@@ -234,7 +234,22 @@ namespace OnionCollections.DataEditor.Editor
 
 
         [SerializeField]
-        public ObjectNodeDefine[] objectNodeDefines = new ObjectNodeDefine[0];
+        public ObjectNodeDefineObject[] objectNodeDefineObjects = new ObjectNodeDefineObject[0];
+
+        OnionReorderableList objectNodeDefineObjectList;
+
+        public ObjectNodeDefineObject[] GetObjectNodeDefineObjectsInProject()
+        {
+            string[] guids = AssetDatabase.FindAssets($"t:{nameof(ObjectNodeDefineObject)}");
+
+            var result = guids
+                .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
+                .Select(path => AssetDatabase.LoadAssetAtPath<ObjectNodeDefineObject>(path))
+                .Where(n => n != null)
+                .ToArray();
+
+            return result;
+        }
 
         public TreeNode CustomObjectNodeDefineNode
         {
@@ -242,49 +257,48 @@ namespace OnionCollections.DataEditor.Editor
             {
                 const string propertyTitle = "Custom Object Node Define";
                 SerializedObject so = new SerializedObject(this);
-                SerializedProperty listSp = so.FindProperty("objectNodeDefines");
+
+                if (objectNodeDefineObjectList == null)
+                {
+                    objectNodeDefineObjectList = new OnionReorderableList(new SerializedObject(this).FindProperty("objectNodeDefineObjects"))
+                    {
+                        title = propertyTitle,
+                        titleIcon = OnionDataEditor.GetIconTexture("Tag"),
+                    };
+                }
 
                 var node = new TreeNode()
                 {
                     displayName = propertyTitle,
                     icon = OnionDataEditor.GetIconTexture("Add"),
-                    OnInspectorAction = new OnionAction(()=>
-                    {
-                        using (var ch = new EditorGUI.ChangeCheckScope())
-                        {
-                            EditorGUILayout.PropertyField(listSp);
-                            if(ch.changed == true)
-                            {
-                                so.ApplyModifiedProperties();
-                            }
-                        }
-                    }),
                     tags = new[] { "CustomObjectNodeDefine" },
+                    OnInspectorAction = new OnionAction(() => objectNodeDefineObjectList.OnInspectorGUI()),
+                    
                 };
 
-                var children = new List<TreeNode>();
-                for (int i = 0; i < objectNodeDefines.Length; i++)
+                node.NodeActions = new List<OnionAction>
                 {
-                    int iCache = i;
-                    var chNode = new TreeNode()
-                    {
-                        displayName = objectNodeDefines[i].objectType,
-                        OnInspectorAction = new OnionAction(() =>
-                        {
-                            using (var ch = new EditorGUI.ChangeCheckScope())
-                            {
-                                EditorGUILayout.PropertyField(listSp.GetArrayElementAtIndex(iCache));
-                                if (ch.changed == true)
-                                {
-                                    so.ApplyModifiedProperties();
-                                }
-                            }
-                        }),
-                    };
-                    node.AddSingleChild(chNode);
-                }
+                    new OnionAction(GetAllDefineInProject,"Get All Define In Project")
+                };
+
+                UpdateNodeChildren();
 
                 return node;
+
+                void GetAllDefineInProject()
+                {
+                    objectNodeDefineObjects = GetObjectNodeDefineObjectsInProject();
+                    EditorUtility.SetDirty(this);
+                    UpdateNodeChildren();
+                    OnionDataEditorWindow.UpdateTreeView();
+                }
+
+                void UpdateNodeChildren()
+                {
+                    node.ClearChildren();
+                    var ch = objectNodeDefineObjects.Select(n => new TreeNode(n));
+                    node.AddChildren(ch);
+                }
             }
         }
 
@@ -293,45 +307,4 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-    [System.Serializable]
-    internal class ObjectNodeDefine
-    {
-        public string objectType;
-
-
-        public string titlePropertyName;
-        public bool HasTitle => string.IsNullOrEmpty(titlePropertyName) == false;
-
-        public string descriptionPropertyName;
-        public bool HasDescription => string.IsNullOrEmpty(descriptionPropertyName) == false;
-
-        public string iconPorpertyName;
-        public bool HasIcon => string.IsNullOrEmpty(iconPorpertyName) == false;
-
-        public string tagColorPorpertyName;
-        public bool HasTagColor => string.IsNullOrEmpty(tagColorPorpertyName) == false;
-
-        public string[] elementPropertyNames;
-        public bool HasElement => elementPropertyNames != null && elementPropertyNames.Length > 0;
-
-
-
-        public ObjectNodeDefine OverrideWith(ObjectNodeDefine overrideDefine)
-        {
-            if (objectType != overrideDefine.objectType)
-                throw new System.Exception("Override type is not equal.");
-
-
-            return new ObjectNodeDefine
-            {
-                objectType = objectType,
-                titlePropertyName = overrideDefine.HasTitle ? overrideDefine.titlePropertyName : titlePropertyName,
-                descriptionPropertyName = overrideDefine.HasDescription ? overrideDefine.descriptionPropertyName : descriptionPropertyName,
-                iconPorpertyName = overrideDefine.HasIcon ? overrideDefine.iconPorpertyName : iconPorpertyName,
-                elementPropertyNames = overrideDefine.HasElement ? overrideDefine.elementPropertyNames : elementPropertyNames,
-                tagColorPorpertyName = overrideDefine.HasTagColor ? overrideDefine.tagColorPorpertyName : tagColorPorpertyName,
-
-            };
-        }
-    }
 }

@@ -17,6 +17,9 @@ public class OnionSettingEditor : UnityEditor.Editor
         List<TreeNode> nodes = (target as OnionSetting).ToList();
         foreach (var node in nodes)
         {
+            if (node.OnInspectorAction?.action == null)
+                continue;
+
             root.Add(new IMGUIContainer(node.OnInspectorAction.action));
 
             var space = new VisualElement();

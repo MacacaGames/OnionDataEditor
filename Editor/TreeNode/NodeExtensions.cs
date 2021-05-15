@@ -211,7 +211,8 @@ namespace OnionCollections.DataEditor.Editor
             Type type = target.GetType();
             var customDefine = OnionDataEditor
                                 .Setting
-                                .objectNodeDefines
+                                .objectNodeDefineObjects
+                                .Select(dObj => dObj.GetDefine())
                                 .FirstOrDefault(n => n.objectType == type.FullName);
 
             return customDefine;
