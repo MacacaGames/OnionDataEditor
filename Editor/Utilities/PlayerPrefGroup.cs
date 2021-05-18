@@ -16,6 +16,10 @@ namespace OnionCollections.DataEditor.Editor
         [SerializeField]
         public string[] regexFilter = new string[0];
 
+        [SerializeField]
+        public PlayerPrefGUI[] customGUI = new PlayerPrefGUI[0];
+
+
         [NodeIcon]
         Texture Icon => EditorGUIUtility.IconContent("d_Folder Icon").image;
 
@@ -28,15 +32,14 @@ namespace OnionCollections.DataEditor.Editor
                 return FilterPlayerPrefByRegexs()
                     .Select(n =>
                     {
-                        ValuePackage valuePackage = new ValuePackage();
-
                         TreeNode node = new TreeNode()
                         {
                             displayName = $"{n.Key} : {n.Value}",
                             description = GetPrefType(n.Value),
                             icon = OnionDataEditor.GetIconTexture("Dot"),
-                            OnInspectorAction = GetPrefInspector(n.Key, n.Value, valuePackage),
                         };
+
+                        node.OnInspectorAction = GetPrefInspector(node, n.Key, n.Value, n.Value.GetType());
 
                         node.NodeActions = new List<OnionAction>
                         {
@@ -46,31 +49,8 @@ namespace OnionCollections.DataEditor.Editor
                                 PlayerPrefs.Save();
                                 OnionDataEditorWindow.RebuildNode();
                             },
-                            $"Delete", OnionDataEditor.GetIconTexture("Trash")),
-                            new OnionAction(() =>
-                            {
-                                object v = null;
-                                switch (n.Value)
-                                {
-                                    case int i:
-                                        PlayerPrefs.SetInt(n.Key, valuePackage.i);
-                                        v = valuePackage.i;
-                                        break;
-
-                                    case float f:
-                                        PlayerPrefs.SetFloat(n.Key, valuePackage.f);
-                                        v = valuePackage.f;
-                                        break;
-
-                                    case string str:
-                                        PlayerPrefs.SetString(n.Key, valuePackage.str);
-                                        v = valuePackage.str;
-                                        break;
-                                }
-                                node.displayName = $"{n.Key} : {v}";
-                                PlayerPrefs.Save();
-                            },
-                            $"Save"),
+                            $"Delete",
+                            OnionDataEditor.GetIconTexture("Trash")),
                         };
 
                         return node;
@@ -78,16 +58,7 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        class ValuePackage
-        {
-            public int i;
-            public float f;
-            public string str;
-
-        }
-
-
-        OnionAction GetPrefInspector(string key, object value, ValuePackage valuePackage)
+        OnionAction GetPrefInspector(TreeNode node, string key,object value, Type valueType)
         {
             EditorGUIUtility.labelWidth = 150F;
             switch (value)
@@ -97,8 +68,31 @@ namespace OnionCollections.DataEditor.Editor
                     {
                         using (new GUILayout.HorizontalScope())
                         {
-                            i = EditorGUILayout.IntField(new GUIContent(key), i);
-                            valuePackage.i = i;
+                            using (var ch = new EditorGUI.ChangeCheckScope())
+                            {
+                                if (GetGUIType(key, valueType) == PlayerPrefGUIType.CheckBox)
+                                {
+                                    bool b = (i == 1);
+                                    b = EditorGUILayout.Toggle(new GUIContent(key), b);
+                                    if (ch.changed)
+                                    {
+                                        i = b ? 1 : 0;
+                                        PlayerPrefs.SetInt(key, i);
+                                        node.displayName = $"{key} : {i}";
+                                        PlayerPrefs.Save();
+                                    }
+                                }
+                                else
+                                {
+                                    i = EditorGUILayout.DelayedIntField(new GUIContent(key), i);
+                                    if (ch.changed)
+                                    {
+                                        PlayerPrefs.SetInt(key, i);
+                                        node.displayName = $"{key} : {i}";
+                                        PlayerPrefs.Save();
+                                    }
+                                }
+                            }
                         }
                     });
 
@@ -107,8 +101,23 @@ namespace OnionCollections.DataEditor.Editor
                     {
                         using (new GUILayout.HorizontalScope())
                         {
-                            f = EditorGUILayout.FloatField(new GUIContent(key), f);
-                            valuePackage.f = f;
+                            using (var ch = new EditorGUI.ChangeCheckScope())
+                            {
+                                if (GetGUIType(key, valueType) == PlayerPrefGUIType.Slider01)
+                                {
+                                    f = EditorGUILayout.Slider(new GUIContent(key), f, 0F, 1F);
+                                }
+                                else
+                                {
+                                    f = EditorGUILayout.DelayedFloatField(new GUIContent(key), f);
+                                }
+                                if (ch.changed)
+                                {
+                                    PlayerPrefs.SetFloat(key, f);
+                                    node.displayName = $"{key} : {f}";
+                                    PlayerPrefs.Save();
+                                }
+                            }
                         }
                     });
 
@@ -117,8 +126,16 @@ namespace OnionCollections.DataEditor.Editor
                     {
                         using (new GUILayout.HorizontalScope())
                         {
-                            str = EditorGUILayout.TextField(new GUIContent(key), str);
-                            valuePackage.str = str;
+                            using (var ch = new EditorGUI.ChangeCheckScope())
+                            {
+                                str = EditorGUILayout.DelayedTextField(new GUIContent(key), str);
+                                if (ch.changed)
+                                {
+                                    PlayerPrefs.SetString(key, str);
+                                    node.displayName = $"{key} : {str}";
+                                    PlayerPrefs.Save();
+                                }
+                            }
                         }
                     });
 
@@ -170,8 +187,16 @@ namespace OnionCollections.DataEditor.Editor
         [NodeAction(actionName = "Delete All", iconName = "Trash")]
         void DeleteAll()
         {
-            PlayerPrefs.DeleteAll();
+            IEnumerable<string> keys = FilterPlayerPrefByRegexs().Select(pref => pref.Key);
+
+            foreach (var key in keys)
+            {
+                PlayerPrefs.DeleteKey(key);
+            }
+
             OnionDataEditorWindow.RebuildNode();
+
+            EditorUtility.DisplayDialog("Delet All", $"{keys.Count()} prefs have been deleted.", "OK");
         }
 
 
@@ -334,6 +359,72 @@ namespace OnionCollections.DataEditor.Editor
 
             }
 
+        }
+
+
+        public enum PlayerPrefGUIType
+        {
+            Default = 0,
+            CheckBox = 1,
+            Slider01 = 2,
+
+        }
+
+        [Serializable]
+        public class PlayerPrefGUI
+        {
+            public string regexFilter;
+            public PlayerPrefGUIType guiType;
+
+        }
+
+
+        public bool IsCustomGUIDirty { get; set; } = true;
+
+        readonly Dictionary<string, PlayerPrefGUIType> guiTypeCache = new Dictionary<string, PlayerPrefGUIType>();
+
+        PlayerPrefGUIType GetGUIType(string key, Type valueType)
+        {
+            if (IsCustomGUIDirty == true)
+            {
+                guiTypeCache.Clear();
+                IsCustomGUIDirty = false;
+            }
+
+            if (guiTypeCache.TryGetValue(key, out PlayerPrefGUIType result) == true)
+            {
+                return result;
+            }
+
+            PlayerPrefGUI s = customGUI
+                .Where(n => ValidType(n.guiType, valueType))
+                .FirstOrDefault(n => new Regex(n.regexFilter).IsMatch(key));
+
+            if (s != null)
+            {
+                guiTypeCache.Add(key, s.guiType);
+                result = s.guiType;
+                return result;
+            }
+
+            return PlayerPrefGUIType.Default;
+
+
+
+            bool ValidType(PlayerPrefGUIType guiType, Type _valueType )
+            {
+                switch (guiType)
+                {
+                    case PlayerPrefGUIType.CheckBox:
+                        return _valueType == typeof(int);
+
+                    case PlayerPrefGUIType.Slider01:
+                        return _valueType == typeof(float);
+
+                    default:
+                        return true;
+                }
+            }
         }
 
 
