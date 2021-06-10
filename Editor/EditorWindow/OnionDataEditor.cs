@@ -11,21 +11,39 @@ namespace OnionCollections.DataEditor.Editor
 {
     public static class OnionDataEditor
     {
-        const string RootPath = "OnionDataEditor";
         const string ResourcePath = "OnionDataEditorResource";
 
         public static string Path
         {
             get
             {
-                if (System.IO.Directory.Exists($"{Application.dataPath}/{RootPath}"))
-                {
-                    return $"Assets/{RootPath}";
-                }
+                string rootPath = GetRootPath();
 
-                return "Packages/com.macacagames.oniondataeditor/";
+                return rootPath ?? "Packages/com.macacagames.oniondataeditor/";
             }
         }
+
+        public static string GetRootPath()
+        {
+            const string AsmdefQuery = "t:ASMDEF OnionDataEditor.Editor";
+
+            string asmdefGUID = AssetDatabase.FindAssets(AsmdefQuery)[0];
+            string asmdefPath = AssetDatabase.GUIDToAssetPath(asmdefGUID);
+
+            DirectoryVisitor directoryVisitor = new DirectoryVisitor(asmdefPath);
+            directoryVisitor.Back();
+
+            string rootPath = directoryVisitor.ToString();
+
+            if (rootPath.StartsWith("Assets/"))
+            {
+                return rootPath;
+            }
+
+            return null;
+        }
+
+
 
         static OnionSetting _setting;
         internal static OnionSetting Setting
