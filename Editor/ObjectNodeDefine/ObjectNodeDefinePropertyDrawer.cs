@@ -6,7 +6,8 @@ using System.Linq;
 using System.Reflection;
 using System;
 
-namespace OnionCollections.DataEditor.Editor {
+namespace OnionCollections.DataEditor.Editor 
+{
 
     [CustomPropertyDrawer(typeof(ObjectNodeDefine))]
     public class ObjectNodeDefinePropertyDrawer : PropertyDrawer
@@ -35,16 +36,23 @@ namespace OnionCollections.DataEditor.Editor {
             Rect r = position
                 .SetHeight(h);
 
+            Type type = null;
+
             using (var ch = new EditorGUI.ChangeCheckScope())
             {
-                string objectTypeStr = EditorGUI.DelayedTextField(r, objectTypeSp.stringValue);
+                string objectTypeStr = EditorGUI.DelayedTextField(r.ExtendLeft(-h-gap), objectTypeSp.stringValue);
+
+                type = NodeExtensions.GetTypeByName(objectTypeStr);
+                Texture texture = EditorGUIUtility.ObjectContent(null, type)?.image;
+                texture = texture == null ? OnionDataEditor.GetIconTexture("Dot") : texture;
+                EditorGUI.LabelField(r.SetWidth(h), new GUIContent(texture));
+
 
                 if (ch.changed)
                 {
                     property.FindPropertyRelative("objectType").stringValue = objectTypeStr;
 
-                    Type fullType = NodeExtensions.GetTypeByName(objectTypeStr);
-                    property.FindPropertyRelative("objectTypeFullName").stringValue = fullType?.FullName ?? "";
+                    property.FindPropertyRelative("objectTypeFullName").stringValue = type?.FullName ?? "";
 
                     property.serializedObject.ApplyModifiedProperties();
                 }
@@ -54,20 +62,20 @@ namespace OnionCollections.DataEditor.Editor {
 
             if (string.IsNullOrEmpty(objectType))
             {
-                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Please input type.");
+                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Please input type.", EditorStyles.miniLabel);
                 return;
             }
 
-            Type resultType = NodeExtensions.GetTypeByName(objectTypeSp.stringValue);
-            if (resultType != null)
+            type = NodeExtensions.GetTypeByName(objectTypeSp.stringValue);
+            if (type != null)
             {
-                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Type : {resultType.FullName}", EditorStyles.miniLabel);
-                ObjectPropertyGUI(position.MoveDown(50), property, resultType);
+                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Type : {type.FullName}", EditorStyles.miniLabel);
+                ObjectPropertyGUI(position.MoveDown(50), property, type);
+                return;
             }
-            else
-            {
-                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Nothing compare this type.");
-            }
+            
+            EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Nothing compare this type.", EditorStyles.miniLabel);
+            
         }
 
 
@@ -151,10 +159,6 @@ namespace OnionCollections.DataEditor.Editor {
             }
         }
 
-
-
-
-
         string objectTypeCache = null;
         MemberInfo[] memberInfosCache = null;
         readonly BindingFlags flag =
@@ -165,7 +169,6 @@ namespace OnionCollections.DataEditor.Editor {
                     BindingFlags.GetProperty |
                     BindingFlags.GetField;
 
-
         enum DefineType
         {
             Title = 0,
@@ -174,8 +177,6 @@ namespace OnionCollections.DataEditor.Editor {
             TagColor = 3,
             Element = 4,
         }
-
-
 
         const string defaultString = "( Default )";
         void ObjectPropertyGUI(Rect position, SerializedProperty property, Type type)
@@ -398,7 +399,6 @@ namespace OnionCollections.DataEditor.Editor {
                 return t == typeof(T) || t.IsSubclassOf(typeof(T));
             }
         }
-
 
 
         public static IEnumerable<SerializedProperty> GetChildren(SerializedProperty property)

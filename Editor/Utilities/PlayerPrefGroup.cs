@@ -70,7 +70,7 @@ namespace OnionCollections.DataEditor.Editor
                         {
                             using (var ch = new EditorGUI.ChangeCheckScope())
                             {
-                                if (GetGUIType(key, valueType) == PlayerPrefGUIType.CheckBox)
+                                if (GetGUIType(key, valueType) == PlayerPrefGUIType.Toggle)
                                 {
                                     bool b = (i == 1);
                                     b = EditorGUILayout.Toggle(new GUIContent(key), b);
@@ -365,7 +365,7 @@ namespace OnionCollections.DataEditor.Editor
         public enum PlayerPrefGUIType
         {
             Default = 0,
-            CheckBox = 1,
+            Toggle = 1,
             Slider01 = 2,
 
         }
@@ -415,7 +415,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 switch (guiType)
                 {
-                    case PlayerPrefGUIType.CheckBox:
+                    case PlayerPrefGUIType.Toggle:
                         return _valueType == typeof(int);
 
                     case PlayerPrefGUIType.Slider01:
