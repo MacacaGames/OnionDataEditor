@@ -214,7 +214,7 @@ namespace OnionCollections.DataEditor.Editor
                                 .objectNodeDefineObjects
                                 .Where(dObj => dObj != null && dObj.Active)
                                 .Select(dObj => dObj.GetDefine())
-                                .FirstOrDefault(n => GetTypeByName(n.objectType) == type);
+                                .FirstOrDefault(n => n.objectTypeFullName == type.FullName);
 
             return customDefine;
         }
@@ -235,6 +235,7 @@ namespace OnionCollections.DataEditor.Editor
             autoDefine = new ObjectNodeDefine
             {
                 objectType = type.Name,
+                objectTypeFullName = type.FullName,
                 titlePropertyName = titleInfo?.Name ?? null,
                 descriptionPropertyName = descriptionInfo?.Name ?? null,
                 iconPropertyName = iconInfo?.Name ?? null,

@@ -31,37 +31,43 @@ namespace OnionCollections.DataEditor.Editor {
             float h = EditorGUIUtility.singleLineHeight;
 
             var objectTypeSp = property.FindPropertyRelative("objectType");
-            ObjectTypeGUI(position, objectTypeSp);
-
-            Type resultType = NodeExtensions.GetTypeByName(objectTypeSp.stringValue);
-            if (resultType != null)
-            {
-                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"type in {resultType.FullName}", EditorStyles.miniLabel);
-                ObjectPropertyGUI(position.MoveDown(50), property, resultType);
-            }
-            else
-            {
-                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Nothing");
-            }
-        }
-
-        void ObjectTypeGUI(Rect position, SerializedProperty property)
-        {
-            float h = EditorGUIUtility.singleLineHeight;
 
             Rect r = position
                 .SetHeight(h);
 
             using (var ch = new EditorGUI.ChangeCheckScope())
             {
-                string objectTypeStr = EditorGUI.DelayedTextField(r, property.stringValue);
+                string objectTypeStr = EditorGUI.DelayedTextField(r, objectTypeSp.stringValue);
 
                 if (ch.changed)
                 {
-                    property.stringValue = objectTypeStr;
+                    property.FindPropertyRelative("objectType").stringValue = objectTypeStr;
+
+                    Type fullType = NodeExtensions.GetTypeByName(objectTypeStr);
+                    property.FindPropertyRelative("objectTypeFullName").stringValue = fullType?.FullName ?? "";
+
+                    property.serializedObject.ApplyModifiedProperties();
                 }
             }
 
+            string objectType = objectTypeSp.stringValue;
+
+            if (string.IsNullOrEmpty(objectType))
+            {
+                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Please input type.");
+                return;
+            }
+
+            Type resultType = NodeExtensions.GetTypeByName(objectTypeSp.stringValue);
+            if (resultType != null)
+            {
+                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Type : {resultType.FullName}", EditorStyles.miniLabel);
+                ObjectPropertyGUI(position.MoveDown(50), property, resultType);
+            }
+            else
+            {
+                EditorGUI.LabelField(position.MoveDown(h + gap).SetHeight(h), $"Nothing compare this type.");
+            }
         }
 
 
@@ -171,6 +177,7 @@ namespace OnionCollections.DataEditor.Editor {
 
 
 
+        const string defaultString = "( Default )";
         void ObjectPropertyGUI(Rect position, SerializedProperty property, Type type)
         {
             if (type.FullName != objectTypeCache)
@@ -234,7 +241,6 @@ namespace OnionCollections.DataEditor.Editor {
                 Texture icon = OnionDataEditor.GetIconTexture($"Node_{defineType}");
                 EditorGUI.LabelField(rLeft, new GUIContent($"{defineType}", icon), EditorStyles.boldLabel);
 
-
                 var rRight = position
                     .MoveDown(index * (h + gap))
                     .ExtendLeft(-titleWidth)
@@ -245,99 +251,104 @@ namespace OnionCollections.DataEditor.Editor {
 
                 if (list.Count > 0)
                 {
-                    const string defaultString = "( Default )";
                     list.Insert(0, defaultString);
 
                     if (defineType == DefineType.Element)
                     {
-
-                        var sp = GetSpByDefineType(defineType);
-
-                        HashSet<string> elList = new HashSet<string>();
-                        for(int i = 0; i < sp.arraySize; i++)
-                        {
-                            elList.Add(sp.GetArrayElementAtIndex(i).stringValue);
-                        }
-
-                        string displayName = elList.Count == 0 ? defaultString : string.Join(", ", elList);
-                        if (GUI.Button(rRight, displayName, EditorStyles.popup))
-                        {
-                            GenericMenu menu = new GenericMenu();
-                            for (int i = 0; i < list.Count; i++)
-                            {
-                                int iCache = i;
-                                bool isOn = elList.Contains(list[i]);
-                                menu.AddItem(
-                                    new GUIContent(list[i]),
-                                    iCache == 0 ? elList.Count == 0 : isOn,
-                                    () =>
-                                    {
-                                        if (iCache == 0)
-                                        {
-                                            //Default
-                                            elList.Clear();
-                                            sp.ClearArray();
-                                        }
-                                        else
-                                        {
-                                            if (isOn)
-                                            {
-                                                elList.Remove(list[iCache]);
-                                            }
-                                            else
-                                            {
-                                                elList.Add(list[iCache]);
-                                            }
-                                            sp.ClearArray();
-
-                                            foreach (var elString in elList)
-                                            {
-                                                sp.InsertArrayElementAtIndex(sp.arraySize);
-                                                sp.GetArrayElementAtIndex(sp.arraySize - 1).stringValue = elString;
-                                            }
-                                        }
-
-                                        sp.serializedObject.ApplyModifiedProperties();
-                                        Debug.Log(string.Join(",", elList));
-                                    });
-                            }
-
-                            menu.DropDown(rRight.MoveDown(h).SetSize(0, 0));
-                        }
+                        MuiltpleEnumPop(rRight, defineType, list);
                     }
                     else
                     {
-                        var sp = GetSpByDefineType(defineType);
-
-                        EditorGUI.BeginChangeCheck();
-                        int originIndex = list.IndexOf(sp.stringValue);
-                        originIndex = Mathf.Max(originIndex, 0);
-
-                        int selectIndex = EditorGUI.Popup(rRight, originIndex , list.ToArray());
-                        if (EditorGUI.EndChangeCheck())
-                        {
-                            if (selectIndex != 0)
-                            {
-                                sp.stringValue = list[selectIndex];
-                            }
-                            else
-                            {
-                                sp.stringValue = "";
-                            }
-                            sp.serializedObject.ApplyModifiedProperties();
-                        }
+                        EnumPop(rRight, defineType, list);
                     }
                 }
                 else
                 {
                     GUI.color = new Color(1, 1, 1, 0.25F);
-
-                    EditorGUI.LabelField(rRight, $"Nothing can select.", EditorStyles.miniLabel);
-
+                    EditorGUI.LabelField(rRight, $"Only default.", EditorStyles.miniLabel);
                     GUI.color = Color.white;
                 }
 
                 index++;
+            }
+
+            void EnumPop(Rect r, DefineType defineType, List<string> contentList)
+            {
+                var sp = GetSpByDefineType(defineType);
+
+                EditorGUI.BeginChangeCheck();
+                int originIndex = contentList.IndexOf(sp.stringValue);
+                originIndex = Mathf.Max(originIndex, 0);
+
+                int selectIndex = EditorGUI.Popup(r, originIndex, contentList.ToArray());
+                if (EditorGUI.EndChangeCheck())
+                {
+                    if (selectIndex != 0)
+                    {
+                        sp.stringValue = contentList[selectIndex];
+                    }
+                    else
+                    {
+                        sp.stringValue = "";
+                    }
+                    sp.serializedObject.ApplyModifiedProperties();
+                }
+            }
+
+            void MuiltpleEnumPop(Rect r, DefineType defineType, List<string> contentList)
+            {
+                var sp = GetSpByDefineType(defineType);
+
+                HashSet<string> elList = new HashSet<string>();
+                for (int i = 0; i < sp.arraySize; i++)
+                {
+                    elList.Add(sp.GetArrayElementAtIndex(i).stringValue);
+                }
+
+                string displayName = elList.Count == 0 ? defaultString : string.Join(", ", elList);
+                if (GUI.Button(r, displayName, EditorStyles.popup))
+                {
+                    GenericMenu menu = new GenericMenu();
+                    for (int i = 0; i < contentList.Count; i++)
+                    {
+                        int iCache = i;
+                        bool isOn = elList.Contains(contentList[i]);
+                        menu.AddItem(
+                            new GUIContent(contentList[i]),
+                            iCache == 0 ? elList.Count == 0 : isOn,
+                            () =>
+                            {
+                                if (iCache == 0)
+                                {
+                                    //Default
+                                    elList.Clear();
+                                    sp.ClearArray();
+                                }
+                                else
+                                {
+                                    if (isOn)
+                                    {
+                                        elList.Remove(contentList[iCache]);
+                                    }
+                                    else
+                                    {
+                                        elList.Add(contentList[iCache]);
+                                    }
+                                    sp.ClearArray();
+
+                                    foreach (var elString in elList)
+                                    {
+                                        sp.InsertArrayElementAtIndex(sp.arraySize);
+                                        sp.GetArrayElementAtIndex(sp.arraySize - 1).stringValue = elString;
+                                    }
+                                }
+
+                                sp.serializedObject.ApplyModifiedProperties();
+                            });
+                    }
+
+                    menu.DropDown(r.MoveDown(h).SetSize(0, 0));
+                }
             }
 
 
@@ -364,7 +375,6 @@ namespace OnionCollections.DataEditor.Editor {
                         throw new Exception($"Can not find compare serialized property by {defineType}");
                 }
             }
-
 
 
             bool IsTitleType(Type t) => IsType<string>(t);

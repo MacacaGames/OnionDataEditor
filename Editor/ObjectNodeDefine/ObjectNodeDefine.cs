@@ -10,6 +10,8 @@ namespace OnionCollections.DataEditor.Editor
     {
         public string objectType;
 
+        public string objectTypeFullName;
+
 
         public string titlePropertyName;
         public bool HasTitle => string.IsNullOrEmpty(titlePropertyName) == false;
@@ -30,13 +32,14 @@ namespace OnionCollections.DataEditor.Editor
 
         public ObjectNodeDefine OverrideWith(ObjectNodeDefine overrideDefine)
         {
-            if (objectType != overrideDefine.objectType)
-                throw new System.Exception("Override type is not equal.");
+            if (objectTypeFullName != overrideDefine.objectTypeFullName)
+                throw new System.Exception($"Override type is not equal. {objectTypeFullName} != {overrideDefine.objectTypeFullName}");
 
 
             return new ObjectNodeDefine
             {
                 objectType = objectType,
+                objectTypeFullName = objectTypeFullName,
                 titlePropertyName = overrideDefine.HasTitle ? overrideDefine.titlePropertyName : titlePropertyName,
                 descriptionPropertyName = overrideDefine.HasDescription ? overrideDefine.descriptionPropertyName : descriptionPropertyName,
                 iconPropertyName = overrideDefine.HasIcon ? overrideDefine.iconPropertyName : iconPropertyName,
