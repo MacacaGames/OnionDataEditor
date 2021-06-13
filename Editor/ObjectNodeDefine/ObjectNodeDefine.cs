@@ -17,8 +17,8 @@ namespace OnionCollections.DataEditor.Editor
         public string descriptionPropertyName;
         public bool HasDescription => string.IsNullOrEmpty(descriptionPropertyName) == false;
 
-        public string iconPorpertyName;
-        public bool HasIcon => string.IsNullOrEmpty(iconPorpertyName) == false;
+        public string iconPropertyName;
+        public bool HasIcon => string.IsNullOrEmpty(iconPropertyName) == false;
 
         public string tagColorPorpertyName;
         public bool HasTagColor => string.IsNullOrEmpty(tagColorPorpertyName) == false;
@@ -39,7 +39,7 @@ namespace OnionCollections.DataEditor.Editor
                 objectType = objectType,
                 titlePropertyName = overrideDefine.HasTitle ? overrideDefine.titlePropertyName : titlePropertyName,
                 descriptionPropertyName = overrideDefine.HasDescription ? overrideDefine.descriptionPropertyName : descriptionPropertyName,
-                iconPorpertyName = overrideDefine.HasIcon ? overrideDefine.iconPorpertyName : iconPorpertyName,
+                iconPropertyName = overrideDefine.HasIcon ? overrideDefine.iconPropertyName : iconPropertyName,
                 elementPropertyNames = overrideDefine.HasElement ? overrideDefine.elementPropertyNames : elementPropertyNames,
                 tagColorPorpertyName = overrideDefine.HasTagColor ? overrideDefine.tagColorPorpertyName : tagColorPorpertyName,
 

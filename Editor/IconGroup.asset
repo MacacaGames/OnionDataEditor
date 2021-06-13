@@ -67,3 +67,18 @@ MonoBehaviour:
   - id: Gray
     defaultIcon: {fileID: 2800000, guid: 4dde42d5fdfaeef46a0f56397cde2c34, type: 3}
     darkModeIcon: {fileID: 2800000, guid: 4dde42d5fdfaeef46a0f56397cde2c34, type: 3}
+  - id: Node_Title
+    defaultIcon: {fileID: 2800000, guid: 12da37a1f93b12b4aa54d784e3ef2e32, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 12da37a1f93b12b4aa54d784e3ef2e32, type: 3}
+  - id: Node_Description
+    defaultIcon: {fileID: 2800000, guid: eddf4adeb481e0b4892a5082fc339e91, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: eddf4adeb481e0b4892a5082fc339e91, type: 3}
+  - id: Node_Icon
+    defaultIcon: {fileID: 2800000, guid: 0d78e98636d696f4cb046e260371ef5c, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 0d78e98636d696f4cb046e260371ef5c, type: 3}
+  - id: Node_TagColor
+    defaultIcon: {fileID: 2800000, guid: ca43e83dcd71e75438fcf2700e343221, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: ca43e83dcd71e75438fcf2700e343221, type: 3}
+  - id: Node_Element
+    defaultIcon: {fileID: 2800000, guid: 57057f76fe1ed3445943d3cfae3bdd71, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 57057f76fe1ed3445943d3cfae3bdd71, type: 3}

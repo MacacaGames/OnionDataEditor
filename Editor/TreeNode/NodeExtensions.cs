@@ -214,7 +214,7 @@ namespace OnionCollections.DataEditor.Editor
                                 .objectNodeDefineObjects
                                 .Where(dObj => dObj != null && dObj.Active)
                                 .Select(dObj => dObj.GetDefine())
-                                .FirstOrDefault(n => n.objectType == type.FullName);
+                                .FirstOrDefault(n => GetTypeByName(n.objectType) == type);
 
             return customDefine;
         }
@@ -234,10 +234,10 @@ namespace OnionCollections.DataEditor.Editor
 
             autoDefine = new ObjectNodeDefine
             {
-                objectType = type.FullName,
+                objectType = type.Name,
                 titlePropertyName = titleInfo?.Name ?? null,
                 descriptionPropertyName = descriptionInfo?.Name ?? null,
-                iconPorpertyName = iconInfo?.Name ?? null,
+                iconPropertyName = iconInfo?.Name ?? null,
                 tagColorPorpertyName = colorTagInfo?.Name ?? null,
                 //++
             };
@@ -247,6 +247,39 @@ namespace OnionCollections.DataEditor.Editor
             return autoDefine;
         }
 
+        static Dictionary<string, Type> typeQuery = null;
+        static void CreateTypeQuery()
+        {
+            typeQuery = new Dictionary<string, Type>();
+            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var t in assembly.GetTypes())
+                {
+                    if (t.IsSubclassOf(typeof(UnityEngine.Object)) == false)
+                        continue;
+
+                    if (typeQuery.ContainsKey(t.Name) == false)
+                    {
+                        typeQuery.Add(t.Name, t);
+                    }
+                }
+            }
+        }
+
+        public static Type GetTypeByName(string name)
+        {
+            if(typeQuery == null)
+            {
+                CreateTypeQuery();
+            }
+
+            if(typeQuery.TryGetValue(name, out Type value))
+            {
+                return value;
+            }
+
+            return null;
+        }
 
 
 
@@ -529,7 +562,7 @@ namespace OnionCollections.DataEditor.Editor
         internal static Texture GetTargetIcon(this Object target)
         {
             var define = GetObjectNodeDefine(target);
-            var memberInfo = target.GetMemberInfoByName(define.iconPorpertyName);
+            var memberInfo = target.GetMemberInfoByName(define.iconPropertyName);
 
 
             //Try get texture
