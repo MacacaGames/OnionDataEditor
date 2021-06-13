@@ -82,3 +82,12 @@ MonoBehaviour:
   - id: Node_Element
     defaultIcon: {fileID: 2800000, guid: 57057f76fe1ed3445943d3cfae3bdd71, type: 3}
     darkModeIcon: {fileID: 2800000, guid: 57057f76fe1ed3445943d3cfae3bdd71, type: 3}
+  - id: Toggle_Left
+    defaultIcon: {fileID: 2800000, guid: e7197d557002a404fb36e89f96619693, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: e7197d557002a404fb36e89f96619693, type: 3}
+  - id: Toggle_Right
+    defaultIcon: {fileID: 2800000, guid: d8f4d2a1ee8b2b245bcd4272cef1a5e6, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: d8f4d2a1ee8b2b245bcd4272cef1a5e6, type: 3}
+  - id: Outline
+    defaultIcon: {fileID: 2800000, guid: 001e9b5c582c35c40934d99f97817aea, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 001e9b5c582c35c40934d99f97817aea, type: 3}

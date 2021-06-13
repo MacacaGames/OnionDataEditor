@@ -61,6 +61,28 @@ namespace OnionCollections.DataEditor.Editor
 
         #endregion
 
+        #region ExtendToFit
+
+        public static Rect ExtendRightToFit(this Rect rect, float v)
+        {
+            return rect.SetWidth(v);
+        }
+        public static Rect ExtendLeftToFit(this Rect rect, float v)
+        {
+            return rect.ExtendLeft(-rect.width + v);
+        }
+        public static Rect ExtendDownToFit(this Rect rect, float v)
+        {
+            return rect.SetHeight(v);
+        }
+        public static Rect ExtendUpToFit(this Rect rect, float v)
+        {
+            return rect.ExtendUp(-rect.height + v);
+        }
+
+        #endregion
+
+
         #region Property
 
         public static Rect SetWidth(this Rect rect, float v)

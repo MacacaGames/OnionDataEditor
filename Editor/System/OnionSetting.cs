@@ -250,7 +250,7 @@ namespace OnionCollections.DataEditor.Editor
                     objectNodeDefineObjectList = new OnionReorderableList(new SerializedObject(this).FindProperty("objectNodeDefineObjects"))
                     {
                         title = propertyTitle,
-                        titleIcon = OnionDataEditor.GetIconTexture("Tag"),
+                        titleIcon = OnionDataEditor.GetIconTexture("Add"),
                         customGUI = InspectGUI,
                     };
                 }

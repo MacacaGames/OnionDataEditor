@@ -136,13 +136,21 @@ namespace OnionCollections.DataEditor.Editor
                 labelStyle.fontSize = 10;
                 labelStyle.padding = new RectOffset(0, 8, 0, 3);
 
-                string displayTag;
                 if (isHideElementNodes)
-                    displayTag = "H";
+                {
+                    var icon = OnionDataEditor.GetIconTexture("HideElement");
+                    GUI.color = new Color(1, 1, 1, 0.5F);
+                    GUI.Label(
+                        rightRect.ExtendLeft(- rightRect.width + rightRect.height).MoveLeft(2), 
+                        new GUIContent(icon, "Hide Elements"), 
+                        labelStyle);
+                    GUI.color = Color.white;
+                }
                 else
-                    displayTag = treeQuery[args.item.id].ChildCount.ToString();
-
-                GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
+                {
+                    string displayTag = treeQuery[args.item.id].ChildCount.ToString();
+                    GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
+                }
             }
 
             if (node.tagColor.a > 0F)
