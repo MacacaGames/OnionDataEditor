@@ -24,7 +24,7 @@ namespace OnionCollections.DataEditor.Editor
             window.titleContent = new GUIContent(title);
             window.position = new Rect(Screen.width / 2, Screen.height / 2, size.x, size.y);
 
-            window.ShowModal();
+            window.ShowAuxWindow();
         }
 
         private void OnEnable()

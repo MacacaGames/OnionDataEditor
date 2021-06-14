@@ -66,13 +66,15 @@ namespace OnionCollections.DataEditor.Editor
                             {
                                 menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
                                 {
-                                    CommonTextInputWindow.Open("Add property", propertyName => 
-                                    {
-                                        if(string.IsNullOrEmpty(propertyName) == false)
+                                    CommonTextInputWindow.Open(
+                                        "Add property",
+                                        propertyName => 
                                         {
-                                            AddNewObjectProperty(jsonNode, propertyName, enumType);
-                                        }
-                                    });
+                                            if(string.IsNullOrEmpty(propertyName) == false)
+                                            {
+                                                AddNewObjectProperty(jsonNode, propertyName, enumType);
+                                            }
+                                        });
                                 });
                             }
                             menu.ShowAsContext();

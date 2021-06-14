@@ -112,6 +112,41 @@
     border-bottom-color: rgba(0, 0, 0, 0);
 }
 
+.btn-tab {
+    margin-left: 2px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 4px;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    justify-content: center;
+    align-items: center;
+    opacity: 0.5;
+    background-color: rgba(56, 56, 56, 0.3);
+    height: 40px;
+    width: 38px;
+}
+
+.btn-tab:hover {
+    background-color: rgba(56, 56, 56, 0.75);
+}
+
+.btn-tab .btn-icon {
+    opacity: 0.3;
+    width: 18px;
+    height: 18px;
+}
+
 .onion-btn.onion-icon-btn {
     justify-content: center;
     align-items: center;
@@ -163,35 +198,6 @@
     cursor: split-resize-up-down;
 }
 
-.btn-tab {
-    margin-left: 2px;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 4px;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-    justify-content: center;
-    align-items: center;
-    opacity: 0.5;
-    background-color: rgba(56, 56, 56, 0.3);
-    height: 40px;
-    width: 38px;
-}
-
-.btn-tab:hover {
-    background-color: rgba(56, 56, 56, 0.75);
-}
-
 .active-tab {
     opacity: 1;
     background-color: rgb(56, 56, 56);
@@ -199,10 +205,6 @@
 
 .active-tab:hover {
     background-color: rgb(56, 56, 56);
-}
-
-.btn-tab .btn-icon {
-    opacity: 0.3;
 }
 
 .active-tab .btn-icon {

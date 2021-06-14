@@ -19,7 +19,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 string rootPath = GetRootPath();
 
-                return rootPath ?? "Packages/com.macacagames.oniondataeditor/";
+                return rootPath ?? "Packages/com.macacagames.oniondataeditor";
             }
         }
 
@@ -33,7 +33,7 @@ namespace OnionCollections.DataEditor.Editor
             DirectoryVisitor directoryVisitor = new DirectoryVisitor(asmdefPath);
             directoryVisitor.Back();
 
-            string rootPath = directoryVisitor.ToString();
+            string rootPath = directoryVisitor.GetPathWithoutSplitChar();
 
             if (rootPath.StartsWith("Assets/"))
             {

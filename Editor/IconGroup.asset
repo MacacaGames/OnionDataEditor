@@ -91,3 +91,15 @@ MonoBehaviour:
   - id: Outline
     defaultIcon: {fileID: 2800000, guid: 001e9b5c582c35c40934d99f97817aea, type: 3}
     darkModeIcon: {fileID: 2800000, guid: 001e9b5c582c35c40934d99f97817aea, type: 3}
+  - id: HideElement
+    defaultIcon: {fileID: 2800000, guid: 20dabb48bbb1e0348a7a01ea1cac4615, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 20dabb48bbb1e0348a7a01ea1cac4615, type: 3}
+  - id: Compass
+    defaultIcon: {fileID: 2800000, guid: afd9d8598edc8a44caff580661f2870a, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: afd9d8598edc8a44caff580661f2870a, type: 3}
+  - id: Arrow_Left
+    defaultIcon: {fileID: 2800000, guid: 26db977cbe6b93e48a721ed415c653be, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 26db977cbe6b93e48a721ed415c653be, type: 3}
+  - id: Arrow_Right
+    defaultIcon: {fileID: 2800000, guid: 59ec74d513d45bd4c90abe4c2c9475e6, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 59ec74d513d45bd4c90abe4c2c9475e6, type: 3}

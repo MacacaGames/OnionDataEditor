@@ -197,7 +197,13 @@ namespace OnionCollections.DataEditor.Editor
                 Type propType = null;
                 if (m.MemberType == MemberTypes.Property)
                 {
-                    propType = ((PropertyInfo)m).PropertyType;
+                    PropertyInfo propertyInfo = (PropertyInfo)m;
+                    
+                    //if is indexer, skip.
+                    if (propertyInfo.GetIndexParameters().Length > 0)
+                        continue;
+
+                    propType = propertyInfo.PropertyType;
                 }
                 else if (m.MemberType == MemberTypes.Field)
                 {
@@ -227,7 +233,6 @@ namespace OnionCollections.DataEditor.Editor
             }
 
             //
-
 
             const float titleWidth = 150F;
             int index = 0;

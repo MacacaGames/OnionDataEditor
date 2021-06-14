@@ -95,9 +95,9 @@ namespace OnionCollections.DataEditor.Editor
 
         void Init()
         {
-            //建構
+            //Create
             var root = this.rootVisualElement;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(path + "/Editor/EditorWindow/OnionDataEditorWindow/Onion.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{path}/Editor/EditorWindow/OnionDataEditorWindow/Onion.uxml");
             TemplateContainer cloneTree = visualTree.CloneTree();
             cloneTree.style.flexGrow = 1;
             root.Add(cloneTree);
@@ -109,32 +109,33 @@ namespace OnionCollections.DataEditor.Editor
 
             //綁定btn-opened
             root.Q<Button>("btn-opened").clickable.clicked += ChangeTabToOpened;
-            SetIcon(root.Q("btn-opened-icon"), "Edit");
+            SetIcon(root.Q("btn-opened-icon"), "Compass");
 
-            //綁定btn-bookmark
+            //Bind btn-bookmark
             root.Q<Button>("btn-bookmark").clickable.clicked += ChangeTabToBookmark;
             SetIcon(root.Q("btn-bookmark-icon"), "Bookmark_Fill");
 
 
-            //綁定btn-setting
+            //Bind btn-setting
             root.Q<Button>("btn-setting").clickable.clicked += ChangeTabToSetting;
             SetIcon(root.Q("btn-setting-icon"), "Settings");
 
 
 
-            //綁定btn-refresh
+            //Bind btn-refresh
             root.Q<Button>("btn-refresh").clickable.clicked += OnFresh;
             SetIcon(root.Q("btn-refresh-icon"), "Refresh");
 
-            //綁定btn-add-bookmark
+            //Bind btn-add-bookmark
             root.Q<Button>("btn-add-bookmark").clickable.clicked += OnToggleBookmark;
-            //SetIcon(root.Q("btn-add-bookmark-icon"), "Heart");
 
+            //Bind btn-toggle-inspector
+            root.Q<Button>("btn-toggle-inspector").clickable.clicked += ()=>
+            {
+                SetInspectorActive(true);
+            };
+            SetIcon(root.Q("btn-toggle-inspector-icon"), "Arrow_Right");
 
-            ////綁定btn-search-target
-            //root.Q<Button>("btn-search-target").clickable.clicked += OnSearchTarget;
-            //root.Q("btn-search-target").Add(new IMGUIContainer(OnSearchTargetListener));
-            //SetIcon(root.Q("btn-search-target-icon"), "Search");
 
 
             //建構treeview
@@ -147,14 +148,23 @@ namespace OnionCollections.DataEditor.Editor
             BindSpliter();
 
 
+            SetInspectorActive(true);
+
             //
 
             void BindSpliter()
             {
+                var manipulator = new VisualElementResizer(
+                    root.Q("ContainerA"),
+                    root.Q("ContainerB"),
+                    root.Q("Spliter"),
+                    VisualElementResizer.Direction.Horizontal)
+                {
+                    onMouseDoubleClick = () => { SetInspectorActive(false); }
+                };
+
                 //左右分割
-                root.Q("Spliter").AddManipulator(new VisualElementResizer(
-                    root.Q("ContainerA"), root.Q("ContainerB"), root.Q("Spliter"),
-                    VisualElementResizer.Direction.Horizontal));
+                root.Q("Spliter").AddManipulator(manipulator);
 
                 //右側上下分割
                 //root.Q("ContainerB").Q("Spliter").AddManipulator(new VisualElementResizer(
@@ -365,58 +375,7 @@ namespace OnionCollections.DataEditor.Editor
 
             return false;
         }
-
-
-        bool isInspectorActive = true;
-        void SetInspectorActive(bool active)
-        {
-            if (isInspectorActive == active)
-                return;
-
-            isInspectorActive = active;
-
-            var containerA = rootVisualElement.Q("ContainerA");
-            var containerB = rootVisualElement.Q("ContainerB");
-            var spliter = rootVisualElement.Q("Spliter");
-
-            if (active)
-            {
-                var winRect = position;
-                winRect.width += containerB.style.width.value.value;
-                position = winRect;
-
-                containerA.style.flexGrow = new StyleFloat(0F);
-                containerA.style.maxWidth = new StyleLength(500);
-                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-            }
-            else
-            {
-                var winRect = position;
-                winRect.width -= containerB.style.width.value.value;
-                position = winRect;
-
-                containerA.style.flexGrow = new StyleFloat(1F);
-                containerA.style.maxWidth = new StyleLength(StyleKeyword.Auto);
-                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-            }
-
-
-        }
-
-
-        public void SetTarget(Object newTarget)
-        {
-            targetNode = new TreeNode(newTarget);
-            OnTargetChange(targetNode);
-        }
-        public void SetTarget(TreeNode newTarget)
-        {
-            targetNode = newTarget;
-            OnTargetChange(targetNode);
-        }
-               
+                       
         void OnTargetChange(TreeNode newNode)
         {
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
@@ -461,8 +420,6 @@ namespace OnionCollections.DataEditor.Editor
                 }
             }
         }
-
-
 
         void OnSelectedNodeChange(TreeNode newNode)
         {
@@ -583,7 +540,53 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        //UI事件
+        float originInspectorWidth = 0;
+        bool IsInspectorActive = true;
+        void SetInspectorActive(bool active)
+        {
+            if (IsInspectorActive == active)
+                return;
+
+            IsInspectorActive = active;
+
+            var window = GetWindow<OnionDataEditorWindow>();
+            var root = window.rootVisualElement;
+
+            var containerA = root.Q("ContainerA");
+            var containerB = root.Q("ContainerB");
+            var spliter = root.Q("Spliter");
+            var btnToggleInspector = root.Q("btn-toggle-inspector");
+
+            if (active)
+            {
+                var winRect = window.position;
+                winRect.width += originInspectorWidth;
+                window.position = winRect;
+
+                containerA.style.flexGrow = new StyleFloat(0F);
+                containerA.style.maxWidth = new StyleLength(500);
+                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+                btnToggleInspector.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            }
+            else
+            {
+                var winRect = window.position;
+                originInspectorWidth = containerB.layout.width;
+
+                winRect.width -= originInspectorWidth;
+                window.position = winRect;
+
+                containerA.style.flexGrow = new StyleFloat(1F);
+                containerA.style.maxWidth = new StyleLength(StyleKeyword.Auto);
+                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                btnToggleInspector.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+            }
+        }
+
+        // UI
+
         public void OnTriggerItem(TreeNode node)
         {
             selectedNode = node;
@@ -608,8 +611,20 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        //
+        // Public Methods
 
+        public void SetTarget(Object newTarget)
+        {
+            targetNode = new TreeNode(newTarget);
+            OnTargetChange(targetNode);
+        }
+        public void SetTarget(TreeNode newTarget)
+        {
+            targetNode = newTarget;
+            OnTargetChange(targetNode);
+        }
+
+        
 
         public static void RebuildNode()
         {

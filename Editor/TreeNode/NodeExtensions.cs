@@ -16,8 +16,6 @@ namespace OnionCollections.DataEditor.Editor
     public static class NodeExtensions
     {
 
-        const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
-
         readonly static List<Type> nodeAttrTypeList = new List<Type>
         {
             typeof(NodeElementAttribute),
@@ -26,7 +24,25 @@ namespace OnionCollections.DataEditor.Editor
             //++
         };
 
+        const BindingFlags defaultBindingFlags = BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance;
+
         static readonly Dictionary<Type, MemberInfo[]> memberCache = new Dictionary<Type, MemberInfo[]>();
+        static MemberInfo[] GetMembers(Type type)
+        {
+            if (memberCache.TryGetValue(type, out MemberInfo[] members) == false)
+            {
+                members = type
+                    .GetMembers(defaultBindingFlags)
+                    .Where(n => n.MemberType != MemberTypes.Property || ((PropertyInfo)n).GetIndexParameters().Length == 0) //Skip Indexer
+                    .ToArray();
+
+                memberCache.Add(type, members);
+            }
+
+            return members;
+        }
+
+
         static readonly Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool> attrResultCache = new Dictionary<(Type objectType, Type memberType, string memberName, Type attr), bool>();
 
         static IEnumerable<TreeNode> GetChildNodeWithAttribute(Object target, MemberInfo member, Attribute attr)
@@ -118,13 +134,8 @@ namespace OnionCollections.DataEditor.Editor
             //CustomDefine
             var customDefine = GetCustomDefine(rootNode.Target);
             if (customDefine != null && customDefine.HasElement == true)
-            {
-                if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
-                {
-                    members = dataObjType.GetMembers(defaultBindingFlags);
-                    memberCache.Add(dataObjType, members);
-                }
-
+            {   
+                MemberInfo[] members = GetMembers(dataObjType);
 
                 foreach (var elementPropertyName in customDefine.elementPropertyNames)
                 {
@@ -166,11 +177,7 @@ namespace OnionCollections.DataEditor.Editor
             //Default
             else
             {
-                if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
-                {
-                    members = dataObjType.GetMembers(defaultBindingFlags);
-                    memberCache.Add(dataObjType, members);
-                }
+                MemberInfo[] members = GetMembers(dataObjType);
 
                 foreach (var member in members)
                 {
@@ -417,11 +424,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             Type dataObjType = target.GetType();
 
-            if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
-            {
-                members = dataObjType.GetMembers(defaultBindingFlags);
-                memberCache.Add(dataObjType, members);
-            }
+            MemberInfo[] members = GetMembers(dataObjType);
 
             foreach (var member in members)
             {
@@ -454,11 +457,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             Type dataObjType = target.GetType();
 
-            if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
-            {
-                members = dataObjType.GetMembers(defaultBindingFlags);
-                memberCache.Add(dataObjType, members);
-            }
+            MemberInfo[] members = GetMembers(dataObjType);
 
             foreach (var member in members)
             {
@@ -490,11 +489,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             Type dataObjType = target.GetType();
 
-            if (memberCache.TryGetValue(dataObjType, out MemberInfo[] members) == false)
-            {
-                members = dataObjType.GetMembers(defaultBindingFlags);
-                memberCache.Add(dataObjType, members);
-            }
+            MemberInfo[] members = GetMembers(dataObjType);
 
             foreach (var member in members)
             {
@@ -524,11 +519,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             Type type = target.GetType();
 
-            if (memberCache.TryGetValue(type, out MemberInfo[] members) == false)
-            {
-                members = type.GetMembers(defaultBindingFlags);
-                memberCache.Add(type, members);
-            }
+            MemberInfo[] members = GetMembers(type);
 
             var member = members.SingleOrDefault(n => n.Name == memberName);
 

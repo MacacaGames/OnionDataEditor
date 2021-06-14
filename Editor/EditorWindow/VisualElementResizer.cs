@@ -2,9 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using System;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -18,6 +17,8 @@ namespace OnionCollections.DataEditor.Editor
         readonly VisualElement m_ContainerA;
         readonly VisualElement m_ContainerB;
         readonly Direction m_Direction;
+
+        public Action onMouseDoubleClick = null;
 
 
         public VisualElementResizer(VisualElement containerA, VisualElement containerB, VisualElement spliter, Direction direction)
@@ -95,14 +96,26 @@ namespace OnionCollections.DataEditor.Editor
             e.StopPropagation();
         }
 
+        double lastClickTimeStamp = 0d; //ms
         protected void OnMouseUp(MouseUpEvent e)
         {
             if (!m_Active || !target.HasMouseCapture() || !CanStopManipulation(e))
                 return;
 
+            if (e.timestamp - lastClickTimeStamp < 1000)
+            {
+                OnMouseDoubleClick();
+            }
+            lastClickTimeStamp = e.timestamp;
+
             m_Active = false;
             target.ReleaseMouse();
             e.StopPropagation();
+        }
+
+        protected void OnMouseDoubleClick()
+        {
+            onMouseDoubleClick?.Invoke();
         }
     }
 }
