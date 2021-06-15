@@ -21,7 +21,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-            node.OnInspectorAction = new OnionAction(OnInspectorGUI);
+            node.OnInspectorGUI = OnInspectorGUI;
 
             node.NodeActions = new List<OnionAction>
             {

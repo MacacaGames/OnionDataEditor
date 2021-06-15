@@ -94,84 +94,124 @@ namespace OnionCollections.DataEditor.Editor
                 state = RowState.Normal;
 
             GUIStyle style = GetStateGUIStyle(state, args.item);
-
-
             bool hasIcon = node.icon != null;
-            //icon
-            if (hasIcon)
-            {
-                int padding = 1;
-                float iconHeight = args.rowRect.height - padding * 2;
 
-                Rect iconRect = new Rect(args.rowRect)
-                    .ExtendLeft(-GetContentIndent(args.item))
-                    .ExtendUp(-padding)
-                    .SetSize(iconHeight, iconHeight);
-                
-                
-                GUI.Label(iconRect, node.icon);
-            }
+            DrawNodeRowGUI();
 
+            DrawIcon();
 
-            //text
-            Rect labelRect = new Rect(args.rowRect)
-                .ExtendLeft(-GetContentIndent(args.item))
-                .ExtendLeft(-(hasIcon ? (args.rowRect.height + 4F) : 2F));
+            DrawTitle();
 
-            GUI.Label(labelRect, node.displayName, style);
+            DrawRightSideInfo();
 
-
-            //child count
-            bool isHideElementNodes = node.Flag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
-            if (treeQuery[args.item.id].ChildCount > 0 || isHideElementNodes)
-            {
-                const float tagWidth = 150F;
-                Rect rightRect = new Rect(args.rowRect)
-                    .ExtendLeft(-args.rowRect.width)
-                    .ExtendLeft(tagWidth);
-
-                GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-                labelStyle.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.5F);
-                labelStyle.alignment = TextAnchor.MiddleRight;
-                labelStyle.fontSize = 10;
-                labelStyle.padding = new RectOffset(0, 8, 0, 3);
-
-                if (isHideElementNodes)
-                {
-                    var icon = OnionDataEditor.GetIconTexture("HideElement");
-                    GUI.color = new Color(1, 1, 1, 0.5F);
-                    GUI.Label(
-                        rightRect.ExtendLeft(- rightRect.width + rightRect.height).MoveLeft(2), 
-                        new GUIContent(icon, "Hide Elements"), 
-                        labelStyle);
-                    GUI.color = Color.white;
-                }
-                else
-                {
-                    string displayTag = treeQuery[args.item.id].ChildCount.ToString();
-                    GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
-                }
-            }
-
-            if (node.tagColor.a > 0F)
-            {
-                const float colorTagWidth = 3F;
-                Rect colorTagRect = new Rect(args.rowRect)
-                    .ExtendLeft(-args.rowRect.width)
-                    .ExtendLeft(colorTagWidth)
-                    .ExtendDown(-1);
-
-                EditorGUI.DrawRect(colorTagRect, node.tagColor);
-            }
+            DrawTagColor();
 
             //Line
-            Rect lineRect = new Rect(args.rowRect)
+            Rect lineRect = args.rowRect
                 .ExtendLeft(-GetContentIndent(args.item))
-                .ExtendUp(-args.rowRect.height)
-                .ExtendUp(1);
+                .ExtendUpToFit(1);
 
             EditorGUI.DrawRect(lineRect, new Color(0.5f, 0.5f, 0.5f, 0.05F));      //線
+
+
+            void DrawNodeRowGUI()
+            {
+                const float leftSpace = 200F;
+                const float rightSpace = 40F;
+
+                if (Event.current.type == EventType.Repaint &&
+                    args.rowRect.width < leftSpace + rightSpace)
+                {
+                    return;
+                }
+
+                Rect rect = args.rowRect
+                    .ExtendLeft(-leftSpace)
+                    .ExtendRight(-rightSpace);
+
+                //EditorGUI.DrawRect(rect, new Color(1, 1, 1, 0.3F)); //For Debug
+
+                node.OnRowGUI?.Invoke(rect);
+
+            }
+
+            void DrawIcon()
+            {
+                if (hasIcon)
+                {
+                    int padding = 1;
+                    float iconHeight = args.rowRect.height - padding * 2;
+
+                    Rect iconRect = new Rect(args.rowRect)
+                        .ExtendLeft(-GetContentIndent(args.item))
+                        .ExtendUp(-padding)
+                        .SetSize(iconHeight, iconHeight);
+
+
+                    GUI.Label(iconRect, node.icon);
+                }
+            }
+
+            void DrawTitle()
+            {
+                Rect labelRect = new Rect(args.rowRect)
+                   .ExtendLeft(-GetContentIndent(args.item))
+                   .ExtendLeft(-(hasIcon ? (args.rowRect.height + 4F) : 2F));
+
+                GUI.Label(labelRect, node.displayName, style);
+            }
+
+            void DrawRightSideInfo()
+            {
+                bool isHideElementNodes = node.Flag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
+                if (treeQuery[args.item.id].ChildCount > 0 || isHideElementNodes)
+                {
+                    const float tagWidth = 150F;
+                    Rect rightRect = new Rect(args.rowRect)
+                        .ExtendLeft(-args.rowRect.width)
+                        .ExtendLeft(tagWidth);
+
+                    GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
+                    labelStyle.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.5F);
+                    labelStyle.alignment = TextAnchor.MiddleRight;
+                    labelStyle.fontSize = 10;
+                    labelStyle.padding = new RectOffset(0, 8, 0, 3);
+
+                    if (isHideElementNodes)
+                    {
+                        var icon = OnionDataEditor.GetIconTexture("HideElement");
+                        GUI.color = new Color(1, 1, 1, 0.5F);
+                        GUI.Label(
+                            rightRect.ExtendLeft(-rightRect.width + rightRect.height).MoveLeft(2),
+                            new GUIContent(icon, "Hide Elements"),
+                            labelStyle);
+                        GUI.color = Color.white;
+                    }
+                    else
+                    {
+                        string displayTag = treeQuery[args.item.id].ChildCount.ToString();
+                        GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
+                    }
+                }
+            }
+
+            void DrawTagColor()
+            {
+                if (node.tagColor.a > 0F)
+                {
+                    const float colorTagWidth = 3F;
+                    Rect colorTagRect = new Rect(args.rowRect)
+                        .ExtendLeft(-args.rowRect.width)
+                        .ExtendLeft(colorTagWidth)
+                        .ExtendDown(-1);
+
+                    EditorGUI.DrawRect(colorTagRect, node.tagColor);
+                }
+
+            }
+
         }
+
         public override IList<TreeViewItem> GetRows()
         {
             return rowList;

@@ -67,11 +67,11 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     displayName = bookmarkTitle,
                     icon = OnionDataEditor.GetIconTexture("Bookmark_Fill"),
-                    OnInspectorAction = new OnionAction(bookmarkList.OnInspectorGUI),
+                    OnInspectorGUI = bookmarkList.OnInspectorGUI,
                     tags = new[] { "Bookmarks" },
                 };
 
-                node.OnRebuildNode = new OnionAction(BuildChildren);
+                node.OnRebuild = BuildChildren;
 
                 BuildChildren();
 
@@ -89,11 +89,11 @@ namespace OnionCollections.DataEditor.Editor
                             Object obj = AssetDatabase.LoadAssetAtPath<Object>(path);
                             TreeNode n = new TreeNode(obj, TreeNode.NodeFlag.HideElementNodes)
                             {
-                                OnDoubleClickAction = new OnionAction(() =>
+                                OnDoubleClick = () =>
                                 {
                                     var onionWindow = EditorWindow.GetWindow<OnionDataEditorWindow>();
                                     onionWindow.SetTarget(obj);
-                                })
+                                },
                             };
                             return n;
                         })
@@ -218,7 +218,7 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     displayName = propertyTitle,
                     icon = OnionDataEditor.GetIconTexture("Tag"),
-                    OnInspectorAction = new OnionAction(userTagsList.OnInspectorGUI),
+                    OnInspectorGUI = userTagsList.OnInspectorGUI,
                     tags = new[] { "UserTags" },
                 };
 
@@ -260,7 +260,7 @@ namespace OnionCollections.DataEditor.Editor
                     displayName = propertyTitle,
                     icon = OnionDataEditor.GetIconTexture("Add"),
                     tags = new[] { "CustomObjectNodeDefine" },
-                    OnInspectorAction = new OnionAction(() => objectNodeDefineObjectList.OnInspectorGUI()),
+                    OnInspectorGUI = objectNodeDefineObjectList.OnInspectorGUI,
                     
                 };
 

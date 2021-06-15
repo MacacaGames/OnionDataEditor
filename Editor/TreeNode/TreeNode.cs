@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
+using System;
+using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -49,35 +51,40 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-        /// <summary>Action will be executed when node be selected.</summary>
-        public OnionAction OnSelectedAction { get; set; }
-
-        /// <summary>Action will be executed when node be double clicked.</summary>
-        public OnionAction OnDoubleClickAction { get; set; }
+        /// <summary>[Interal] Action when node draw row GUI.</summary>
+        internal Action<Rect> OnRowGUI { get; set; }
 
         /// <summary>Action when node rebuild. It will not execute when node first build.</summary>
-        internal OnionAction OnRebuildNode { get; set; }
+        internal Action OnRebuild { get; set; }
+
+        /// <summary>Action will be executed when node be selected.</summary>
+        public Action OnSelected { get; set; }
+
+        /// <summary>Action will be executed when node be double clicked.</summary>
+        public Action OnDoubleClick { get; set; }
+
 
         /// <summary>Actions of this node. Will display as button in data editor.</summary>
         public IEnumerable<OnionAction> NodeActions { get; set; }
 
-        OnionAction _OnInspectorAction;
+
+        Action _OnInspectorGUI;
         /// <summary>Inspector action of this node.</summary>
-        public OnionAction OnInspectorAction
+        public Action OnInspectorGUI
         {
             get
             {
                 if (IsPseudo == false && Target != null)
                 {
-                    if (_OnInspectorAction == null)
+                    if (_OnInspectorGUI == null)
                     {
-                        _OnInspectorAction = new OnionAction(EditorCache.OnInspectorGUI);
+                        _OnInspectorGUI = EditorCache.OnInspectorGUI;
                     }
                 }
 
-                return _OnInspectorAction;                
+                return _OnInspectorGUI;                
             }
-            set => _OnInspectorAction = value;
+            set => _OnInspectorGUI = value;
         }
 
         VisualElement _OnInspectorVisualElementRoot;
@@ -123,7 +130,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-        [System.Flags]
+        [Flags]
         public enum NodeFlag
         {
             None = 0,
@@ -171,8 +178,8 @@ namespace OnionCollections.DataEditor.Editor
             if (IsNull == false)
             {
                 NodeActions = Target.GetTargetActions();
-                OnSelectedAction = Target.GetTargetOnSelectedAction();
-                OnDoubleClickAction = Target.GetTargetOnDoubleClickAction();
+                OnSelected = Target.GetTargetOnSelectedAction();
+                OnDoubleClick = Target.GetTargetOnDoubleClickAction();
             }
 
         }
@@ -298,6 +305,23 @@ namespace OnionCollections.DataEditor.Editor
                 yield return child;
         }
 
+
+
+        #region Obsolete
+
+        [Obsolete("Use OnInspectorGUI.", true)]
+        /// <summary>Inspector action of this node.</summary>
+        public OnionAction OnInspectorAction { get; set; }
+
+        [Obsolete("Use OnSeleted.", true)]
+        /// <summary>Action will be executed when node be selected.</summary>
+        public OnionAction OnSelectedAction { get; set; }
+
+        [Obsolete("Use OnDoubleClick.", true)]
+        /// <summary>Action will be executed when node be double clicked.</summary>
+        public OnionAction OnDoubleClickAction { get; set; }
+
+        #endregion
     }
 
 }

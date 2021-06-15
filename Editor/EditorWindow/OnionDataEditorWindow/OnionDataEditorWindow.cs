@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
 using System.Linq;
+using System;
 using UnityEditor.IMGUI.Controls;
 
 using Object = UnityEngine.Object;
@@ -177,7 +178,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 var inspectorContainer = new IMGUIContainer(() =>
                 {
-                    selectedNode?.OnInspectorAction?.action?.Invoke();
+                    selectedNode?.OnInspectorGUI?.Invoke();
                 });
                 inspectorContainer.AddToClassList("inspect-container");
                 inspectorContainer.name = "inspect-container-imgui";
@@ -296,13 +297,13 @@ namespace OnionCollections.DataEditor.Editor
                 return;
             }
 
-            if (treeRoot.OnRebuildNode == null)
+            if (treeRoot.OnRebuild == null)
             {
                 treeRoot.InitSetting();
             }
             else
             {
-                treeRoot.OnRebuildNode.action.Invoke();
+                treeRoot.OnRebuild.Invoke();
             }
 
             OnTargetChange(treeRoot);
@@ -590,18 +591,14 @@ namespace OnionCollections.DataEditor.Editor
         public void OnTriggerItem(TreeNode node)
         {
             selectedNode = node;
-
-            OnionAction onSelectedAction = node.OnSelectedAction;
-            if (onSelectedAction != null)
-                onSelectedAction.action.Invoke();
-
+            node.OnSelected?.Invoke();
         }
         public void OnDoubleClickItem(TreeNode node)
         {
-            OnionAction onDoubleClickAction = node.OnDoubleClickAction;
+            Action onDoubleClickAction = node.OnDoubleClick;
             if (onDoubleClickAction != null)
             {
-                onDoubleClickAction.action.Invoke();
+                onDoubleClickAction.Invoke();
             }
             else if(node.IsPseudo == false)
             {

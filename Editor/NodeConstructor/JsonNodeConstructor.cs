@@ -54,7 +54,7 @@ namespace OnionCollections.DataEditor.Editor
                 //Object
                 if (jsonNode.JsonType == JsonNode.JsonNodeType.Object)
                 {
-                    jsonNode.OnInspectorAction = new OnionAction(() => DrawCollectionGUI(jsonNode, false));
+                    jsonNode.OnInspectorGUI = () => DrawCollectionGUI(jsonNode, false);
                     jsonNode.NodeActions = new List<OnionAction> 
                     {
                         saveAction,
@@ -91,7 +91,7 @@ namespace OnionCollections.DataEditor.Editor
                 //Array
                 if (jsonNode.JsonType == JsonNode.JsonNodeType.Array)
                 {
-                    jsonNode.OnInspectorAction = new OnionAction(() => DrawCollectionGUI(jsonNode, true));
+                    jsonNode.OnInspectorGUI = () => DrawCollectionGUI(jsonNode, true);
                     jsonNode.NodeActions = new List<OnionAction> 
                     {
                         saveAction,
@@ -124,7 +124,14 @@ namespace OnionCollections.DataEditor.Editor
                 }
 
                 //Field
-                jsonNode.OnInspectorAction = new OnionAction(() => DrawFieldGUI(jsonNode));
+                jsonNode.OnInspectorGUI = () => DrawFieldGUI(jsonNode);
+                jsonNode.OnRowGUI = (rect) =>
+                {
+                    float h = EditorGUIUtility.singleLineHeight;
+                    rect = rect.MoveDown((rect.height - h) / 2 - 1).SetHeight(h);
+
+                    jsonNode.DrawFieldGUI(rect);
+                };
                 jsonNode.NodeActions = new List<OnionAction> 
                 { 
                     saveAction,
@@ -237,7 +244,7 @@ namespace OnionCollections.DataEditor.Editor
                                 {
                                     foreach (var nodeCh in jsonNode.GetChildren())
                                     {
-                                        nodeCh.OnInspectorAction?.action?.Invoke();
+                                        nodeCh.OnInspectorGUI?.Invoke();
                                     }
                                 }
 
@@ -293,7 +300,13 @@ namespace OnionCollections.DataEditor.Editor
                         GUILayout.FlexibleSpace();
                     }
 
-                    jsonNode.DrawFieldGUI();
+                    Rect rect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle() { stretchWidth = true, stretchHeight = true });
+
+                    float h = EditorGUIUtility.singleLineHeight;
+                    rect = rect.MoveDown((rect.height - h) / 2 - 1).SetHeight(h);
+
+                    jsonNode.DrawFieldGUI(rect);
+
                 }
             }
 

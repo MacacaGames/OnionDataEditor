@@ -29,17 +29,28 @@ namespace OnionCollections.DataEditor.Editor
         {
             get
             {
+                playerPrefCache.Clear();
+
                 return FilterPlayerPrefByRegexs()
                     .Select(n =>
                     {
+                        playerPrefCache.Add(n.Key, n.Value);
+
                         TreeNode node = new TreeNode()
                         {
-                            displayName = $"{n.Key} : {n.Value}",
+                            displayName = $"{n.Key}",
                             description = GetPrefType(n.Value),
                             icon = OnionDataEditor.GetIconTexture("Dot"),
                         };
 
-                        node.OnInspectorAction = GetPrefInspector(node, n.Key, n.Value, n.Value.GetType());
+                        PlayerPrefGUIType guiType = GetGUIType(n.Key, n.Value.GetType());
+                        node.OnInspectorGUI = () => PrefInspectorGUI(node, GetRect(), n.Key, guiType);
+                        node.OnRowGUI = rect =>
+                        {
+                            float h = EditorGUIUtility.singleLineHeight;
+                            rect = rect.MoveDown((rect.height - h) / 2 - 1).SetHeight(h);
+                            PrefInspectorGUI(node, rect, n.Key, guiType);
+                        };
 
                         node.NodeActions = new List<OnionAction>
                         {
@@ -58,90 +69,110 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        OnionAction GetPrefInspector(TreeNode node, string key,object value, Type valueType)
+        Dictionary<string, object> playerPrefCache = new Dictionary<string, object>();
+
+        Rect GetRect()
         {
+            Rect rect = GUILayoutUtility.GetRect(new GUIContent(), new GUIStyle() { stretchWidth = true, stretchHeight = true });
+            float h = EditorGUIUtility.singleLineHeight;
+            rect = rect.MoveDown((rect.height - h) / 2 - 1).SetHeight(h);
+
+            return rect;
+        }
+
+        void PrefInspectorGUI(TreeNode node, Rect rect, string key, PlayerPrefGUIType guiType)
+        {
+
             EditorGUIUtility.labelWidth = 150F;
+
+            object value = playerPrefCache[key];
+
             switch (value)
             {
                 case int i:
-                    return new OnionAction(() =>
-                    {
-                        using (new GUILayout.HorizontalScope())
-                        {
-                            using (var ch = new EditorGUI.ChangeCheckScope())
-                            {
-                                if (GetGUIType(key, valueType) == PlayerPrefGUIType.Toggle)
-                                {
-                                    bool b = (i == 1);
-                                    b = EditorGUILayout.Toggle(new GUIContent(key), b);
-                                    if (ch.changed)
-                                    {
-                                        i = b ? 1 : 0;
-                                        PlayerPrefs.SetInt(key, i);
-                                        node.displayName = $"{key} : {i}";
-                                        PlayerPrefs.Save();
-                                    }
-                                }
-                                else
-                                {
-                                    i = EditorGUILayout.DelayedIntField(new GUIContent(key), i);
-                                    if (ch.changed)
-                                    {
-                                        PlayerPrefs.SetInt(key, i);
-                                        node.displayName = $"{key} : {i}";
-                                        PlayerPrefs.Save();
-                                    }
-                                }
-                            }
-                        }
-                    });
+                    DrawIntField(rect, i);
+                    break;
 
                 case float f:
-                    return new OnionAction(() =>
-                    {
-                        using (new GUILayout.HorizontalScope())
-                        {
-                            using (var ch = new EditorGUI.ChangeCheckScope())
-                            {
-                                if (GetGUIType(key, valueType) == PlayerPrefGUIType.Slider01)
-                                {
-                                    f = EditorGUILayout.Slider(new GUIContent(key), f, 0F, 1F);
-                                }
-                                else
-                                {
-                                    f = EditorGUILayout.DelayedFloatField(new GUIContent(key), f);
-                                }
-                                if (ch.changed)
-                                {
-                                    PlayerPrefs.SetFloat(key, f);
-                                    node.displayName = $"{key} : {f}";
-                                    PlayerPrefs.Save();
-                                }
-                            }
-                        }
-                    });
+                    DrawFloatField(rect, f);
+                    break;
 
                 case string str:
-                    return new OnionAction(() =>
-                    {
-                        using (new GUILayout.HorizontalScope())
-                        {
-                            using (var ch = new EditorGUI.ChangeCheckScope())
-                            {
-                                str = EditorGUILayout.DelayedTextField(new GUIContent(key), str);
-                                if (ch.changed)
-                                {
-                                    PlayerPrefs.SetString(key, str);
-                                    node.displayName = $"{key} : {str}";
-                                    PlayerPrefs.Save();
-                                }
-                            }
-                        }
-                    });
+                    DrawStringField(rect, str);
+                    break;
 
                 default:
-                    return null;
-            }            
+                    break;
+            } 
+            
+
+            void DrawIntField(Rect r, int i)
+            {
+                using (var ch = new EditorGUI.ChangeCheckScope())
+                {
+                    if (guiType == PlayerPrefGUIType.Toggle)
+                    {
+                        bool b = (i == 1);
+                        b = EditorGUI.Toggle(r, GUIContent.none, b);
+                        if (ch.changed)
+                        {
+                            i = b ? 1 : 0;
+                            playerPrefCache[key] = i;
+                            node.displayName = $"{key}";
+                            PlayerPrefs.SetInt(key, i);
+                            PlayerPrefs.Save();
+                        }
+                    }
+                    else
+                    {
+                        i = EditorGUI.DelayedIntField(r, GUIContent.none, i);
+                        if (ch.changed)
+                        {
+                            playerPrefCache[key] = i;
+                            node.displayName = $"{key}";
+                            PlayerPrefs.SetInt(key, i);
+                            PlayerPrefs.Save();
+                        }
+                    }
+                }
+            }
+
+            void DrawFloatField(Rect r, float f)
+            {
+                using (var ch = new EditorGUI.ChangeCheckScope())
+                {
+                    if (guiType == PlayerPrefGUIType.Slider01)
+                    {
+                        f = EditorGUI.Slider(r, GUIContent.none, f, 0F, 1F);
+                    }
+                    else
+                    {
+                        f = EditorGUI.DelayedFloatField(r, GUIContent.none, f);
+                    }
+                    if (ch.changed)
+                    {
+                        playerPrefCache[key] = f;
+                        node.displayName = $"{key}";
+                        PlayerPrefs.SetFloat(key, f);
+                        PlayerPrefs.Save();
+                    }
+                }
+            }
+
+            void DrawStringField(Rect r, string str)
+            {
+                using (var ch = new EditorGUI.ChangeCheckScope())
+                {
+                    str = EditorGUI.DelayedTextField(r, GUIContent.none, str);
+                    if (ch.changed)
+                    {
+                        playerPrefCache[key] = str;
+                        node.displayName = $"{key}";
+                        PlayerPrefs.SetString(key, str);
+                        PlayerPrefs.Save();
+                    }
+                }
+            }
         }
 
         string GetPrefType(object value)

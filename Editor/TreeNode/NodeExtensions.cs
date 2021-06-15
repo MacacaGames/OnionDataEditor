@@ -163,13 +163,13 @@ namespace OnionCollections.DataEditor.Editor
 
                 IEnumerable<TreeNode> nodes = gameobjectAgent.GetNodes(go);
 
-                rootNode.OnInspectorAction = new OnionAction(() =>
+                rootNode.OnInspectorGUI = () =>
                 {
                     if (rootNode != null)
                     {
                         gameobjectAgent.OnInspectorGUI(rootNode);
                     }
-                });
+                };
 
                 nodeList.AddRange(nodes);
             }
@@ -635,7 +635,7 @@ namespace OnionCollections.DataEditor.Editor
             return result;
         }
 
-        internal static OnionAction GetTargetOnSelectedAction(this Object target)
+        internal static Action GetTargetOnSelectedAction(this Object target)
         {
             if (target != null)
             {
@@ -647,12 +647,12 @@ namespace OnionCollections.DataEditor.Editor
                     .methodInfo;
 
                 if (method != null)
-                    return new OnionAction(method, target, method.Name);
+                    return new OnionAction(method, target, method.Name).action;
             }
             return null;
         }
 
-        internal static OnionAction GetTargetOnDoubleClickAction(this Object target)
+        internal static Action GetTargetOnDoubleClickAction(this Object target)
         {
             if (target != null)
             {
@@ -665,7 +665,7 @@ namespace OnionCollections.DataEditor.Editor
                     .methodInfo;
 
                 if (method != null)
-                    return new OnionAction(method, target, method.Name);
+                    return new OnionAction(method, target, method.Name).action;
             }
             return null;
         }

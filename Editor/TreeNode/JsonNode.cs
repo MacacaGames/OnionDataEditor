@@ -106,33 +106,33 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-        public void DrawFieldGUI()
+        public void DrawFieldGUI(Rect rect)
         {
             switch (JsonType)
             {
                 case JsonNodeType.Bool:
-                    bool b = EditorGUILayout.Toggle(this.b);
+                    bool b = EditorGUI.Toggle(rect, this.b);
                     Set(b);
                     break;
 
 
                 case JsonNodeType.Number:
-                    float f = EditorGUILayout.FloatField(this.f);
+                    float f = EditorGUI.FloatField(rect, this.f);
                     Set(f);
                     break;
 
                 case JsonNodeType.String:
-                    string str = EditorGUILayout.TextField(this.str);
+                    string str = EditorGUI.TextField(rect, this.str);
                     Set(str);
                     break;
 
                 case JsonNodeType.Null:
-                    EditorGUILayout.LabelField($"null", new GUIStyle(EditorStyles.helpBox) { stretchWidth = false });
+                    EditorGUI.LabelField(rect, $"null", new GUIStyle(EditorStyles.helpBox) { stretchWidth = false });
                     break;
 
 
                 default:
-                    EditorGUILayout.LabelField(displayName);
+                    EditorGUI.LabelField(rect, displayName);
                     break;
 
             }

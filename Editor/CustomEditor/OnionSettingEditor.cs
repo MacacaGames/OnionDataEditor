@@ -17,10 +17,10 @@ public class OnionSettingEditor : UnityEditor.Editor
         List<TreeNode> nodes = (target as OnionSetting).ToList();
         foreach (var node in nodes)
         {
-            if (node.OnInspectorAction?.action == null)
+            if (node.OnInspectorGUI == null)
                 continue;
 
-            root.Add(new IMGUIContainer(node.OnInspectorAction.action));
+            root.Add(new IMGUIContainer(node.OnInspectorGUI));
 
             var space = new VisualElement();
             space.style.height = new StyleLength(10);
