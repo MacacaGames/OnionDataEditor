@@ -58,6 +58,27 @@ namespace OnionCollections.DataEditor.Editor
             rect.height += v;
             return rect;
         }
+        public static Rect ExtendAll(this Rect rect, float v)
+        {
+            return rect
+                .ExtendRight(v)
+                .ExtendLeft(v)
+                .ExtendDown(v)
+                .ExtendUp(v);
+        }
+        public static Rect ExtendHorizontal(this Rect rect, float v)
+        {
+            return rect
+                .ExtendRight(v)
+                .ExtendLeft(v);
+        }
+        public static Rect ExtendVertical(this Rect rect, float v)
+        {
+            return rect
+                .ExtendDown(v)
+                .ExtendUp(v);
+        }
+
 
         #endregion
 

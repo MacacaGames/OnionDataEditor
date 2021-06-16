@@ -529,7 +529,6 @@ namespace OnionCollections.DataEditor.Editor
                 string nodeDescription = n.description;
 
                 root.Q<Label>("info-title").text = nodeTitle;
-                root.Q<Label>("info-description").text = nodeDescription;
 
                 if (n != null && string.IsNullOrEmpty(n.description) == true)
                 {
@@ -537,7 +536,18 @@ namespace OnionCollections.DataEditor.Editor
                 }
                 else
                 {
+                    root.Q<Label>("info-description").text = nodeDescription;
                     root.Q<Label>("info-description").style.display = DisplayStyle.Flex;
+                }
+
+                if(n.icon == null)
+                {
+                    root.Q("info-icon").style.display = DisplayStyle.None;
+                }
+                else
+                {
+                    root.Q("info-icon").style.backgroundImage = new StyleBackground((Texture2D)n.icon);
+                    root.Q("info-icon").style.display = DisplayStyle.Flex;
                 }
 
             }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+using System.Linq;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -11,7 +11,7 @@ namespace OnionCollections.DataEditor.Editor
     {
 
         [NodeIcon]
-        Texture2D Icon => GetIcon("Dot");
+        Texture2D Icon => GetIcon("Node_Icon");
 
 
         [System.Serializable]
@@ -28,6 +28,15 @@ namespace OnionCollections.DataEditor.Editor
         [SerializeField]
         IconInfo[] data = new IconInfo[0];
 
+        [NodeCustomElement]
+        IEnumerable<TreeNode> DataNodes
+        {
+            get => data.Select(n => new TreeNode()
+            {
+                displayName = n.id,
+                icon = n.defaultIcon,
+            });
+        }
 
 
         public Texture2D GetIcon(string key)
@@ -47,7 +56,6 @@ namespace OnionCollections.DataEditor.Editor
 
             return targetItem.darkModeIcon;
         }
-
 
     }
 }

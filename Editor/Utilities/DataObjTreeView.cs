@@ -137,14 +137,13 @@ namespace OnionCollections.DataEditor.Editor
 
             void DrawIcon()
             {
+                const float padding = 1F;
                 if (hasIcon)
                 {
-                    int padding = 1;
                     float iconHeight = args.rowRect.height - padding * 2;
 
                     Rect iconRect = new Rect(args.rowRect)
                         .ExtendLeft(-GetContentIndent(args.item))
-                        .ExtendUp(-padding)
                         .SetSize(iconHeight, iconHeight);
 
 
@@ -166,31 +165,35 @@ namespace OnionCollections.DataEditor.Editor
                 bool isHideElementNodes = node.Flag.HasFlag(TreeNode.NodeFlag.HideElementNodes);
                 if (treeQuery[args.item.id].ChildCount > 0 || isHideElementNodes)
                 {
-                    const float tagWidth = 150F;
+                    const float tagWidth = 40F;
                     Rect rightRect = new Rect(args.rowRect)
                         .ExtendLeft(-args.rowRect.width)
                         .ExtendLeft(tagWidth);
 
-                    GUIStyle labelStyle = new GUIStyle(GUI.skin.label);
-                    labelStyle.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 0.5F);
-                    labelStyle.alignment = TextAnchor.MiddleRight;
-                    labelStyle.fontSize = 10;
-                    labelStyle.padding = new RectOffset(0, 8, 0, 3);
+                    GUIStyle labelStyle = new GUIStyle(GUI.skin.label)
+                    {
+                        normal = {
+                            textColor = new Color(0.5F, 0.5F, 0.5F, 0.5F),
+                        },
+                        alignment = TextAnchor.MiddleCenter,
+                        fontSize = 10,
+                        padding = new RectOffset(0, 0, 0, 0),
+                        border = new RectOffset(16, 16, 16, 16),
+                    };
 
                     if (isHideElementNodes)
                     {
                         var icon = OnionDataEditor.GetIconTexture("HideElement");
                         GUI.color = new Color(1, 1, 1, 0.5F);
                         GUI.Label(
-                            rightRect.ExtendLeft(-rightRect.width + rightRect.height).MoveLeft(2),
-                            new GUIContent(icon, "Hide Elements"),
-                            labelStyle);
+                            rightRect.ExtendLeft(-rightRect.width + rightRect.height).MoveLeft(8),
+                            new GUIContent(icon, "Hide Elements"));
                         GUI.color = Color.white;
                     }
                     else
                     {
                         string displayTag = treeQuery[args.item.id].ChildCount.ToString();
-                        GUI.Label(rightRect, $"[ {displayTag} ]", labelStyle);
+                        GUI.Label(rightRect.ExtendHorizontal(-5).ExtendVertical(-2), $"[ {displayTag} ]", labelStyle);
                     }
                 }
             }
