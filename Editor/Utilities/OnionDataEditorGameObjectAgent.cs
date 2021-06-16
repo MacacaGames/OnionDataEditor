@@ -36,10 +36,16 @@ namespace OnionCollections.DataEditor.Editor
         public IEnumerable<TreeNode> GetNodes(GameObject go)
         {
             var nodes = go.GetComponents<Component>()
-                .Where(c => c is Transform == false)
-                .Select(c => new TreeNode(c)
+                .Select(c =>
                 {
-                    displayName = (c is IQueryableData q) ? q.GetID() : c.GetType().Name
+                    UnityEditor.Editor customEditor = null;
+                    var node = new TreeNode(c)
+                    {
+                        displayName = (c is IQueryableData q) ? q.GetID() : c.GetType().Name,
+                        OnInspectorGUI = () => OnComponentInspectorGUI(c, customEditor),
+                    };
+
+                    return node;
                 });
 
             return nodes;
@@ -49,6 +55,8 @@ namespace OnionCollections.DataEditor.Editor
         const float bigIconSize = 38F;
 
         GameObject go = null;
+
+        Dictionary<Component, bool> compFoldState = new Dictionary<Component, bool>();
 
         public void OnInspectorGUI(TreeNode rootNode)
         {
@@ -77,7 +85,6 @@ namespace OnionCollections.DataEditor.Editor
 
             GUI.enabled = false;
 
-
             using (new EditorGUILayout.HorizontalScope())
             {
                 GUILayout.Label(EditorGUIUtility.ObjectContent(null, typeof(GameObject)).image, bigIconStyle);
@@ -95,16 +102,13 @@ namespace OnionCollections.DataEditor.Editor
 
                     using (new EditorGUILayout.HorizontalScope())
                     {
-
                         GUILayout.Label("Tag", GUILayout.Width(30));
                         EditorGUILayout.TagField(go.tag);
 
                         GUILayout.Label("", GUILayout.Width(10));
 
-                        GUILayout.Label("Layer", GUILayout.Width(34));
+                        GUILayout.Label("Layer", GUILayout.Width(38));
                         EditorGUILayout.LayerField(go.layer);
-
-
                     }
 
                     GUI.enabled = true;
@@ -113,20 +117,35 @@ namespace OnionCollections.DataEditor.Editor
 
             GUILayout.Label("", GUILayout.Height(10F));
 
-            EditorGUI.DrawRect(new Rect(0, 48, 10000, 1), new Color(0, 0, 0, 0.15F));
-
-            GUILayout.Label("", GUILayout.Height(5F));
-
-            using (new EditorGUILayout.HorizontalScope())
+            foreach (var n in rootNode.GetChildren())
             {
-                foreach (var n in rootNode.GetChildren())
+                if (n.IsPseudo == false && n.IsNull == false)
                 {
-                    if (n.IsPseudo == false && n.IsNull == false)
-                    {
-                        GUILayout.Label("", GUILayout.Width(1F));
-                        GUILayout.Label(EditorGUIUtility.ObjectContent(null, n.Target.GetType()).image, iconStyle);
-                    }
+                    n.OnInspectorGUI();
                 }
+            }
+
+        }
+
+        void OnComponentInspectorGUI(Component comp, UnityEditor.Editor customEditor)
+        {
+            if (customEditor == null)
+            {
+                customEditor = UnityEditor.Editor.CreateEditor(comp);
+            }
+
+            if( compFoldState.TryGetValue(comp, out bool isFoldOut) == false)
+            {
+                isFoldOut = true;
+                compFoldState.Add(comp, isFoldOut);
+            }
+
+            compFoldState[comp] = EditorGUILayout.InspectorTitlebar(isFoldOut, comp);
+            if (isFoldOut)
+            {
+                GUILayout.Space(3);
+                customEditor.OnInspectorGUI();
+                GUILayout.Space(10);
             }
         }
     }

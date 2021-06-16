@@ -53,7 +53,6 @@ namespace OnionCollections.DataEditor.Editor
         /// <summary>目前顯示的Root Node，不論Bookmark、Setting，都會變動此Node。</summary>
         TreeNode treeRoot;
 
-
         [MenuItem("Window/Onion Data Editor &#E")]
         public static OnionDataEditorWindow ShowWindow()
         {
@@ -88,11 +87,21 @@ namespace OnionCollections.DataEditor.Editor
             return window;
         }
 
+        [UnityEditor.Callbacks.DidReloadScripts]
+        private static void Reload()
+        {
+            if (HasOpenInstances<OnionDataEditorWindow>())
+            {
+                ShowWindow();
+            }
+        }
+
         public void OnEnable()
         {
             titleContent = new GUIContent("Onion Data Editor");
             Init();
         }
+
 
         void Init()
         {
@@ -210,7 +219,38 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     if (treeRoot != null)
                     {
-                        treeView.OnGUI(treeViewContainer.layout);
+                        Rect rect = treeViewContainer.layout;
+                        DropAreaGUI(rect);
+                        treeView.OnGUI(rect);
+                    }
+                }
+
+                void DropAreaGUI(Rect drop_area)
+                {
+                    Event evt = Event.current;
+
+                    switch (evt.type)
+                    {
+                        case EventType.DragUpdated:
+                        case EventType.DragPerform:
+
+                            if (!drop_area.Contains(evt.mousePosition))
+                            {
+                                return;
+                            }
+
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+
+                            if (evt.type == EventType.DragPerform)
+                            {
+                                DragAndDrop.AcceptDrag();
+
+                                Object target = DragAndDrop.objectReferences[0];
+
+                                SetTarget(target);
+
+                            }
+                            break;
                     }
                 }
             }
