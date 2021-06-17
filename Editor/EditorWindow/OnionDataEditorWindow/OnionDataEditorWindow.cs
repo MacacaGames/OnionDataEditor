@@ -98,7 +98,7 @@ namespace OnionCollections.DataEditor.Editor
 
         public void OnEnable()
         {
-            titleContent = new GUIContent("Onion Data Editor");
+            titleContent = new GUIContent("Onion Data Editor", OnionDataEditor.GetIconTexture("Node_Element"));
             Init();
         }
 
@@ -111,7 +111,6 @@ namespace OnionCollections.DataEditor.Editor
             TemplateContainer cloneTree = visualTree.CloneTree();
             cloneTree.style.flexGrow = 1;
             root.Add(cloneTree);
-
 
             //Tab
 

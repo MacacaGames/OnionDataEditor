@@ -61,23 +61,26 @@ namespace OnionCollections.DataEditor.Editor
                         GetRemoveNodeAction(jsonNode),
                         new OnionAction(() =>
                         {
-                            var menu = new GenericMenu();
-                            foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
-                            {
-                                menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
+                            CommonTypeNameInputWindow.Open(
+                                "Add property",
+                                JsonNode.JsonNodeType.Object,
+                                "",
+                                (propertyType, propertyName) =>
                                 {
-                                    CommonTextInputWindow.Open(
-                                        "Add property",
-                                        propertyName => 
-                                        {
-                                            if(string.IsNullOrEmpty(propertyName) == false)
-                                            {
-                                                AddNewObjectProperty(jsonNode, propertyName, enumType);
-                                            }
-                                        });
+                                    if(string.IsNullOrEmpty(propertyName) == false)
+                                    {
+                                        AddNewObjectProperty(jsonNode, propertyName, (JsonNode.JsonNodeType)propertyType);
+                                    }
                                 });
-                            }
-                            menu.ShowAsContext();
+
+                            //var menu = new GenericMenu();
+                            //foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
+                            //{
+                            //    menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
+                            //    {
+                            //    });
+                            //}
+                            //menu.ShowAsContext();
 
                         }, 
                         "Add Property",
