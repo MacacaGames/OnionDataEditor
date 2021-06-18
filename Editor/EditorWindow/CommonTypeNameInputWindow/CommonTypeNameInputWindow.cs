@@ -29,12 +29,33 @@ namespace OnionCollections.DataEditor.Editor
             window.textField.Focus();
         }
 
+        public static void Open(string title, Enum enumValue, Action<Enum> onConfirm)
+        {
+            Vector2 size = new Vector2(250, 100);
+            CommonTypeNameInputWindow window = CreateInstance<CommonTypeNameInputWindow>();
+
+            window.maxSize = size;
+            window.minSize = size;
+            window.titleContent = new GUIContent(title);
+            window.position = new Rect(Screen.width / 2, Screen.height / 2, size.x, size.y);
+
+            window.enumField.Init(enumValue);
+            window.textFieldRoot.Hide();
+            window.onConfirm = (e, _) => onConfirm(e);
+
+            window.ShowAuxWindow();
+            window.textField.Focus();
+        }
+
         private void OnEnable()
         {
             rootVisualElement.Add(GetRootVisualElement());
         }
 
         Action<Enum, string> onConfirm = null;
+
+        VisualElement enumFieldRoot;
+        VisualElement textFieldRoot;
 
         EnumField enumField;
         TextField textField;
@@ -46,7 +67,7 @@ namespace OnionCollections.DataEditor.Editor
                 .SetPadding(20F)
                 .SetFlexGrow(1F);
 
-            VisualElement enumFieldRoot = new VisualElement()
+            enumFieldRoot = new VisualElement()
                 .SetFlexGrow(1F)
                 .SetFlexDirection(FlexDirection.Row)
                 .AddTo(root);
@@ -59,7 +80,7 @@ namespace OnionCollections.DataEditor.Editor
                 .SetWidth(150)
                 .AddTo(enumFieldRoot);
 
-            VisualElement textFieldRoot = new VisualElement()
+            textFieldRoot = new VisualElement()
             {
                 style =
                     {

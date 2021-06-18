@@ -103,15 +103,23 @@ namespace OnionCollections.DataEditor.Editor
                         {
                             if(jsonNode.ChildCount == 0)
                             {
-                                var menu = new GenericMenu();
-                                foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
-                                {
-                                    menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
+                                CommonTypeNameInputWindow.Open(
+                                    "Add Item",
+                                    JsonNode.JsonNodeType.Object,
+                                    jsonType =>
                                     {
-                                        AddNewArrayItem(jsonNode, enumType);
+                                        AddNewArrayItem(jsonNode, (JsonNode.JsonNodeType)jsonType);
                                     });
-                                }
-                                menu.ShowAsContext();
+
+                                //var menu = new GenericMenu();
+                                //foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
+                                //{
+                                //    menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
+                                //    {
+                                //        AddNewArrayItem(jsonNode, enumType);
+                                //    });
+                                //}
+                                //menu.ShowAsContext();
                             }
                             else
                             {
