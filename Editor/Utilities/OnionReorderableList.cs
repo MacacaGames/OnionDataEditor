@@ -14,6 +14,7 @@ namespace OnionCollections.DataEditor.Editor
 
 
         public string title = "No Title";
+        public string emptyListHint = "List is empty";
         public Texture2D titleIcon = null;
 
         public Action<Rect, SerializedProperty, int> customGUI = null;
@@ -124,7 +125,7 @@ namespace OnionCollections.DataEditor.Editor
             if (customListEmptyGUI == null)
             {
                 GUI.color = new Color(1, 1, 1, 0.5F);
-                EditorGUI.LabelField(arect, "List is empty");
+                EditorGUI.LabelField(arect, emptyListHint);
                 GUI.color = Color.white;
             }
             else

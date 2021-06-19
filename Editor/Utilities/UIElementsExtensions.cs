@@ -4,11 +4,14 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.UIElements;
+using System;
 
 namespace OnionCollections.DataEditor.Editor
 {
     internal static class UIElementsExtensions
     {
+        #region Style
+
         public static T Show<T>(this T ve) where T: VisualElement
         {
             ve.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
@@ -86,6 +89,20 @@ namespace OnionCollections.DataEditor.Editor
             ve.name = name;
             return ve;
         }
+
+        #endregion
+
+        #region Event
+        public static T OnClicked<T>(this T ve, Action action) where T : Button
+        {
+            ve.clicked += action;
+            return ve;
+        }
+
+
+
+        #endregion
+
 
         public static T AddTo<T>(this T ve, VisualElement parent) where T : VisualElement
         {

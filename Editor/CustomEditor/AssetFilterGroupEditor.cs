@@ -24,6 +24,7 @@ public class AssetFilterGroupEditor : Editor
         searchFolderList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("searchFolders"))
         {
             title = "Search Folders",
+            emptyListHint = "Search all folders",
             titleIcon = OnionDataEditor.GetIconTexture("Folder"),
         };
 
@@ -77,11 +78,12 @@ public class AssetFilterGroupEditor : Editor
     {
         GUILayout.Space(10);
 
-        filterList.OnInspectorGUI();
+        searchFolderList.OnInspectorGUI();
 
         GUILayout.Space(10);
+        
+        filterList.OnInspectorGUI();
 
-        searchFolderList.OnInspectorGUI();
     }
 
 

@@ -109,37 +109,38 @@ namespace OnionCollections.DataEditor.Editor
             var root = this.rootVisualElement;
             var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{path}/Editor/EditorWindow/OnionDataEditorWindow/Onion.uxml");
             TemplateContainer cloneTree = visualTree.CloneTree();
-            cloneTree.style.flexGrow = 1;
-            root.Add(cloneTree);
+            cloneTree
+                .SetFlexGrow(1)
+                .AddTo(root);
 
             //Tab
 
             SetIcon(root.Q("oniondataeditor-icon"), "OnionDataEditorIcon");
 
             //綁定btn-opened
-            root.Q<Button>("btn-opened").clickable.clicked += ChangeTabToOpened;
+            root.Q<Button>("btn-opened").clicked += ChangeTabToOpened;
             SetIcon(root.Q("btn-opened-icon"), "Compass");
 
             //Bind btn-bookmark
-            root.Q<Button>("btn-bookmark").clickable.clicked += ChangeTabToBookmark;
+            root.Q<Button>("btn-bookmark").clicked += ChangeTabToBookmark;
             SetIcon(root.Q("btn-bookmark-icon"), "Bookmark_Fill");
 
 
             //Bind btn-setting
-            root.Q<Button>("btn-setting").clickable.clicked += ChangeTabToSetting;
+            root.Q<Button>("btn-setting").clicked += ChangeTabToSetting;
             SetIcon(root.Q("btn-setting-icon"), "Settings");
 
 
 
             //Bind btn-refresh
-            root.Q<Button>("btn-refresh").clickable.clicked += OnFresh;
+            root.Q<Button>("btn-refresh").clicked += OnFresh;
             SetIcon(root.Q("btn-refresh-icon"), "Refresh");
 
             //Bind btn-add-bookmark
-            root.Q<Button>("btn-add-bookmark").clickable.clicked += OnToggleBookmark;
+            root.Q<Button>("btn-add-bookmark").clicked += OnToggleBookmark;
 
             //Bind btn-toggle-inspector
-            root.Q<Button>("btn-toggle-inspector").clickable.clicked += ()=>
+            root.Q<Button>("btn-toggle-inspector").clicked += ()=>
             {
                 SetInspectorActive(true);
             };
@@ -238,7 +239,7 @@ namespace OnionCollections.DataEditor.Editor
                                 return;
                             }
 
-                            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+                            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
 
                             if (evt.type == EventType.DragPerform)
                             {
