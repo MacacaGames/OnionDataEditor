@@ -119,7 +119,7 @@ namespace OnionCollections.DataEditor.Editor
                         var node = new TreeNode(m.asset, TreeNode.NodeFlag.HideElementNodes)
                         {
                             description = m.path,
-                            OnDoubleClick = () => OnionDataEditorWindow.ChangeTargetTo(m.asset),
+                            OnDoubleClick = () => OnionDataEditorWindow.Push(m.asset),
                         };
                         return node;
                     });

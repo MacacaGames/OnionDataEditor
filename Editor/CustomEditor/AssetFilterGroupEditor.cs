@@ -17,6 +17,7 @@ public class AssetFilterGroupEditor : Editor
         filterList = new OnionReorderableList(new SerializedObject(assetFilterGroup).FindProperty("filters"))
         {
             title = "Filters",
+            emptyListHint = "No filter",
             customGUI = itemGUI,
             titleIcon = OnionDataEditor.GetIconTexture("Filter"),
         };

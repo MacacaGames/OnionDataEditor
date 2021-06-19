@@ -22,6 +22,9 @@
         <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
             <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1; border-right-width: 1px; border-right-color: rgba(0, 0, 0, 0.1);">
                 <ui:VisualElement style="flex-direction: row; height: 40px;">
+                    <ui:Button name="btn-back-histroy" class="onion-btn onion-icon-btn btn-bookmark pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                        <ui:VisualElement name="btn-back-histroy-icon" class="btn-icon" style="width: 16px; height: 16px;" />
+                    </ui:Button>
                     <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
                     <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn btn-bookmark pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
                         <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 16px; height: 16px;" />

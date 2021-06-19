@@ -63,7 +63,7 @@ namespace OnionCollections.DataEditor.Editor
             return window;
         }
 
-        public static OnionDataEditorWindow ShowWindow(TreeNode node)
+        internal static OnionDataEditorWindow ShowWindow(TreeNode node)
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
@@ -78,7 +78,7 @@ namespace OnionCollections.DataEditor.Editor
         public static OnionDataEditorWindow ShowWindow(Object data)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            
+
             if (data == null)
                 window.SetTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
             else
@@ -86,6 +86,8 @@ namespace OnionCollections.DataEditor.Editor
 
             return window;
         }
+
+
 
         [UnityEditor.Callbacks.DidReloadScripts]
         private static void Reload()
@@ -130,6 +132,10 @@ namespace OnionCollections.DataEditor.Editor
             root.Q<Button>("btn-setting").clicked += ChangeTabToSetting;
             SetIcon(root.Q("btn-setting-icon"), "Settings");
 
+            //Bind btn-setting
+            root.Q<Button>("btn-back-histroy").clicked += () => viewHistroy.Back();
+            SetIcon(root.Q("btn-back-histroy-icon"), "Arrow_Left");
+
 
 
             //Bind btn-refresh
@@ -153,6 +159,9 @@ namespace OnionCollections.DataEditor.Editor
 
             //Inspector
             BindInspector();
+
+            //ViewHistroy
+            BindViewHistory();
 
             //Split
             BindSpliter();
@@ -200,6 +209,22 @@ namespace OnionCollections.DataEditor.Editor
                 inspectorRoot.Add(inspectorContainer);
                 inspectorRoot.Add(inspectorContainerVisualElement);
 
+            }
+
+            void BindViewHistory()
+            {
+                viewHistroy = new ViewHistroy(this)
+                {
+                    OnHistroyChange = OnHistroyChange
+                };
+
+                void OnHistroyChange()
+                {
+                    root.Q("btn-back-histroy").style.display =
+                        (viewHistroy.Count > 1) ?
+                        new StyleEnum<DisplayStyle>(DisplayStyle.Flex) :
+                        new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                }
             }
 
             void BuildTreeView()
@@ -255,6 +280,7 @@ namespace OnionCollections.DataEditor.Editor
                 }
             }
 
+
             //
 
             void ChangeTabToBookmark()
@@ -307,25 +333,6 @@ namespace OnionCollections.DataEditor.Editor
 
             }
 
-            //void OnSearchTarget()
-            //{
-            //    int controlID = rootVisualElement.Q<Button>("btn-search-target").GetHashCode();
-            //    EditorGUIUtility.ShowObjectPicker<Object>(null, false, "", controlID);
-            //}
-
-            //void OnSearchTargetListener()
-            //{
-            //    //作為監聽器
-            //    if (Event.current.commandName == "ObjectSelectorClosed" &&
-            //        EditorGUIUtility.GetObjectPickerObject() != null &&
-            //        EditorGUIUtility.GetObjectPickerControlID() == rootVisualElement.Q<Button>("btn-search-target").GetHashCode())
-            //    {
-            //        Object selectObj = EditorGUIUtility.GetObjectPickerObject();
-
-            //        if (selectObj != null)
-            //            SetTarget(selectObj);
-            //    }
-            //}
 
         }
 
@@ -417,7 +424,7 @@ namespace OnionCollections.DataEditor.Editor
             return false;
         }
                        
-        void OnTargetChange(TreeNode newNode)
+        internal void OnTargetChange(TreeNode newNode)
         {
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
             containerRoot.visible = (newNode != null);
@@ -657,21 +664,51 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
+        
+        //ViewHistroy
 
-        // Public Methods
+        ViewHistroy viewHistroy;
 
-        public void SetTarget(Object newTarget)
+
+        internal void SetTarget(Object newTarget)
         {
             targetNode = new TreeNode(newTarget);
-            OnTargetChange(targetNode);
+            viewHistroy.Clear();
+            viewHistroy.PushState(targetNode);
         }
-        public void SetTarget(TreeNode newTarget)
+        internal void SetTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
-            OnTargetChange(targetNode);
+            viewHistroy.Clear();
+            viewHistroy.PushState(targetNode);
         }
 
-        
+        internal void PushTarget(Object newTarget)
+        {
+            targetNode = new TreeNode(newTarget);
+            viewHistroy.PushState(targetNode);
+        }
+        internal void PushTarget(TreeNode newTarget)
+        {
+            targetNode = newTarget;
+            viewHistroy.PushState(targetNode);
+        }
+
+        internal void ReplaceTarget(Object newTarget)
+        {
+            targetNode = new TreeNode(newTarget);
+            viewHistroy.ReplaceState(targetNode);
+        }
+        internal void ReplaceTarget(TreeNode newTarget)
+        {
+            targetNode = newTarget;
+            viewHistroy.ReplaceState(targetNode);
+        }
+
+
+
+
+        // Public Methods
 
         public static void RebuildNode()
         {
@@ -704,6 +741,20 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
             window.SetTarget(newTarget);
+        }
+
+        public static void Push(Object newTarget)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            var targetNode = new TreeNode(newTarget);
+            window.viewHistroy.PushState(targetNode);
+        }
+
+        public static void Replace(Object newTarget)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            var targetNode = new TreeNode(newTarget);
+            window.viewHistroy.ReplaceState(targetNode);
         }
 
 
