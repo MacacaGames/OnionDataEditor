@@ -111,11 +111,9 @@ namespace OnionCollections.DataEditor.Editor
             root.Q<Button>("btn-setting").clicked += ChangeTabToSetting;
             SetIcon(root.Q("btn-setting-icon"), "Settings");
 
-            //Bind btn-setting
+            //Bind btn-back-histroy
             root.Q<Button>("btn-back-histroy").clicked += () => viewHistroy.Back();
             SetIcon(root.Q("btn-back-histroy-icon"), "Arrow_Left");
-
-
 
             //Bind btn-refresh
             root.Q<Button>("btn-refresh").clicked += OnFresh;
@@ -199,10 +197,16 @@ namespace OnionCollections.DataEditor.Editor
 
                 void OnHistroyChange()
                 {
-                    root.Q("btn-back-histroy").style.display =
-                        (viewHistroy.Count > 1) ?
-                        new StyleEnum<DisplayStyle>(DisplayStyle.Flex) :
-                        new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                    if (viewHistroy.Count >= 2)
+                    {
+                        root.Q("btn-back-histroy").style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+
+                        root.Q("btn-back-histroy").tooltip = viewHistroy.Last.DisplayName;
+                    }
+                    else
+                    {
+                        root.Q("btn-back-histroy").style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+                    }
                 }
             }
 
@@ -417,15 +421,11 @@ namespace OnionCollections.DataEditor.Editor
                 if (treeRoot != null)
                 {
                     treeRoot.CreateTreeView(out treeView);
-
                 }
-
 
                 treeView.SetState(viewHistroy.Current.treeViewState);
 
-
-                //選擇Root
-                selectedNode = treeRoot;
+                selectedNode = treeView.GetSelectedNode();
 
                 FreshBookmarkView(treeRoot);
 

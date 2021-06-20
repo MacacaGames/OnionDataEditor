@@ -306,6 +306,7 @@ namespace OnionCollections.DataEditor.Editor
             base.DoubleClickedItem(id);
             EditorWindow.GetWindow<OnionDataEditorWindow>().OnDoubleClickItem(treeQuery[id]);
         }
+
         protected override void SelectionChanged(IList<int> selectedIds)
         {
             base.SelectionChanged(selectedIds);
@@ -315,6 +316,11 @@ namespace OnionCollections.DataEditor.Editor
                 isSelectChange = true;
                 EditorWindow.GetWindow<OnionDataEditorWindow>().OnTriggerItem(treeQuery[selectedIds[0]]);
             }
+        }
+
+        public TreeNode GetSelectedNode()
+        {
+            return treeQuery[GetSelection()[0]];
         }
 
         public void SelectAt(TreeNode node)

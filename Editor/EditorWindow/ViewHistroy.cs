@@ -67,7 +67,8 @@ namespace OnionCollections.DataEditor.Editor
 
         public int Count => histroy.Count;
 
-        public ViewHistroyState Current => histroy.Peek();
+        public ViewHistroyState Current => (Count >= 1) ? histroy.Peek() : null;
+        public ViewHistroyState Last => (Count >= 2) ? histroy.Skip(1).First() : null;
 
         void SaveCurrentState()
         {
@@ -145,10 +146,14 @@ namespace OnionCollections.DataEditor.Editor
 
         void HistroyChange()
         {
-            //string log = string.Join(" > ", histroy.Reverse().Select(n => n.DisplayName));
-            //Debug.Log(log);
 
             OnHistroyChange?.Invoke();
+        }
+
+        internal void LogStates()
+        {
+            string log = string.Join(" > ", histroy.Reverse().Select(n => n.DisplayName));
+            Debug.Log(log);
         }
 
     }

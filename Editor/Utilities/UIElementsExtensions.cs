@@ -93,12 +93,6 @@ namespace OnionCollections.DataEditor.Editor
         #endregion
 
         #region Event
-        public static T OnClicked<T>(this T ve, Action action) where T : Button
-        {
-            ve.clicked += action;
-            return ve;
-        }
-
 
 
         #endregion
