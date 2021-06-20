@@ -46,8 +46,7 @@ namespace OnionCollections.DataEditor.Editor
         /// <summary>與Bookmark、Setting同階層，在選擇Bookmark、Setting時，此Node不會被改變。</summary>
         TreeNode openedNode;
 
-        public TreeViewState treeViewState;
-        DataObjTreeView treeView;
+        internal DataObjTreeView treeView;
         IMGUIContainer treeViewContainer;
 
         /// <summary>目前顯示的Root Node，不論Bookmark、Setting，都會變動此Node。</summary>
@@ -67,41 +66,21 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
-            if (node?.Target == null)
-                window.SetTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
+            if (node.IsNull)
+                window.OpenTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
             else
-                window.SetTarget(node);
+                window.OpenTarget(node);
 
             return window;
         }
 
-        public static OnionDataEditorWindow ShowWindow(Object data)
-        {
-            var window = GetWindow<OnionDataEditorWindow>();
-
-            if (data == null)
-                window.SetTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
-            else
-                window.SetTarget(data);
-
-            return window;
-        }
-
-
-
-        [UnityEditor.Callbacks.DidReloadScripts]
-        private static void Reload()
-        {
-            if (HasOpenInstances<OnionDataEditorWindow>())
-            {
-                ShowWindow();
-            }
-        }
 
         public void OnEnable()
         {
             titleContent = new GUIContent("Onion Data Editor", OnionDataEditor.GetIconTexture("Node_Element"));
             Init();
+
+            OpenTarget(treeRoot ?? OnionDataEditor.Bookmarks);
         }
 
 
@@ -271,8 +250,9 @@ namespace OnionCollections.DataEditor.Editor
                                 DragAndDrop.AcceptDrag();
 
                                 Object target = DragAndDrop.objectReferences[0];
+                                TreeNode targetNode = new TreeNode(target);
 
-                                SetTarget(target);
+                                OpenTarget(targetNode);
 
                             }
                             break;
@@ -285,13 +265,13 @@ namespace OnionCollections.DataEditor.Editor
 
             void ChangeTabToBookmark()
             {
-                SetTarget(OnionDataEditor.Bookmarks);
+                OpenTarget(OnionDataEditor.Bookmarks);
                 SwitchTab(Tab.Bookmark);
             }
 
             void ChangeTabToSetting()
             {
-                SetTarget(OnionDataEditor.Setting);
+                OpenTarget(new TreeNode(OnionDataEditor.Setting));
                 SwitchTab(Tab.Setting);
             }
 
@@ -299,7 +279,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 if (openedNode != null)
                 {
-                    SetTarget(openedNode);
+                    OpenTarget(openedNode);
                     SwitchTab(Tab.Opened);
                 }
                 else
@@ -340,7 +320,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             if (treeRoot == null)
             {
-                SetTarget(OnionDataEditor.Bookmarks);
+                OpenTarget(OnionDataEditor.Bookmarks);
                 return;
             }
 
@@ -423,7 +403,7 @@ namespace OnionCollections.DataEditor.Editor
 
             return false;
         }
-                       
+
         internal void OnTargetChange(TreeNode newNode)
         {
             VisualElement containerRoot = rootVisualElement.Q("tree-view-container");
@@ -438,21 +418,17 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     treeRoot.CreateTreeView(out treeView);
 
-
-                    if (treeViewState == null)
-                        treeViewState = treeView.state;
                 }
+
+
+                treeView.SetState(viewHistroy.Current.treeViewState);
+
 
                 //選擇Root
                 selectedNode = treeRoot;
 
-                //選擇Root並展開
-                int rootId = treeView.GetRows()[0].id;
-                treeView.SetSelection(new List<int> { rootId });
-                treeView.SetExpanded(rootId, true);
-
                 FreshBookmarkView(treeRoot);
-                
+
                 if (OnionDataEditor.IsBookmark(newNode))
                 {
                     SwitchTab(Tab.Bookmark);
@@ -669,40 +645,26 @@ namespace OnionCollections.DataEditor.Editor
 
         ViewHistroy viewHistroy;
 
-
-        internal void SetTarget(Object newTarget)
-        {
-            targetNode = new TreeNode(newTarget);
-            viewHistroy.Clear();
-            viewHistroy.PushState(targetNode);
-        }
-        internal void SetTarget(TreeNode newTarget)
+        internal void OpenTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
             viewHistroy.Clear();
             viewHistroy.PushState(targetNode);
+
         }
 
-        internal void PushTarget(Object newTarget)
-        {
-            targetNode = new TreeNode(newTarget);
-            viewHistroy.PushState(targetNode);
-        }
         internal void PushTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
             viewHistroy.PushState(targetNode);
+
         }
 
-        internal void ReplaceTarget(Object newTarget)
-        {
-            targetNode = new TreeNode(newTarget);
-            viewHistroy.ReplaceState(targetNode);
-        }
         internal void ReplaceTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
             viewHistroy.ReplaceState(targetNode);
+
         }
 
 
@@ -722,10 +684,7 @@ namespace OnionCollections.DataEditor.Editor
 
             if (window.treeRoot != null)
             {
-                if (window.treeViewState == null)
-                    window.treeView = new DataObjTreeView(window.treeRoot, new TreeViewState());
-                else
-                    window.treeView = new DataObjTreeView(window.treeRoot, window.treeView.state);
+                window.treeView = new DataObjTreeView(window.treeRoot, new TreeViewState());
             }
         }
 
@@ -740,20 +699,31 @@ namespace OnionCollections.DataEditor.Editor
         public static void ChangeTargetTo(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            window.SetTarget(newTarget);
+            var targetNode = new TreeNode(newTarget);
+            window.OpenTarget(targetNode);
+        }
+
+        public static void Open(Object newTarget)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            if (newTarget == null)
+                window.OpenTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
+            else
+                window.OpenTarget(new TreeNode(newTarget));
         }
 
         public static void Push(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            var targetNode = new TreeNode(newTarget);
+            TreeNode targetNode = new TreeNode(newTarget);
             window.viewHistroy.PushState(targetNode);
         }
 
         public static void Replace(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            var targetNode = new TreeNode(newTarget);
+            TreeNode targetNode = new TreeNode(newTarget);
             window.viewHistroy.ReplaceState(targetNode);
         }
 

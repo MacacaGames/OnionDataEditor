@@ -351,12 +351,7 @@ namespace OnionCollections.DataEditor.Editor
                 node = pseudoNodeConstructor.Construct(node, null);
             }
 
-            var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
-
-            if (window.treeViewState == null)
-                treeView = new DataObjTreeView(node, new TreeViewState());
-            else
-                treeView = new DataObjTreeView(node, window.treeViewState);
+            treeView = new DataObjTreeView(node, new TreeViewState());
 
         }
 

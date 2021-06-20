@@ -329,5 +329,18 @@ namespace OnionCollections.DataEditor.Editor
                 SetSelection(new List<int> { id });
             }
         }
+
+        public void SetState(TreeViewState state)
+        {
+            if (state == null)
+            {
+                return;
+            }
+
+            SetSelection(state.selectedIDs);
+
+            CollapseAll();
+            SetExpanded(state.expandedIDs);
+        }
     }
 }

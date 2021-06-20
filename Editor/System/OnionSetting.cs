@@ -276,6 +276,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 void InspectGUI(Rect r, SerializedProperty sp, int inx)
                 {
+
                     float activeWidth = r.height;
                     float typeNameWidth = 150F;
 

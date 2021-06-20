@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Linq;
+using UnityEditor.IMGUI.Controls;
 using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
@@ -19,16 +20,17 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        public struct ViewHistroyState
+        public class ViewHistroyState
         {
-            public Object target;
-            public TreeNode node;
+            public Object target = null;
+            public TreeNode node = null;
+            public TreeViewState treeViewState = null;
+
             public string DisplayName { get; private set; }
 
             public ViewHistroyState(Object target)
             {
                 this.target = target;
-                node = null;
                 DisplayName = target.name;
             }
 
@@ -37,12 +39,10 @@ namespace OnionCollections.DataEditor.Editor
                 if (node.IsPseudo == false)
                 {
                     target = node.Target;
-                    this.node = null;
                     DisplayName = target.name;
                 }
                 else
                 {
-                    target = null;
                     this.node = node;
                     DisplayName = node.displayName;
                 }
@@ -67,9 +67,34 @@ namespace OnionCollections.DataEditor.Editor
 
         public int Count => histroy.Count;
 
+        public ViewHistroyState Current => histroy.Peek();
+
+        void SaveCurrentState()
+        {
+            if (histroy.Count > 0)
+            {
+                Current.treeViewState = new TreeViewState
+                {
+                    expandedIDs = window.treeView.state.expandedIDs,
+                    selectedIDs = window.treeView.state.selectedIDs,
+                };
+            }
+        }
+
+        TreeViewState GetDefaultState()
+        {
+            //選擇Root並展開
+            return new TreeViewState
+            {
+                selectedIDs = new List<int> { 1 },
+                expandedIDs = new List<int> { 1 }
+            };
+        }
+
         public void PushState(TreeNode node)
         {
-            histroy.Push(new ViewHistroyState(node));
+            SaveCurrentState();
+            histroy.Push(new ViewHistroyState(node) { treeViewState = GetDefaultState() });
             window.OnTargetChange(node);
 
             HistroyChange();
@@ -77,11 +102,12 @@ namespace OnionCollections.DataEditor.Editor
 
         public void ReplaceState(TreeNode node)
         {
+            SaveCurrentState();
             if (histroy.Count > 0)
             {
                 histroy.Pop();
 
-                var state = new ViewHistroyState(node);
+                var state = new ViewHistroyState(node) { treeViewState = GetDefaultState() };
 
                 if (histroy.Count > 0)
                 {
@@ -100,7 +126,7 @@ namespace OnionCollections.DataEditor.Editor
 
         public void Back()
         {
-            if(histroy.Count > 0)
+            if (histroy.Count > 0)
             {
                 histroy.Pop();
                 var state = histroy.Peek();

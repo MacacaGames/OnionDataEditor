@@ -139,7 +139,8 @@ namespace OnionCollections.DataEditor.Editor
             if (selectObj != null)
             {
                 var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
-                window.SetTarget(selectObj);
+                TreeNode targetNode = new TreeNode(selectObj);
+                window.OpenTarget(targetNode);
             }
         }
 
