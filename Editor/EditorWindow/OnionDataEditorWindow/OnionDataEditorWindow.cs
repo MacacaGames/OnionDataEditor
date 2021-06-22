@@ -146,6 +146,9 @@ namespace OnionCollections.DataEditor.Editor
 
             SetInspectorActive(true);
 
+            bool isFullWidth = OnionDataEditor.Setting.isFullWidth;
+            SetInspectorWidthFull(isFullWidth);
+
             //
 
             void BindSpliter()
@@ -617,6 +620,19 @@ namespace OnionCollections.DataEditor.Editor
                 spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
                 btnToggleInspector.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             }
+        }
+
+        internal static void SetInspectorWidthFull(bool isFullWidth)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+
+            var containerB = window.rootVisualElement.Q("ContainerB");
+            containerB.style.alignItems = isFullWidth ? new StyleEnum<Align>(Align.Stretch) : new StyleEnum<Align>(Align.Center);
+
+            var inspectoreContainer = window.rootVisualElement.Q("InspectorContainer");
+            inspectoreContainer.style.maxWidth = isFullWidth ? new StyleLength(StyleKeyword.Auto) : new StyleLength(500F);
+
+
         }
 
         // UI

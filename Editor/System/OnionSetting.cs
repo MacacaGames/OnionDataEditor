@@ -34,6 +34,7 @@ namespace OnionCollections.DataEditor.Editor
             yield return OnboardingPageNode;
             yield return UserTagsNode;
             yield return CustomObjectNodeDefineNode;
+            yield return OtherNode;
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -370,17 +371,17 @@ namespace OnionCollections.DataEditor.Editor
 
         #region BoardingPage
 
-        public enum OnboardingPageType
+        enum OnboardingPageType
         {
             Bookmark = 0,
             Custom = 1,
         }
 
         [SerializeField]
-        public OnboardingPageType onboardingPageType;
+        OnboardingPageType onboardingPageType;
 
         [SerializeField]
-        public Object customOnboardingPage;
+        Object customOnboardingPage;
 
         public TreeNode OnboardingPageNode
         {
@@ -432,6 +433,58 @@ namespace OnionCollections.DataEditor.Editor
 
         #endregion
 
+
+        #region Other
+
+        [SerializeField]
+        public bool isFullWidth = true;
+
+
+        public TreeNode OtherNode
+        {
+            get
+            {
+                const string propertyTitle = "Other";
+                SerializedObject so = new SerializedObject(this);
+
+
+                var node = new TreeNode()
+                {
+                    displayName = propertyTitle,
+                    icon = OnionDataEditor.GetIconTexture("Trash"),
+                    tags = new[] { "OnboardingPage" },
+                    OnInspectorVisualElementRoot = CreateOnBoardingPageOnInspector(),
+                };
+
+                return node;
+
+                VisualElement CreateOnBoardingPageOnInspector()
+                {
+                    VisualElement content = new VisualElement();
+
+                    PropertyField isFullWidthField = new PropertyField()
+                    {
+                        label = "Is Full With",
+                        bindingPath = "isFullWidth",
+                    }.AddTo(content);
+
+
+                    isFullWidthField.RegisterValueChangeCallback(n =>
+                    {
+                        bool f = n.changedProperty.boolValue;
+                        OnionDataEditorWindow.SetInspectorWidthFull(f);
+                    });
+
+                    VisualElement root = GetContainer("Other", OnionDataEditor.GetIconTexture("Trash"), content);
+                    root.Bind(so);
+
+                    return root;
+                }
+            }
+        }
+
+
+        #endregion
 
         VisualElement GetContainer(string title, Texture2D icon, VisualElement content)
         {
