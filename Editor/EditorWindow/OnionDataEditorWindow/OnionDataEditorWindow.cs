@@ -67,7 +67,7 @@ namespace OnionCollections.DataEditor.Editor
             var window = GetWindow<OnionDataEditorWindow>();
 
             if (node.IsNull)
-                window.OpenTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
+                window.OpenTarget(OnionDataEditor.Setting.OnboardingNode);
             else
                 window.OpenTarget(node);
 
@@ -80,7 +80,7 @@ namespace OnionCollections.DataEditor.Editor
             titleContent = new GUIContent("Onion Data Editor", OnionDataEditor.GetIconTexture("Node_Element"));
             Init();
 
-            OpenTarget(treeRoot ?? OnionDataEditor.Bookmarks);
+            OpenTarget(treeRoot ?? OnionDataEditor.Setting.OnboardingNode);
         }
 
 
@@ -324,7 +324,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             if (treeRoot == null)
             {
-                OpenTarget(OnionDataEditor.Bookmarks);
+                OpenTarget(OnionDataEditor.Setting.OnboardingNode);
                 return;
             }
 
@@ -708,7 +708,7 @@ namespace OnionCollections.DataEditor.Editor
             var window = GetWindow<OnionDataEditorWindow>();
 
             if (newTarget == null)
-                window.OpenTarget(OnionDataEditor.Bookmarks);    //沒有東西的話就指定bookmarks
+                window.OpenTarget(OnionDataEditor.Setting.OnboardingNode);
             else
                 window.OpenTarget(new TreeNode(newTarget));
         }

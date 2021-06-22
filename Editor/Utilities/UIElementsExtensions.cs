@@ -12,9 +12,21 @@ namespace OnionCollections.DataEditor.Editor
     {
         #region Style
 
+        public static T ShowIf<T>(this T ve, bool isShow) where T : VisualElement
+        {
+            ve.style.display = new StyleEnum<DisplayStyle>(isShow ? DisplayStyle.Flex : DisplayStyle.None);
+            return ve;
+        }
+
         public static T Show<T>(this T ve) where T: VisualElement
         {
             ve.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+            return ve;
+        }
+
+        public static T HideIf<T>(this T ve, bool isHide) where T : VisualElement
+        {
+            ve.style.display = new StyleEnum<DisplayStyle>(isHide ? DisplayStyle.None : DisplayStyle.Flex);
             return ve;
         }
 
@@ -89,6 +101,24 @@ namespace OnionCollections.DataEditor.Editor
             ve.name = name;
             return ve;
         }
+
+        public static T BorderColor<T>(this T ve, Color color) where T : VisualElement
+        {
+            ve.style.borderTopColor = color;
+            ve.style.borderRightColor = color;
+            ve.style.borderBottomColor = color;
+            ve.style.borderLeftColor = color;
+            return ve;
+        }
+        public static T BorderWidth<T>(this T ve, float value) where T : VisualElement
+        {
+            ve.style.borderTopWidth = new StyleFloat(value);
+            ve.style.borderRightWidth = new StyleFloat(value);
+            ve.style.borderBottomWidth = new StyleFloat(value);
+            ve.style.borderLeftWidth = new StyleFloat(value);
+            return ve;
+        }
+
 
         #endregion
 

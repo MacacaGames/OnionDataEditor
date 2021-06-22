@@ -18,9 +18,9 @@ public class OnionSettingEditor : UnityEditor.Editor
         foreach (var node in nodes)
         {
             if (node.OnInspectorGUI == null)
-                continue;
-
-            root.Add(new IMGUIContainer(node.OnInspectorGUI));
+                root.Add(node.OnInspectorVisualElementRoot);
+            else
+                root.Add(new IMGUIContainer(node.OnInspectorGUI));
 
             var space = new VisualElement();
             space.style.height = new StyleLength(10);

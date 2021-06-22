@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -29,6 +31,7 @@ namespace OnionCollections.DataEditor.Editor
         public IEnumerator<TreeNode> GetEnumerator()
         {
             yield return BookmarksNode;
+            yield return OnboardingPageNode;
             yield return UserTagsNode;
             yield return CustomObjectNodeDefineNode;
         }
@@ -38,7 +41,10 @@ namespace OnionCollections.DataEditor.Editor
             yield return GetEnumerator();
         }
 
-
+        public TreeNode OnboardingNode =>
+            (onboardingPageType == OnboardingPageType.Bookmark && customOnboardingPage != null) ?
+            OnionDataEditor.Bookmarks :
+            new TreeNode(customOnboardingPage);
 
         #region Bookmark
 
@@ -192,6 +198,7 @@ namespace OnionCollections.DataEditor.Editor
         #endregion
 
 
+
         #region UserTag
 
         [SerializeField]
@@ -229,8 +236,8 @@ namespace OnionCollections.DataEditor.Editor
         #endregion
 
 
-        #region CustomObjectNodeDefine
 
+        #region CustomObjectNodeDefine
 
         [SerializeField]
         public ObjectNodeDefineObject[] objectNodeDefineObjects = new ObjectNodeDefineObject[0];
@@ -260,7 +267,7 @@ namespace OnionCollections.DataEditor.Editor
                     icon = OnionDataEditor.GetIconTexture("Add"),
                     tags = new[] { "CustomObjectNodeDefine" },
                     OnInspectorGUI = objectNodeDefineObjectList.OnInspectorGUI,
-                    
+
                 };
 
                 node.NodeActions = new List<OnionAction>
@@ -358,8 +365,123 @@ namespace OnionCollections.DataEditor.Editor
         }
 
         #endregion
+
+
+
+        #region BoardingPage
+
+        public enum OnboardingPageType
+        {
+            Bookmark = 0,
+            Custom = 1,
+        }
+
+        [SerializeField]
+        public OnboardingPageType onboardingPageType;
+
+        [SerializeField]
+        public Object customOnboardingPage;
+
+        public TreeNode OnboardingPageNode
+        {
+            get
+            {
+                const string propertyTitle = "Onoarding Page";
+                SerializedObject so = new SerializedObject(this);
+
+
+                var node = new TreeNode()
+                {
+                    displayName = propertyTitle,
+                    icon = OnionDataEditor.GetIconTexture("Edit"),
+                    tags = new[] { "OnboardingPage" },
+                    OnInspectorVisualElementRoot = CreateOnBoardingPageOnInspector(),
+                };
+
+                return node;
+
+                VisualElement CreateOnBoardingPageOnInspector()
+                {
+                    VisualElement content = new VisualElement();
+
+                    PropertyField em = new PropertyField()
+                    {
+                        label = "Onboarding Page",
+                        bindingPath = "onboardingPageType",
+                    }.AddTo(content);
+
+                    PropertyField objectField = new PropertyField()
+                    {
+                        label = "Custom Onboarding",
+                        bindingPath = "customOnboardingPage",
+                    }.AddTo(content);
+
+
+                    em.RegisterValueChangeCallback(n =>
+                    {
+                        objectField.ShowIf((OnboardingPageType)(n.changedProperty.intValue) == OnboardingPageType.Custom);
+                    });
+
+                    VisualElement root = GetContainer("Onboarding Page", OnionDataEditor.GetIconTexture("Edit"), content);
+                    root.Bind(so);
+
+                    return root;
+                }
+            }
+        }
+
+        #endregion
+
+
+        VisualElement GetContainer(string title, Texture2D icon, VisualElement content)
+        {
+            VisualElement root = new VisualElement().SetFlexGrow(1);
+
+            VisualElement header = new VisualElement().AddTo(root);
+
+            new IMGUIContainer(() => DrawHeader(header.layout)).AddTo(header);
+
+            content.AddTo(root);
+
+            header.BorderColor(new Color(0.14F, 0.14F, 0.14F));
+            header.BorderWidth(1F);
+            content.BorderColor(new Color(0.14F, 0.14F, 0.14F));
+            content.BorderWidth(1F);
+            content.style.borderTopWidth = new StyleFloat(0F);
+
+            header.style.borderTopLeftRadius = new StyleLength(3F);
+            header.style.borderTopRightRadius = new StyleLength(3F);
+            content.style.borderBottomLeftRadius = new StyleLength(3F);
+            content.style.borderBottomRightRadius = new StyleLength(3F);
+
+            content.style.paddingLeft = new StyleLength(3);
+            content.style.paddingRight = new StyleLength(3);
+            content.style.paddingTop = new StyleLength(5);
+            content.style.paddingBottom = new StyleLength(5);
+
+            header.style.backgroundColor = new StyleColor(new Color(0.2F, 0.2F, 0.2F));
+            content.style.backgroundColor = new StyleColor(new Color(0.255F, 0.255F, 0.255F));
+
+            header.SetHeight(20);
+            header.style.paddingLeft = new StyleLength(5);
+
+            root.style.marginBottom = new StyleLength(10);
+
+            return root;
+
+
+            void DrawHeader(Rect rect)
+            {
+                var aRect = rect;
+                aRect.height = EditorGUIUtility.singleLineHeight;
+
+                if (icon != null)
+                {
+                    EditorGUI.LabelField(new Rect(rect.x + 0, rect.y + 1, 16, 16), new GUIContent("", icon));
+                    aRect.x += 19;
+                }
+                EditorGUI.LabelField(aRect, title);
+            }
+        }
     }
-
-
-
 }
