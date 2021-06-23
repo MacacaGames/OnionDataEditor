@@ -102,7 +102,7 @@ namespace OnionCollections.DataEditor.Editor
             return ve;
         }
 
-        public static T BorderColor<T>(this T ve, Color color) where T : VisualElement
+        public static T SetBorderColor<T>(this T ve, Color color) where T : VisualElement
         {
             ve.style.borderTopColor = color;
             ve.style.borderRightColor = color;
@@ -110,12 +110,20 @@ namespace OnionCollections.DataEditor.Editor
             ve.style.borderLeftColor = color;
             return ve;
         }
-        public static T BorderWidth<T>(this T ve, float value) where T : VisualElement
+        public static T SetBorderWidth<T>(this T ve, float value) where T : VisualElement
         {
             ve.style.borderTopWidth = new StyleFloat(value);
             ve.style.borderRightWidth = new StyleFloat(value);
             ve.style.borderBottomWidth = new StyleFloat(value);
             ve.style.borderLeftWidth = new StyleFloat(value);
+            return ve;
+        }
+        public static T SetBorderRadius<T>(this T ve, float value) where T : VisualElement
+        {
+            ve.style.borderBottomRightRadius = new StyleLength(value);
+            ve.style.borderBottomLeftRadius = new StyleLength(value);
+            ve.style.borderTopLeftRadius = new StyleLength(value);
+            ve.style.borderTopRightRadius = new StyleLength(value);
             return ve;
         }
 

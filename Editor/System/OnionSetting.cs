@@ -464,7 +464,7 @@ namespace OnionCollections.DataEditor.Editor
 
                     PropertyField isFullWidthField = new PropertyField()
                     {
-                        label = "Is Full With",
+                        label = "Full Width",
                         bindingPath = "isFullWidth",
                     }.AddTo(content);
 
@@ -496,10 +496,10 @@ namespace OnionCollections.DataEditor.Editor
 
             content.AddTo(root);
 
-            header.BorderColor(new Color(0.14F, 0.14F, 0.14F));
-            header.BorderWidth(1F);
-            content.BorderColor(new Color(0.14F, 0.14F, 0.14F));
-            content.BorderWidth(1F);
+            header.SetBorderColor(new Color(0.14F, 0.14F, 0.14F));
+            header.SetBorderWidth(1F);
+            content.SetBorderColor(new Color(0.14F, 0.14F, 0.14F));
+            content.SetBorderWidth(1F);
             content.style.borderTopWidth = new StyleFloat(0F);
 
             header.style.borderTopLeftRadius = new StyleLength(3F);

@@ -263,12 +263,12 @@ namespace OnionCollections.DataEditor.Editor
         {
             base.ContextClickedItem(id);
 
-            if(Event.current == null)
+            if (Event.current == null || Event.current.type != EventType.ContextClick)
             {
                 return;
             }
 
-            if (Event.current.isMouse && Event.current.button == 1)
+            if (Event.current.button == 1)
             {
                 OnRightClickMenu(treeQuery[id]);
             }
@@ -284,26 +284,37 @@ namespace OnionCollections.DataEditor.Editor
 
             void OnRightClickMenu(TreeNode node)
             {
-                if (node.NodeActions == null)
+                if (node.NodeActions == null || node.NodeActions.Count() == 0)
                     return;
 
-                var menu = new GenericMenu
-                {
-                    allowDuplicateNames = true,
-                };
 
-                foreach(var action in node.NodeActions)
+                var menu = new OnionMenu();
+
+                foreach (var action in node.NodeActions)
                 {
-                    menu.AddItem(new GUIContent(action.actionName), false, ()=> { action.action(); });
+                    menu.AddItem(action.actionName, () => { action.action(); }, action.actionIcon);
                 }
 
-                menu.ShowAsContext();
+                menu.Show();
+
+                //var menu = new GenericMenu
+                //{
+                //    allowDuplicateNames = true,
+                //};
+
+                //foreach(var action in node.NodeActions)
+                //{
+                //    menu.AddItem(new GUIContent(action.actionName), false, ()=> { action.action(); });
+                //}
+
+                //menu.ShowAsContext();
             }
         }
 
         protected override void DoubleClickedItem(int id)
         {
             base.DoubleClickedItem(id);
+
             EditorWindow.GetWindow<OnionDataEditorWindow>().OnDoubleClickItem(treeQuery[id]);
         }
 
