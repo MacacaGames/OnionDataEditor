@@ -629,8 +629,22 @@ namespace OnionCollections.DataEditor.Editor
             var containerB = window.rootVisualElement.Q("ContainerB");
             containerB.style.alignItems = isFullWidth ? new StyleEnum<Align>(Align.Stretch) : new StyleEnum<Align>(Align.Center);
 
-            var inspectoreContainer = window.rootVisualElement.Q("InspectorContainer");
-            inspectoreContainer.style.maxWidth = isFullWidth ? new StyleLength(StyleKeyword.Auto) : new StyleLength(500F);
+            //var inspectoreContainer = window.rootVisualElement.Q("InspectorContainer");
+            //inspectoreContainer.style.maxWidth = isFullWidth ? new StyleLength(StyleKeyword.Auto) : new StyleLength(500F);
+
+
+
+            window.rootVisualElement.Q("InspectorContainer").style.alignItems = new StyleEnum<Align>(Align.Center);
+            window.rootVisualElement.Q("inspector-scroll").style.alignItems = new StyleEnum<Align>(Align.Center);
+
+
+            var inspectoreHeader = window.rootVisualElement.Q("InspectorHeader");
+            inspectoreHeader.style.width = new Length(100, LengthUnit.Percent);
+            inspectoreHeader.style.maxWidth = isFullWidth ? new StyleLength(StyleKeyword.Auto) : new StyleLength(500F);
+
+            var inspectoreViewport = window.rootVisualElement.Q("unity-content-viewport");
+            inspectoreViewport.style.width = new Length(100, LengthUnit.Percent);
+            inspectoreViewport.style.maxWidth = isFullWidth ? new StyleLength(StyleKeyword.Auto) : new StyleLength(500F);
 
 
         }
