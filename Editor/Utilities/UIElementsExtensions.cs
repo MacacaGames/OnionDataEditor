@@ -142,6 +142,12 @@ namespace OnionCollections.DataEditor.Editor
             return ve;
         }
 
+        public static T AddClass<T>(this T ve, string className) where T : VisualElement
+        {
+            ve.AddToClassList(className);
+            return ve;
+        }
+
 
     }
 

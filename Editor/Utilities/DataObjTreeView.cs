@@ -292,7 +292,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 foreach (var action in node.NodeActions)
                 {
-                    menu.AddItem(action.actionName, () => { action.action(); }, action.actionIcon);
+                    menu.AddItem(action);
                 }
 
                 menu.Show();

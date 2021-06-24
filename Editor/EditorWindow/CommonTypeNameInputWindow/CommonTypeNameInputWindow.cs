@@ -25,8 +25,7 @@ namespace OnionCollections.DataEditor.Editor
             window.textField.value = text;
             window.onConfirm = onConfirm;
 
-            window.ShowAuxWindow();
-            window.textField.Focus();
+            window.ShowModal();
         }
 
         public static void Open(string title, Enum enumValue, Action<Enum> onConfirm)
@@ -50,6 +49,8 @@ namespace OnionCollections.DataEditor.Editor
         private void OnEnable()
         {
             rootVisualElement.Add(GetRootVisualElement());
+            
+            textField.Focus();
         }
 
         Action<Enum, string> onConfirm = null;

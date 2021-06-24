@@ -62,7 +62,7 @@ namespace OnionCollections.DataEditor.Editor
                         new OnionAction(() =>
                         {
                             CommonTypeNameInputWindow.Open(
-                                "Add property",
+                                "Add Property",
                                 JsonNode.JsonNodeType.Object,
                                 "",
                                 (propertyType, propertyName) =>

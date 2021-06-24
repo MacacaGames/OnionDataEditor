@@ -8,7 +8,7 @@ using System;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class OnionMenuWindow: EditorWindow
+    internal class OnionMenuWindow: EditorWindow
     {
 
         public void AddRoot(VisualElement ve)
@@ -22,6 +22,10 @@ namespace OnionCollections.DataEditor.Editor
         void OnEnable()
         {
             openTime = Time.realtimeSinceStartup;
+
+            StyleSheet styleSheet = AssetDatabase.LoadAssetAtPath<StyleSheet>($"{OnionDataEditor.Path}/Editor/EditorWindow/OnionMenuWindow/OnionMenu.uss");
+
+            rootVisualElement.styleSheets.Add(styleSheet);
         }
 
         void OnLostFocus()
@@ -59,34 +63,33 @@ namespace OnionCollections.DataEditor.Editor
             root.style.paddingBottom = new StyleLength(padding);
             root.style.paddingTop = new StyleLength(padding);
 
-            size = new Vector2(170, 2 + padding * 2);
+            size = new Vector2(180, 2 + padding * 2);
 
 
             window = EditorWindow.CreateInstance<OnionMenuWindow>();
         }
 
 
+        public void AddItems(IEnumerable<OnionAction> onionActions)
+        {
+            foreach(var onionAction in onionActions)
+            {
+                AddItem(onionAction);
+            }
+        }
+
+        public void AddItem(OnionAction onionAction)
+        {
+            AddItem(onionAction.actionName, onionAction.action, onionAction.actionIcon);
+        }
+
         public void AddItem(string name, Action action, Texture icon = null)
         {
-
-            float buttonHeight = 30;
-            size += new Vector2(0, buttonHeight + 1);
+            size += new Vector2(0, 30);
 
             VisualElement b = new VisualElement()
-                .SetPadding(0)
-                .SetMargin(0)
-                .SetBorderWidth(0)
-                .SetBorderRadius(0)
-                .SetBorderColor(new Color(0.1F, 0.1F, 0.1F, 0F))
-                .SetFlexDirection(FlexDirection.Row)
-                .SetHeight(buttonHeight);
-
-            b.style.borderBottomWidth = new StyleFloat(1F);
-
-            b.style.backgroundColor = new StyleColor(new Color(0.2F, 0.2F, 0.2F));
-
-            b.RegisterCallback<MouseOverEvent>(n => b.style.backgroundColor = new StyleColor(new Color(0.25F, 0.25F, 0.25F)));
-            b.RegisterCallback<MouseOutEvent>(n => b.style.backgroundColor = new StyleColor(new Color(0.2F, 0.2F, 0.2F)));
+                .AddTo(root)
+                .AddClass("item-btn");
 
             b.RegisterCallback<MouseUpEvent>(n =>
             {
@@ -97,45 +100,43 @@ namespace OnionCollections.DataEditor.Editor
                 window.Close();
             });
 
-            float iconSize = 16;
-            Image iconVe = new Image()
+            new Image() { image = icon }
                 .AddTo(b)
-                .SetMargin((buttonHeight - iconSize)/2)
-                .SetWidth(iconSize)
-                .SetHeight(iconSize);
+                .AddClass("item-icon");
 
-            iconVe.image = icon;
 
-            Label lableVe = new Label(name)
+            new Label(name)
                 .AddTo(b)
-                .SetHeight(buttonHeight);
-
-            lableVe.style.unityTextAlign = new StyleEnum<TextAnchor>(TextAnchor.MiddleLeft);
+                .AddClass("item-text");
 
 
-            root.Add(b);
+        }
 
+        public void AddLabel(string text)
+        {
+            size += new Vector2(0, 24);
+
+            new Label(text)
+                .AddTo(root)
+                .AddClass("item-label");
         }
 
         public void AddSplitLine()
         {
-            float margin = 6F;
-
             size += new Vector2(0, 1);
 
-            VisualElement b = new VisualElement()
-                .SetPadding(0)
-                .SetMargin(0)
-                .SetBorderWidth(0)
-                .SetBorderRadius(0)
-                .SetBorderColor(new Color(0.1F, 0.1F, 0.1F, 0.2F))
-                .SetFlexDirection(FlexDirection.Row)
-                .SetHeight(0)
-                .AddTo(root);
+            new VisualElement()
+                .AddTo(root)
+                .AddClass("item-splitline");
+        }
 
-            b.style.borderBottomWidth = new StyleFloat(1);
-            b.style.marginLeft = new StyleLength(margin);
-            b.style.marginRight = new StyleLength(margin);
+        public void AddCustomItem(VisualElement ve, float height)
+        {
+            size += new Vector2(0, height);
+
+            ve
+                .AddTo(root)
+                .AddClass("item-custom");
         }
 
         public void Show()
@@ -144,10 +145,9 @@ namespace OnionCollections.DataEditor.Editor
 
             Vector2 pos = GUIUtility.GUIToScreenPoint(Event.current.mousePosition);
 
-            //window.ShowAsDropDown(new Rect(pos, Vector2.zero), size);
+            window.ShowAsDropDown(new Rect(pos, Vector2.zero), size);
 
-            window.position = new Rect(pos, size);
-            window.ShowPopup();
+            //window.ShowPopup();
         }
     }
 }
