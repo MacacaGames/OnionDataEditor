@@ -11,10 +11,10 @@
             <ui:Button name="btn-opened" class="btn-tab pointer" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-opened-icon" class="btn-icon" />
             </ui:Button>
+            <ui:VisualElement style="flex-grow: 1;" />
             <ui:Button name="btn-bookmark" class="btn-tab pointer" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" />
             </ui:Button>
-            <ui:VisualElement style="flex-grow: 1;" />
             <ui:Button name="btn-setting" class="btn-tab pointer" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-setting-icon" class="btn-icon" />
             </ui:Button>
