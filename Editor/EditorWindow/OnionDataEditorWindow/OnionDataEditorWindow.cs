@@ -15,22 +15,17 @@ namespace OnionCollections.DataEditor.Editor
 {
     public class OnionDataEditorWindow : EditorWindow
     {
-        static string path => OnionDataEditor.Path;
+        Object Target => treeRoot?.Target;
 
-        Object target => treeRoot?.Target;
-
-
-        TreeNode targetNode;
-
-        TreeNode _selectedNode;
-        TreeNode selectedNode
+        TreeNode _SelectedNode;
+        TreeNode SelectedNode
         {
-            get => _selectedNode;
+            get => _SelectedNode;
             set
             {
                 OnSelectedNodeChange(value);
 
-                _selectedNode = value;
+                _SelectedNode = value;
             }
         }
 
@@ -77,7 +72,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             //Create
             var root = this.rootVisualElement;
-            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{path}/Editor/EditorWindow/OnionDataEditorWindow/Onion.uxml");
+            var visualTree = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>($"{OnionDataEditor.Path}/Editor/EditorWindow/OnionDataEditorWindow/Onion.uxml");
             TemplateContainer cloneTree = visualTree.CloneTree();
             cloneTree
                 .SetFlexGrow(1)
@@ -110,7 +105,7 @@ namespace OnionCollections.DataEditor.Editor
             SetIcon(root.Q("btn-back-histroy-icon"), "Arrow_Left");
 
             //Bind btn-refresh
-            root.Q<Button>("btn-refresh").clicked += OnFresh;
+            root.Q<Button>("btn-refresh").clicked += OnRebuildNode;
             SetIcon(root.Q("btn-refresh-icon"), "Refresh");
 
             //Bind btn-add-bookmark
@@ -171,7 +166,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 var inspectorContainer = new IMGUIContainer(() =>
                 {
-                    selectedNode?.OnInspectorGUI?.Invoke();
+                    SelectedNode?.OnInspectorGUI?.Invoke();
                 });
                 inspectorContainer.AddToClassList("inspect-container");
                 inspectorContainer.name = "inspect-container-imgui";
@@ -296,13 +291,13 @@ namespace OnionCollections.DataEditor.Editor
             {
                 if (CanNodeAddToBookmarks(treeRoot))
                 {
-                    if (OnionDataEditor.Setting.IsAddedInBookmark(target) == true)
+                    if (OnionDataEditor.Setting.IsAddedInBookmark(Target) == true)
                     {
-                        OnionDataEditor.Setting.RemoveBookmark(target);
+                        OnionDataEditor.Setting.RemoveBookmark(Target);
                     }
                     else
                     {
-                        OnionDataEditor.Setting.AddBookmark(target);
+                        OnionDataEditor.Setting.AddBookmark(Target);
                     }
 
                     FreshBookmarkView(treeRoot);
@@ -316,7 +311,7 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
-        void OnFresh()
+        void OnRebuildNode()
         {
             if (treeRoot == null)
             {
@@ -363,18 +358,18 @@ namespace OnionCollections.DataEditor.Editor
             if (IsSystemTarget(node))
                 return false;
 
-            if (target == null)
+            if (Target == null)
                 return false;
 
             //---
 
-            if (AssetDatabase.IsNativeAsset(target) == true)                        //Asset(without prefab, sence...)
+            if (AssetDatabase.IsNativeAsset(Target) == true)                        //Asset(without prefab, sence...)
                 return true;
 
-            if (AssetDatabase.IsForeignAsset(target) == true)                       //Asset
+            if (AssetDatabase.IsForeignAsset(Target) == true)                       //Asset
                 return true;
 
-            if (target is GameObject && AssetDatabase.IsMainAsset(target) == true)  //Prefab
+            if (Target is GameObject && AssetDatabase.IsMainAsset(Target) == true)  //Prefab
                 return true;
 
             return false;
@@ -397,7 +392,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 treeView.SetState(viewHistroy.Current.treeViewState);
 
-                selectedNode = treeView.GetSelectedNode();
+                SelectedNode = treeView.GetSelectedNode();
 
                 FreshBookmarkView(treeRoot);
 
@@ -431,7 +426,9 @@ namespace OnionCollections.DataEditor.Editor
 
             }
 
-            DisplayInfo(newNode);
+            UpdateTitleInfo(newNode);
+
+            UpdateActionButtonInfo(newNode);
         }
         
         static bool IsSystemTarget(TreeNode node)
@@ -447,92 +444,9 @@ namespace OnionCollections.DataEditor.Editor
         }
         
 
-        List<Button> actionBtns = new List<Button>();
-        void DisplayInfo(TreeNode node)
-        {
-            if (node != null && node.NodeActions != null && node.NodeActions.Any())
-            {
-                rootVisualElement.Q("data-info").style.display = DisplayStyle.Flex;
-            }
-            else
-            {
-                rootVisualElement.Q("data-info").style.display = DisplayStyle.None;
-            }
 
 
-            DisplayTextInfo(node);
-            DisplayActionButtonInfo(node);
-
-            void DisplayTextInfo(TreeNode n)
-            {
-                var root = this.rootVisualElement;
-
-                //text info
-                string nodeTitle = n.displayName;
-                string nodeDescription = n.description;
-
-                root.Q<Label>("info-title").text = nodeTitle;
-
-                if (n != null && string.IsNullOrEmpty(n.description) == true)
-                {
-                    root.Q<Label>("info-description").style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    root.Q<Label>("info-description").text = nodeDescription;
-                    root.Q<Label>("info-description").style.display = DisplayStyle.Flex;
-                }
-
-                if(n.icon == null)
-                {
-                    root.Q("info-icon").style.display = DisplayStyle.None;
-                }
-                else
-                {
-                    root.Q("info-icon").style.backgroundImage = new StyleBackground((Texture2D)n.icon);
-                    root.Q("info-icon").style.display = DisplayStyle.Flex;
-                }
-
-            }
-
-            void DisplayActionButtonInfo(TreeNode n)
-            {
-                var root = this.rootVisualElement;
-
-                var container = root.Q("data-info-btn-list");
-
-                foreach (var actionBtn in actionBtns)
-                    container.Remove(actionBtn);
-
-                actionBtns = new List<Button>();
-
-                if (n.NodeActions != null)
-                {
-                    foreach (var action in n.NodeActions)
-                    {
-                        Button actionBtn = new Button();
-
-                        actionBtn.clickable.clicked += () => action.action();
-                        actionBtn.AddToClassList("onion-btn");
-                        actionBtn.AddToClassList("pointer");
-
-                        if (action.actionIcon != null)
-                        {
-                            actionBtn.Add(new Image() { image = action.actionIcon });
-                        }
-                        actionBtn.Add(new Label() { text = action.actionName });
-
-
-
-                        actionBtns.Add(actionBtn);
-
-                        container.Add(actionBtn);
-                    }
-                }
-            }
-
-        }
-
+        // Inspector
 
         float originInspectorWidth = 0;
         bool IsInspectorActive = true;
@@ -557,11 +471,8 @@ namespace OnionCollections.DataEditor.Editor
                 winRect.width += originInspectorWidth;
                 window.position = winRect;
 
-                containerA.style.flexGrow = new StyleFloat(0F);
+                containerA.SetFlexGrow(0);
                 containerA.style.maxWidth = new StyleLength(500);
-                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-                btnToggleInspector.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
             }
             else
             {
@@ -571,12 +482,14 @@ namespace OnionCollections.DataEditor.Editor
                 winRect.width -= originInspectorWidth;
                 window.position = winRect;
 
-                containerA.style.flexGrow = new StyleFloat(1F);
+                containerA.SetFlexGrow(1F);
                 containerA.style.maxWidth = new StyleLength(StyleKeyword.Auto);
-                containerB.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-                spliter.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-                btnToggleInspector.style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
             }
+
+            containerB.ShowIf(active);
+            spliter.ShowIf(active);
+            btnToggleInspector.HideIf(active);
+
         }
 
         internal static void SetInspectorWidthFull(bool isFullWidth)
@@ -585,11 +498,6 @@ namespace OnionCollections.DataEditor.Editor
 
             var containerB = window.rootVisualElement.Q("ContainerB");
             containerB.style.alignItems = isFullWidth ? new StyleEnum<Align>(Align.Stretch) : new StyleEnum<Align>(Align.Center);
-
-            //var inspectoreContainer = window.rootVisualElement.Q("InspectorContainer");
-            //inspectoreContainer.style.maxWidth = isFullWidth ? new StyleLength(StyleKeyword.Auto) : new StyleLength(500F);
-
-
 
             window.rootVisualElement.Q("InspectorContainer").style.alignItems = new StyleEnum<Align>(Align.Center);
             window.rootVisualElement.Q("inspector-scroll").style.alignItems = new StyleEnum<Align>(Align.Center);
@@ -606,11 +514,89 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
+        void UpdateTitleInfo(TreeNode n)
+        {
+            var root = this.rootVisualElement;
+
+            //text info
+            string nodeTitle = n.displayName;
+            string nodeDescription = n.description;
+
+            root.Q<Label>("info-title").text = nodeTitle;
+
+            if (n != null && string.IsNullOrEmpty(n.description) == true)
+            {
+                root.Q<Label>("info-description").style.display = DisplayStyle.None;
+            }
+            else
+            {
+                root.Q<Label>("info-description").text = nodeDescription;
+                root.Q<Label>("info-description").style.display = DisplayStyle.Flex;
+            }
+
+            if (n.icon == null)
+            {
+                root.Q("info-icon").style.display = DisplayStyle.None;
+            }
+            else
+            {
+                root.Q("info-icon").style.backgroundImage = new StyleBackground((Texture2D)n.icon);
+                root.Q("info-icon").style.display = DisplayStyle.Flex;
+            }
+
+        }
+
+        List<Button> actionBtns = new List<Button>();
+        void UpdateActionButtonInfo(TreeNode n)
+        {
+            var root = this.rootVisualElement;
+
+            if (n == null || n.NodeActions == null || n.NodeActions.Any() == false)
+            {
+                root.Q("data-info").style.display = DisplayStyle.None;
+                return;
+            }
+
+            root.Q("data-info").style.display = DisplayStyle.Flex;
+
+            var container = root.Q("data-info-btn-list");
+
+            foreach (var actionBtn in actionBtns)
+            {
+                container.Remove(actionBtn);
+            }
+
+            actionBtns = new List<Button>();
+
+            foreach (var action in n.NodeActions)
+            {
+                Button actionBtn = new Button()
+                    .AddClass("onion-btn")
+                    .AddClass("pointer");
+
+                actionBtn.clicked += () => action.action();
+
+                if (action.actionIcon != null)
+                {
+                    actionBtn.Add(new Image() { image = action.actionIcon });
+                }
+                actionBtn.Add(new Label() { text = action.actionName });
+
+
+
+                actionBtns.Add(actionBtn);
+
+                container.Add(actionBtn);
+            }
+        }
+
+
+
         // UI
 
         public void OnTriggerItem(TreeNode node)
         {
-            selectedNode = node;
+            SelectedNode = node;
             node.OnSelected?.Invoke();
         }
         public void OnDoubleClickItem(TreeNode node)
@@ -668,12 +654,13 @@ namespace OnionCollections.DataEditor.Editor
 
                     menu.Show();
                 }
-                else
-                {
-                    ChangeTabTo(tab);
-                    UpdateAllTabView();
-                }
-            }, TrickleDown.TrickleDown);
+            });
+
+            ve.clicked += () =>
+            {
+                ChangeTabTo(tab);
+                UpdateAllTabView();
+            };
 
             Image icon = new Image()
                 .AddTo(ve)
@@ -755,7 +742,7 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        void UpdateCurrentTab(TreeNode currentNode)
+        public void UpdateCurrentTab(TreeNode currentNode)
         {
             var tab = CurrentTab;
             tab.node = currentNode;
@@ -788,23 +775,24 @@ namespace OnionCollections.DataEditor.Editor
             UpdateCurrentTab(node);
         }
 
+        // ## NOTE ##
+        // Open、Push、Replace 和 Public Methods 的三個方法是對稱的，
+        // 一個是 TreeNode 一個是 Object，都是操作 viewHistroy
+
         internal void OpenTarget(TreeNode newTarget)
         {
-            targetNode = newTarget;
             viewHistroy.Clear();
-            viewHistroy.PushState(targetNode);
+            viewHistroy.PushState(newTarget);
         }
 
-        internal void PushTarget(TreeNode newTarget)
+        void PushTarget(TreeNode newTarget)
         {
-            targetNode = newTarget;
-            viewHistroy.PushState(targetNode);
+            viewHistroy.PushState(newTarget);
         }
 
-        internal void ReplaceTarget(TreeNode newTarget)
+        void ReplaceTarget(TreeNode newTarget)
         {
-            targetNode = newTarget;
-            viewHistroy.ReplaceState(targetNode);
+            viewHistroy.ReplaceState(newTarget);
         }
 
 
@@ -815,7 +803,7 @@ namespace OnionCollections.DataEditor.Editor
         public static void RebuildNode()
         {
             var window = GetWindow<OnionDataEditorWindow>();
-            window.OnFresh();
+            window.OnRebuildNode();
         }
 
         public static void UpdateTreeView()
@@ -832,7 +820,7 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
-            window.selectedNode = node;
+            window.SelectedNode = node;
             window.treeView.SelectAt(node);
         }
 

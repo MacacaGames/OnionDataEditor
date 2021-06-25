@@ -122,7 +122,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 histroy.Push(state);
                 window.OnTargetChange(node);
-                
+
                 HistroyChange(node);
             }
         }
@@ -135,7 +135,8 @@ namespace OnionCollections.DataEditor.Editor
                 var state = histroy.Peek();
                 var node = state.GetNode();
                 window.OnTargetChange(node);
-                
+
+
                 HistroyChange(node);
             }
 
