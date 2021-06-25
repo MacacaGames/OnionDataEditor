@@ -40,13 +40,13 @@ namespace OnionCollections.DataEditor.Editor
                 if (node.IsPseudo == false)
                 {
                     target = node.Target;
-                    DisplayName = target.name;
                 }
                 else
                 {
                     this.node = node;
-                    DisplayName = node.displayName;
                 }
+                
+                DisplayName = node.displayName;
             }
 
             public TreeNode GetNode()
@@ -91,6 +91,30 @@ namespace OnionCollections.DataEditor.Editor
                 selectedIDs = new List<int> { 1 },
                 expandedIDs = new List<int> { 1 }
             };
+        }
+
+        public void ReplaceSelf()
+        {
+            if (histroy.Count > 0)
+            {
+                var state = histroy.Pop();
+
+                var node = state.GetNode();
+
+                if (histroy.Count > 0)
+                {
+                    var parentState = histroy.Peek();
+                    if (ViewHistroyState.Equals(parentState, state))
+                    {
+                        histroy.Pop();
+                    }
+                }
+
+                histroy.Push(state);
+                window.OnTargetChange(node);
+
+                HistroyChange(node);
+            }
         }
 
         public void PushState(TreeNode node)

@@ -384,7 +384,6 @@ namespace OnionCollections.DataEditor.Editor
             {
                 treeRoot = newNode;
 
-
                 if (treeRoot != null)
                 {
                     treeRoot.CreateTreeView(out treeView);
@@ -716,11 +715,11 @@ namespace OnionCollections.DataEditor.Editor
 
         void ChangeTabTo(Tab tab)
         {
-            tab.viewHistroy.SaveCurrentState();
+            viewHistroy?.SaveCurrentState();
 
             currentTabIndex = tab.index;
             viewHistroy = tab.viewHistroy;
-            ReplaceTarget(tab.viewHistroy.Current.GetNode());
+            viewHistroy.ReplaceSelf();
 
             UpdateAllTabView();
         }
