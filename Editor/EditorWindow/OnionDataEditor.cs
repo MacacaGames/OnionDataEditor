@@ -23,7 +23,7 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        public static string GetRootPath()
+        static string GetRootPath()
         {
             const string AsmdefQuery = "t:ASMDEF OnionDataEditor.Editor";
 

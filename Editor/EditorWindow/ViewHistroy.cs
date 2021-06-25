@@ -12,11 +12,12 @@ namespace OnionCollections.DataEditor.Editor
     {
         OnionDataEditorWindow window;
 
-        public Action OnHistroyChange = null;
+        public Action<TreeNode> OnHistroyChange = null;
 
-        public ViewHistroy(OnionDataEditorWindow window)
+        public ViewHistroy(OnionDataEditorWindow window, TreeNode baseNode)
         {
             this.window = window;
+            histroy.Push(new ViewHistroyState(baseNode) { treeViewState = GetDefaultState() });
         }
 
 
@@ -70,9 +71,9 @@ namespace OnionCollections.DataEditor.Editor
         public ViewHistroyState Current => (Count >= 1) ? histroy.Peek() : null;
         public ViewHistroyState Last => (Count >= 2) ? histroy.Skip(1).First() : null;
 
-        void SaveCurrentState()
+        public void SaveCurrentState()
         {
-            if (histroy.Count > 0)
+            if (histroy.Count > 0 && window.treeView != null)
             {
                 Current.treeViewState = new TreeViewState
                 {
@@ -98,7 +99,7 @@ namespace OnionCollections.DataEditor.Editor
             histroy.Push(new ViewHistroyState(node) { treeViewState = GetDefaultState() });
             window.OnTargetChange(node);
 
-            HistroyChange();
+            HistroyChange(node);
         }
 
         public void ReplaceState(TreeNode node)
@@ -121,8 +122,9 @@ namespace OnionCollections.DataEditor.Editor
 
                 histroy.Push(state);
                 window.OnTargetChange(node);
+                
+                HistroyChange(node);
             }
-            HistroyChange();
         }
 
         public void Back()
@@ -131,23 +133,22 @@ namespace OnionCollections.DataEditor.Editor
             {
                 histroy.Pop();
                 var state = histroy.Peek();
-                window.OnTargetChange(state.GetNode());
+                var node = state.GetNode();
+                window.OnTargetChange(node);
+                
+                HistroyChange(node);
             }
 
-            HistroyChange();
         }
 
         public void Clear()
         {
             histroy.Clear();
-
-            HistroyChange();
         }
 
-        void HistroyChange()
+        void HistroyChange(TreeNode node)
         {
-
-            OnHistroyChange?.Invoke();
+            OnHistroyChange?.Invoke(node);
         }
 
         internal void LogStates()

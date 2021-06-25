@@ -73,15 +73,6 @@ namespace OnionCollections.DataEditor.Editor
                                     }
                                 });
 
-                            //var menu = new GenericMenu();
-                            //foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
-                            //{
-                            //    menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
-                            //    {
-                            //    });
-                            //}
-                            //menu.ShowAsContext();
-
                         }, 
                         "Add Property",
                         OnionDataEditor.GetIconTexture("Add")),
@@ -110,16 +101,6 @@ namespace OnionCollections.DataEditor.Editor
                                     {
                                         AddNewArrayItem(jsonNode, (JsonNode.JsonNodeType)jsonType);
                                     });
-
-                                //var menu = new GenericMenu();
-                                //foreach( JsonNode.JsonNodeType enumType in Enum.GetValues(typeof(JsonNode.JsonNodeType)))
-                                //{
-                                //    menu.AddItem(new GUIContent(enumType.ToString()), false, ()=>
-                                //    {
-                                //        AddNewArrayItem(jsonNode, enumType);
-                                //    });
-                                //}
-                                //menu.ShowAsContext();
                             }
                             else
                             {

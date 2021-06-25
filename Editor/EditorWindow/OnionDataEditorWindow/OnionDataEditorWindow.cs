@@ -34,17 +34,6 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        enum Tab
-        {
-            None = 0,
-            Opened = 1,
-            Bookmark = 2,
-            Setting = 3,
-        }
-        Tab currentTab = Tab.None;
-
-        /// <summary>與Bookmark、Setting同階層，在選擇Bookmark、Setting時，此Node不會被改變。</summary>
-        TreeNode openedNode;
 
         internal DataObjTreeView treeView;
         IMGUIContainer treeViewContainer;
@@ -98,18 +87,23 @@ namespace OnionCollections.DataEditor.Editor
 
             SetIcon(root.Q("oniondataeditor-icon"), "OnionDataEditorIcon");
 
-            //綁定btn-opened
-            root.Q<Button>("btn-opened").clicked += ChangeTabToOpened;
-            SetIcon(root.Q("btn-opened-icon"), "Compass");
+
+            root.Q<Button>("btn-add-tab").clicked += () =>
+            {
+                var tab = CreateNewEmptyTab();
+                ChangeTabTo(tab);
+            };
+            SetIcon(root.Q("btn-add-tab-icon"), "Add");
+
 
             //Bind btn-bookmark
             root.Q<Button>("btn-bookmark").clicked += ChangeTabToBookmark;
             SetIcon(root.Q("btn-bookmark-icon"), "Bookmark_Fill");
 
-
             //Bind btn-setting
             root.Q<Button>("btn-setting").clicked += ChangeTabToSetting;
             SetIcon(root.Q("btn-setting-icon"), "Settings");
+
 
             //Bind btn-back-histroy
             root.Q<Button>("btn-back-histroy").clicked += () => viewHistroy.Back();
@@ -137,17 +131,18 @@ namespace OnionCollections.DataEditor.Editor
             //Inspector
             BindInspector();
 
-            //ViewHistroy
-            BindViewHistory();
 
             //Split
             BindSpliter();
+
+            BuildTab();
 
 
             SetInspectorActive(true);
 
             bool isFullWidth = OnionDataEditor.Setting.isFullWidth;
             SetInspectorWidthFull(isFullWidth);
+
 
             //
 
@@ -189,28 +184,6 @@ namespace OnionCollections.DataEditor.Editor
                 inspectorRoot.Add(inspectorContainer);
                 inspectorRoot.Add(inspectorContainerVisualElement);
 
-            }
-
-            void BindViewHistory()
-            {
-                viewHistroy = new ViewHistroy(this)
-                {
-                    OnHistroyChange = OnHistroyChange
-                };
-
-                void OnHistroyChange()
-                {
-                    if (viewHistroy.Count >= 2)
-                    {
-                        root.Q("btn-back-histroy").style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
-
-                        root.Q("btn-back-histroy").tooltip = viewHistroy.Last.DisplayName;
-                    }
-                    else
-                    {
-                        root.Q("btn-back-histroy").style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
-                    }
-                }
             }
 
             void BuildTreeView()
@@ -267,31 +240,52 @@ namespace OnionCollections.DataEditor.Editor
                 }
             }
 
+            void BuildTab()
+            {
+                var tab = CreateNewEmptyTab();
+
+                ChangeTabTo(tab);
+            }
 
             //
 
-            void ChangeTabToBookmark()
-            {
-                OpenTarget(OnionDataEditor.Bookmarks);
-                SwitchTab(Tab.Bookmark);
-            }
-
             void ChangeTabToSetting()
             {
-                OpenTarget(new TreeNode(OnionDataEditor.Setting));
-                SwitchTab(Tab.Setting);
-            }
-
-            void ChangeTabToOpened()
-            {
-                if (openedNode != null)
+                var targetTab = tabs.FirstOrDefault(n => OnionDataEditor.IsSetting(n.node));
+                if (targetTab != null)
                 {
-                    OpenTarget(openedNode);
-                    SwitchTab(Tab.Opened);
+                    ChangeTabTo(targetTab);
                 }
                 else
                 {
-                    ChangeTabToBookmark();
+                    targetTab = CreateNewTab(new Tab
+                    {
+                        viewHistroy = new ViewHistroy(this, new TreeNode(OnionDataEditor.Setting))
+                        {
+                            OnHistroyChange = OnHistroyChange,
+                        },
+                    });
+                    ChangeTabTo(targetTab);
+                }
+            }
+
+            void ChangeTabToBookmark()
+            {
+                var targetTab = tabs.FirstOrDefault(n => OnionDataEditor.IsBookmark(n.node));
+                if (targetTab != null)
+                {
+                    ChangeTabTo(targetTab);
+                }
+                else
+                {
+                    targetTab = CreateNewTab(new Tab
+                    {
+                        viewHistroy = new ViewHistroy(this, OnionDataEditor.Bookmarks)
+                        {
+                            OnHistroyChange = OnHistroyChange,
+                        },
+                    });
+                    ChangeTabTo(targetTab);
                 }
             }
 
@@ -320,7 +314,6 @@ namespace OnionCollections.DataEditor.Editor
 
             }
 
-
         }
 
         void OnFresh()
@@ -343,31 +336,7 @@ namespace OnionCollections.DataEditor.Editor
             OnTargetChange(treeRoot);
         }
 
-        void SwitchTab(Tab tab)
-        {
-            currentTab = tab;
 
-            Dictionary<Tab, string> elQuery = new Dictionary<Tab, string>
-            {
-                [Tab.Bookmark] = "btn-bookmark",
-                [Tab.Opened] = "btn-opened",
-                [Tab.Setting] = "btn-setting",
-            };
-
-            const string className = "active-tab";
-            foreach (var p in elQuery)
-            {
-                if (p.Key != tab)
-                    rootVisualElement.Q(p.Value)?.RemoveFromClassList(className);
-                else
-                    rootVisualElement.Q(p.Value)?.AddToClassList(className);
-            }
-
-
-            //Opened 依照openedTarget來顯示
-            rootVisualElement.Q(elQuery[Tab.Opened]).style.display = (openedNode != null) ? DisplayStyle.Flex : DisplayStyle.None;
-
-        }
 
         void FreshBookmarkView(TreeNode node)
         {
@@ -432,19 +401,7 @@ namespace OnionCollections.DataEditor.Editor
 
                 FreshBookmarkView(treeRoot);
 
-                if (OnionDataEditor.IsBookmark(newNode))
-                {
-                    SwitchTab(Tab.Bookmark);
-                }
-                else if (OnionDataEditor.IsSetting(newNode))
-                {
-                    SwitchTab(Tab.Setting);
-                }
-                else
-                {
-                    openedNode = treeRoot;
-                    SwitchTab(Tab.Opened);
-                }
+                UpdateAllTabView();
             }
         }
 
@@ -670,31 +627,184 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        
+
+
+
+
+        //Tab
+
+        internal class Tab
+        {
+            public int index;
+            public ViewHistroy viewHistroy;
+            public TreeNode node;
+            
+            public VisualElement ve;
+            public Image iconVe;
+        }
+
+        readonly List<Tab> tabs = new List<Tab>();
+        int currentTabIndex = 0;
+        Tab CurrentTab => tabs[currentTabIndex];
+
+        Tab CreateNewTab(Tab tab)
+        {
+            int index = tabs.Any() ? tabs.Max(n => n.index) + 1 : 0;
+            tab.index = index;
+
+            var container = rootVisualElement.Q("TabListContainer");
+            Button ve = new Button()
+                .AddTo(container)
+                .AddClass("btn-tab")
+                .AddClass("pointer");
+
+            ve.RegisterCallback<MouseDownEvent>(e =>
+            {
+                //確保Tab分頁在1個以上時才能關閉
+                if (e.button == 1 && tabs.Count > 1)
+                {
+                    var menu = new OnionMenu();
+                    menu.AddItem("Close Tab", () => { CloseTab(tab); }, OnionDataEditor.GetIconTexture("Trash"));
+
+                    menu.Show();
+                }
+                else
+                {
+                    ChangeTabTo(tab);
+                    UpdateAllTabView();
+                }
+            }, TrickleDown.TrickleDown);
+
+            Image icon = new Image()
+                .AddTo(ve)
+                .AddClass("btn-icon");
+
+
+            tab.ve = ve;
+            tab.iconVe = icon;
+
+
+            tabs.Add(tab);
+
+            return tab;
+        }
+
+        Tab CreateNewEmptyTab()
+        {
+            Tab tab = new Tab
+            {
+                ve = null,
+                viewHistroy = new ViewHistroy(this, OnionDataEditor.Setting.OnboardingNode)
+                {
+                    OnHistroyChange = OnHistroyChange,
+                },
+            };
+
+            return CreateNewTab(tab);
+        }
+
+        void CloseTab(Tab tab)
+        {
+            if(currentTabIndex == tab.index)
+            {
+                currentTabIndex = 0;
+            }
+
+            var container = rootVisualElement.Q("TabListContainer");
+            container.Remove(tab.ve);
+            tabs.Remove(tab);
+
+            for(int i = 0; i < tabs.Count; i++)
+            {
+                tabs[i].index = i;
+            }
+
+            if (currentTabIndex >= tabs.Count)
+            {
+                currentTabIndex = tabs.Count - 1;
+            }
+
+            UpdateAllTabView();
+        }
+
+        void ChangeTabTo(Tab tab)
+        {
+            tab.viewHistroy.SaveCurrentState();
+
+            currentTabIndex = tab.index;
+            viewHistroy = tab.viewHistroy;
+            ReplaceTarget(tab.viewHistroy.Current.GetNode());
+
+            UpdateAllTabView();
+        }
+
+        void UpdateAllTabView()
+        {
+            const string className = "active-tab";
+
+            foreach(var t in tabs)
+            {
+                if (t.index == currentTabIndex)
+                {
+                    t.ve.AddToClassList(className);
+                }
+                else
+                {
+                    t.ve.RemoveFromClassList(className);
+                }
+            }
+        }
+
+        void UpdateCurrentTab(TreeNode currentNode)
+        {
+            var tab = CurrentTab;
+            tab.node = currentNode;
+
+            tab.iconVe.image = currentNode.icon == null ? OnionDataEditor.GetIconTexture("Compass") : currentNode.icon;
+        }
+
+
+
+
+
         //ViewHistroy
 
         ViewHistroy viewHistroy;
+
+        void OnHistroyChange(TreeNode node)
+        {
+            if (viewHistroy.Count >= 2)
+            {
+                rootVisualElement.Q("btn-back-histroy").style.display = new StyleEnum<DisplayStyle>(DisplayStyle.Flex);
+
+                rootVisualElement.Q("btn-back-histroy").tooltip = viewHistroy.Last.DisplayName;
+            }
+            else
+            {
+                rootVisualElement.Q("btn-back-histroy").style.display = new StyleEnum<DisplayStyle>(DisplayStyle.None);
+            }
+
+
+            UpdateCurrentTab(node);
+        }
 
         internal void OpenTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
             viewHistroy.Clear();
             viewHistroy.PushState(targetNode);
-
         }
 
         internal void PushTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
             viewHistroy.PushState(targetNode);
-
         }
 
         internal void ReplaceTarget(TreeNode newTarget)
         {
             targetNode = newTarget;
             viewHistroy.ReplaceState(targetNode);
-
         }
 
 
