@@ -1,15 +1,15 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="Onion.uss" />
-    <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: row; background-color: rgb(56, 56, 56);">
-        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.2); flex-direction: column; width: 40px; flex-shrink: 0;">
-            <ui:VisualElement style="width: 30px; height: 30px; margin-left: 5px; margin-right: 5px; margin-top: 5px; margin-bottom: 5px; align-items: center; justify-content: center;">
-                <ui:VisualElement name="oniondataeditor-icon" class="btn-icon" style="width: 16px; height: 16px; opacity: 0.05;" />
+    <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: column; background-color: rgb(56, 56, 56);">
+        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.2); flex-direction: row; flex-shrink: 0; flex-grow: 0; height: 36px;">
+            <ui:VisualElement style="width: 36px; height: 36px; align-items: center; justify-content: center; flex-shrink: 0;">
+                <ui:VisualElement name="oniondataeditor-icon" class="btn-icon" style="width: 20px; height: 20px; opacity: 0.1;" />
             </ui:VisualElement>
-            <ui:VisualElement name="TabListContainer" style="flex-grow: 0; flex-shrink: 1;" />
+            <ui:VisualElement name="TabListContainer" style="flex-grow: 0; flex-shrink: 1; flex-direction: row; overflow: hidden;" />
             <ui:Button name="btn-add-tab" tooltip="Add Tab" class="pointer btn-tab-btn" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-add-tab-icon" class="btn-icon" />
             </ui:Button>
-            <ui:VisualElement style="flex-grow: 1;" />
+            <ui:VisualElement name="TabBlank" style="flex-grow: 1;" />
             <ui:Button name="btn-bookmark" tooltip="Open Bookmarks Tab" class="pointer btn-tab-btn" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" />
             </ui:Button>
@@ -17,43 +17,45 @@
                 <ui:VisualElement name="btn-setting-icon" class="btn-icon" />
             </ui:Button>
         </ui:VisualElement>
-        <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
-            <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1; border-right-width: 1px; border-right-color: rgba(0, 0, 0, 0.1);">
-                <ui:VisualElement style="flex-direction: row; height: 40px;">
-                    <ui:Button name="btn-back-histroy" class="onion-btn onion-icon-btn btn-bookmark pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                        <ui:VisualElement name="btn-back-histroy-icon" class="btn-icon" style="width: 16px; height: 16px;" />
-                    </ui:Button>
-                    <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
-                    <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn btn-bookmark pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                        <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 16px; height: 16px;" />
-                    </ui:Button>
-                    <ui:Button name="btn-refresh" class="onion-btn onion-icon-btn pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
-                        <ui:VisualElement name="btn-refresh-icon" class="btn-icon" />
-                    </ui:Button>
-                    <ui:Button name="btn-toggle-inspector" class="onion-btn onion-icon-btn pointer" style="flex-grow: 0; height: 30px; width: 10px; margin: 5; margin-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-top-left-radius: 6px; border-bottom-left-radius: 6px; display: none;">
-                        <ui:VisualElement name="btn-toggle-inspector-icon" class="btn-icon" style="opacity: 0.5; margin-left: 2px;" />
-                    </ui:Button>
-                </ui:VisualElement>
-                <ui:VisualElement name="tree-view-container" style="flex-grow: 1;" />
-            </ui:VisualElement>
-        </ui:VisualElement>
-        <ui:VisualElement name="Spliter" class="spliter" style="width: 3px;" />
-        <ui:VisualElement name="ContainerB" style="flex-grow: 1;">
-            <ui:VisualElement name="InspectorContainer" style="flex-grow: 1; width: 100%;">
-                <ui:VisualElement name="InspectorHeader" style="width: 100%;">
-                    <ui:VisualElement style="flex-direction: column; align-items: flex-start; padding-right: 10px; flex-shrink: 0;">
-                        <ui:VisualElement style="flex-shrink: 0; flex-grow: 0; flex-direction: row; height: 40px; align-items: center; padding-left: 10px; padding-right: 10px;">
-                            <ui:VisualElement name="info-icon" class="btn-icon" style="width: 20px; height: 20px; margin-right: 5px;" />
-                            <ui:Label name="info-title" class="h3" style="height: 30px; margin: 0; -unity-text-align: middle-left; flex-grow: 1; -unity-font-style: bold; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
-                        </ui:VisualElement>
+        <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+            <ui:VisualElement name="ContainerA" style="min-width: 200px; max-width: 500px; width: 300px; flex-direction: row;">
+                <ui:VisualElement name="TargetTreeContainer" style="flex-grow: 1; border-right-width: 1px; border-right-color: rgba(0, 0, 0, 0.1);">
+                    <ui:VisualElement style="flex-direction: row; height: 40px;">
+                        <ui:Button name="btn-back-histroy" class="onion-btn onion-icon-btn btn-bookmark pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                            <ui:VisualElement name="btn-back-histroy-icon" class="btn-icon" style="width: 16px; height: 16px;" />
+                        </ui:Button>
+                        <ui:VisualElement style="flex-grow: 1; flex-direction: column;" />
+                        <ui:Button name="btn-add-bookmark" class="onion-btn onion-icon-btn btn-bookmark pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                            <ui:VisualElement name="btn-add-bookmark-icon" class="btn-icon" style="width: 16px; height: 16px;" />
+                        </ui:Button>
+                        <ui:Button name="btn-refresh" class="onion-btn onion-icon-btn pointer" style="flex-grow: 0; height: 30px; width: 30px; margin: 5;">
+                            <ui:VisualElement name="btn-refresh-icon" class="btn-icon" />
+                        </ui:Button>
+                        <ui:Button name="btn-toggle-inspector" class="onion-btn onion-icon-btn pointer" style="flex-grow: 0; height: 30px; width: 10px; margin: 5; margin-right: 0; border-top-right-radius: 0; border-bottom-right-radius: 0; border-top-left-radius: 6px; border-bottom-left-radius: 6px; display: none;">
+                            <ui:VisualElement name="btn-toggle-inspector-icon" class="btn-icon" style="opacity: 0.5; margin-left: 2px;" />
+                        </ui:Button>
                     </ui:VisualElement>
-                    <ui:Label name="info-description" class="p" style="-unity-text-align: upper-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 0; padding-bottom: 5px; opacity: 0.5;" />
+                    <ui:VisualElement name="tree-view-container" style="flex-grow: 1;" />
                 </ui:VisualElement>
-                <ui:ScrollView name="inspector-scroll" style="flex-grow: 1; width: 100%;" />
             </ui:VisualElement>
-            <ui:VisualElement name="Spliter" class="spliter" style="height: 6px; display: none;" />
-            <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); height: 55px; border-top-width: 1px; border-top-color: rgba(0, 0, 0, 0.05); padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px; width: 100%;">
-                <ui:VisualElement name="data-info-btn-list" style="height: 35px; flex-direction: row;" />
+            <ui:VisualElement name="Spliter" class="spliter" style="width: 3px;" />
+            <ui:VisualElement name="ContainerB" style="flex-grow: 1;">
+                <ui:VisualElement name="InspectorContainer" style="flex-grow: 1; width: 100%;">
+                    <ui:VisualElement name="InspectorHeader" style="width: 100%;">
+                        <ui:VisualElement style="flex-direction: column; align-items: flex-start; padding-right: 10px; flex-shrink: 0;">
+                            <ui:VisualElement style="flex-shrink: 0; flex-grow: 0; flex-direction: row; height: 40px; align-items: center; padding-left: 10px; padding-right: 10px;">
+                                <ui:VisualElement name="info-icon" class="btn-icon" style="width: 20px; height: 20px; margin-right: 5px;" />
+                                <ui:Label name="info-title" class="h3" style="height: 30px; margin: 0; -unity-text-align: middle-left; flex-grow: 1; -unity-font-style: bold; padding-left: 0; padding-right: 0; padding-top: 0; padding-bottom: 0;" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:Label name="info-description" class="p" style="-unity-text-align: upper-left; margin: 0; padding-left: 10px; padding-right: 10px; padding-top: 0; padding-bottom: 5px; opacity: 0.5;" />
+                    </ui:VisualElement>
+                    <ui:ScrollView name="inspector-scroll" style="flex-grow: 1; width: 100%;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Spliter" class="spliter" style="height: 6px; display: none;" />
+                <ui:VisualElement name="data-info" class="data-info" style="background-color: rgba(0, 0, 0, 0.02); height: 55px; border-top-width: 1px; border-top-color: rgba(0, 0, 0, 0.05); padding-left: 5px; padding-right: 5px; padding-top: 5px; padding-bottom: 5px; width: 100%;">
+                    <ui:VisualElement name="data-info-btn-list" style="height: 35px; flex-direction: row;" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

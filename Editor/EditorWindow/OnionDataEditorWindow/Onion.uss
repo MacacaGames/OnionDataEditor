@@ -118,23 +118,23 @@
     padding-right: 0;
     padding-top: 0;
     padding-bottom: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 4px;
+    margin-right: 2px;
+    margin-top: 3px;
+    margin-bottom: 3px;
     border-left-width: 0;
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
     justify-content: center;
     align-items: center;
     opacity: 0.5;
-    background-color: rgba(56, 56, 56, 0.3);
-    height: 40px;
-    width: 38px;
+    background-color: rgba(56, 56, 56, 0);
+    height: 30px;
+    width: 160px;
 }
 
 .btn-tab:hover {
@@ -145,7 +145,52 @@
     opacity: 0.3;
     width: 18px;
     height: 18px;
-    margin-right: 2px;
+    margin-right: 0;
+    margin-left: 0;
+    flex-shrink: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.btn-tab .btn-text {
+    flex-shrink: 0;
+    width: 110px;
+    margin-left: 2px;
+    overflow: hidden;
+}
+
+.btn-tab .btn-close {
+    visibility: hidden;
+    background-color: rgba(128, 128, 128, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    width: 16px;
+    height: 16px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    flex-shrink: 0;
+}
+
+.btn-tab:hover .btn-close {
+    visibility: visible;
+    opacity: 0.5;
+}
+
+.btn-tab:hover .btn-close:hover {
+    background-color: rgba(128, 128, 128, 0.3);
+    opacity: 1;
 }
 
 .onion-btn.onion-icon-btn {
@@ -201,11 +246,11 @@
 
 .active-tab {
     opacity: 1;
-    background-color: rgb(56, 56, 56);
+    background-color: rgb(64, 64, 64);
 }
 
 .active-tab:hover {
-    background-color: rgb(56, 56, 56);
+    background-color: rgb(77, 77, 77);
 }
 
 .active-tab .btn-icon {
@@ -213,12 +258,12 @@
 }
 
 .btn-tab-btn {
-    height: 32px;
+    height: 28px;
     margin-left: 3px;
     margin-right: 3px;
     margin-top: 3px;
     margin-bottom: 3px;
-    width: 32px;
+    width: 28px;
     padding-left: 0;
     padding-right: 0;
     padding-top: 0;

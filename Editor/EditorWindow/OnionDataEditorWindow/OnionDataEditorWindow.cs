@@ -13,7 +13,7 @@ using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
 {
-    public class OnionDataEditorWindow : EditorWindow
+    public class OnionDataEditorWindow : EditorWindow, IHasCustomMenu
     {
         Object Target => treeRoot?.Target;
 
@@ -40,8 +40,14 @@ namespace OnionCollections.DataEditor.Editor
         public static OnionDataEditorWindow ShowWindow()
         {
             var window = GetWindow<OnionDataEditorWindow>();
-
-            ShowWindow(window.treeRoot);    //預設開null，使其打開bookmarkGroup；有target的話就開target
+            if (EditorWindow.HasOpenInstances<OnionDataEditorWindow>())
+            {
+                window.Focus();
+            }
+            else
+            {
+                ShowWindow(window.treeRoot);    //預設開null，使其打開bookmarkGroup；有target的話就開target
+            }
 
             return window;
         }
@@ -79,7 +85,7 @@ namespace OnionCollections.DataEditor.Editor
 
             //Tab
 
-            SetIcon(root.Q("oniondataeditor-icon"), "OnionDataEditorIcon");
+            SetIcon(root.Q("oniondataeditor-icon"), "Node_Element");
 
 
             root.Q<Button>("btn-add-tab").clicked += () =>
@@ -88,7 +94,9 @@ namespace OnionCollections.DataEditor.Editor
                 ChangeTabTo(tab);
             };
             SetIcon(root.Q("btn-add-tab-icon"), "Add");
-
+            
+            root.Q("TabBlank").RegisterCallback<DragUpdatedEvent>(OnTabDragUpdateObject);
+            root.Q("TabBlank").RegisterCallback<DragPerformEvent>(OnTabDragPerformObject);
 
             //Bind btn-bookmark
             root.Q<Button>("btn-bookmark").clicked += ChangeTabToBookmark;
@@ -101,6 +109,7 @@ namespace OnionCollections.DataEditor.Editor
 
             //Bind btn-back-histroy
             root.Q<Button>("btn-back-histroy").clicked += () => viewHistroy.Back();
+            root.Q<Button>("btn-back-histroy").RegisterCallback<MouseDownEvent>(n => { if (n.button == 1) ShowViewHistroyMenu(); });
             SetIcon(root.Q("btn-back-histroy-icon"), "Arrow_Left");
 
             //Bind btn-refresh
@@ -119,20 +128,18 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-            //建構treeview
             BuildTreeView();
 
-            //Inspector
             BindInspector();
 
-
-            //Split
             BindSpliter();
 
             BuildTab();
 
 
             SetInspectorActive(true);
+
+            SetTabBarActive(true);
 
             bool isFullWidth = OnionDataEditor.Setting.isFullWidth;
             SetInspectorWidthFull(isFullWidth);
@@ -198,38 +205,7 @@ namespace OnionCollections.DataEditor.Editor
                     if (treeRoot != null)
                     {
                         Rect rect = treeViewContainer.layout;
-                        DropAreaGUI(rect);
                         treeView.OnGUI(rect);
-                    }
-                }
-
-                void DropAreaGUI(Rect drop_area)
-                {
-                    Event evt = Event.current;
-
-                    switch (evt.type)
-                    {
-                        case EventType.DragUpdated:
-                        case EventType.DragPerform:
-
-                            if (!drop_area.Contains(evt.mousePosition))
-                            {
-                                return;
-                            }
-
-                            DragAndDrop.visualMode = DragAndDropVisualMode.Link;
-
-                            if (evt.type == EventType.DragPerform)
-                            {
-                                DragAndDrop.AcceptDrag();
-
-                                Object target = DragAndDrop.objectReferences[0];
-                                TreeNode targetNode = new TreeNode(target);
-
-                                OpenTarget(targetNode);
-
-                            }
-                            break;
                     }
                 }
             }
@@ -243,47 +219,6 @@ namespace OnionCollections.DataEditor.Editor
 
             //
 
-            void ChangeTabToSetting()
-            {
-                var targetTab = tabs.FirstOrDefault(n => OnionDataEditor.IsSetting(n.node));
-                if (targetTab != null)
-                {
-                    ChangeTabTo(targetTab);
-                }
-                else
-                {
-                    targetTab = CreateNewTab(new Tab
-                    {
-                        viewHistroy = new ViewHistroy(this, new TreeNode(OnionDataEditor.Setting))
-                        {
-                            OnHistroyChange = OnHistroyChange,
-                        },
-                    });
-                    ChangeTabTo(targetTab);
-                }
-            }
-
-            void ChangeTabToBookmark()
-            {
-                var targetTab = tabs.FirstOrDefault(n => OnionDataEditor.IsBookmark(n.node));
-                if (targetTab != null)
-                {
-                    ChangeTabTo(targetTab);
-                }
-                else
-                {
-                    targetTab = CreateNewTab(new Tab
-                    {
-                        viewHistroy = new ViewHistroy(this, OnionDataEditor.Bookmarks)
-                        {
-                            OnHistroyChange = OnHistroyChange,
-                        },
-                    });
-                    ChangeTabTo(targetTab);
-                }
-            }
-
-            //
             
 
             void OnToggleBookmark()
@@ -308,6 +243,42 @@ namespace OnionCollections.DataEditor.Editor
 
             }
 
+            void ShowViewHistroyMenu()
+            {
+                var menu = new OnionMenu();
+                
+                menu.AddLabel("Tab Histroy");
+
+                int i = 0;
+                foreach(var state in viewHistroy.histroy.Skip(1))
+                {
+                    int times = i + 1;
+                    menu.AddItem(state.DisplayName, () => 
+                    {
+                        viewHistroy.Back(times);
+                        Debug.Log(times);
+                    }, state.Icon);
+
+                    i++;
+                }
+
+                menu.Show();
+            }
+
+            void OnTabDragUpdateObject(DragUpdatedEvent e)
+            {
+                e.StopPropagation();
+
+                DragAndDrop.visualMode = DragAndDropVisualMode.Move;
+
+            }
+            void OnTabDragPerformObject(DragPerformEvent e)
+            {
+                DragAndDrop.AcceptDrag();
+
+                Object target = DragAndDrop.objectReferences[0];
+                OpenInNewTab(target);
+            }
         }
 
         void OnRebuildNode()
@@ -330,7 +301,57 @@ namespace OnionCollections.DataEditor.Editor
             OnTargetChange(treeRoot);
         }
 
+        void ChangeTabToSetting()
+        {
+            var targetTab = tabs.FirstOrDefault(n => OnionDataEditor.IsSetting(n.node));
+            if (targetTab != null)
+            {
+                ChangeTabTo(targetTab);
+            }
+            else
+            {
+                targetTab = CreateNewTab(new Tab
+                {
+                    viewHistroy = new ViewHistroy(this, new TreeNode(OnionDataEditor.Setting))
+                    {
+                        OnHistroyChange = OnHistroyChange,
+                    },
+                });
+                ChangeTabTo(targetTab);
+            }
+        }
 
+        void ChangeTabToBookmark()
+        {
+            var targetTab = tabs.FirstOrDefault(n => OnionDataEditor.IsBookmark(n.node));
+            if (targetTab != null)
+            {
+                ChangeTabTo(targetTab);
+            }
+            else
+            {
+                targetTab = CreateNewTab(new Tab
+                {
+                    viewHistroy = new ViewHistroy(this, OnionDataEditor.Bookmarks)
+                    {
+                        OnHistroyChange = OnHistroyChange,
+                    },
+                });
+                ChangeTabTo(targetTab);
+            }
+        }
+
+        //
+
+        public void AddItemsToMenu(GenericMenu menu)
+        {
+            menu.AddItem(new GUIContent("Setting"), false, ChangeTabToSetting);
+            menu.AddItem(new GUIContent("Bookmarks"), false, ChangeTabToBookmark);
+            menu.AddSeparator("");
+            menu.AddItem(new GUIContent("Layout/Tab Bar"), IsTabBarActive, () => SetTabBarActive(!IsTabBarActive));
+            menu.AddItem(new GUIContent("Layout/Inspector"), IsInspectorActive, () => SetInspectorActive(!IsInspectorActive));
+
+        }
 
         void FreshBookmarkView(TreeNode node)
         {
@@ -440,7 +461,30 @@ namespace OnionCollections.DataEditor.Editor
         {
             el.style.backgroundImage = new StyleBackground(OnionDataEditor.GetIconTexture(iconName));
         }
-        
+
+
+
+        // UI
+
+        public void OnTriggerItem(TreeNode node)
+        {
+            SelectedNode = node;
+            node.OnSelected?.Invoke();
+        }
+        public void OnDoubleClickItem(TreeNode node)
+        {
+            Action onDoubleClickAction = node.OnDoubleClick;
+            if (onDoubleClickAction != null)
+            {
+                onDoubleClickAction.Invoke();
+            }
+            else if (node.IsPseudo == false)
+            {
+                var selectionObject = node.Target;
+                EditorGUIUtility.PingObject(selectionObject);   //Ping
+            }
+        }
+
 
 
 
@@ -590,32 +634,22 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
-        // UI
-
-        public void OnTriggerItem(TreeNode node)
-        {
-            SelectedNode = node;
-            node.OnSelected?.Invoke();
-        }
-        public void OnDoubleClickItem(TreeNode node)
-        {
-            Action onDoubleClickAction = node.OnDoubleClick;
-            if (onDoubleClickAction != null)
-            {
-                onDoubleClickAction.Invoke();
-            }
-            else if(node.IsPseudo == false)
-            {
-                var selectionObject = node.Target;
-                EditorGUIUtility.PingObject(selectionObject);   //Ping
-            }
-        }
-
-
-
 
 
         //Tab
+
+
+        bool IsTabBarActive = true;
+        void SetTabBarActive(bool active)
+        {
+            if (IsTabBarActive == active)
+                return;
+
+            IsTabBarActive = active;
+
+            rootVisualElement.Q("TabContainer").ShowIf(active);
+        }
+
 
         internal class Tab
         {
@@ -625,6 +659,7 @@ namespace OnionCollections.DataEditor.Editor
             
             public VisualElement ve;
             public Image iconVe;
+            public Label labelVe;
         }
 
         readonly List<Tab> tabs = new List<Tab>();
@@ -639,18 +674,18 @@ namespace OnionCollections.DataEditor.Editor
             var container = rootVisualElement.Q("TabListContainer");
             Button ve = new Button()
                 .AddTo(container)
-                .AddClass("btn-tab")
-                .AddClass("pointer");
+                .SetFlexDirection(FlexDirection.Row)
+                .AddClass("btn-tab");
 
             ve.RegisterCallback<MouseDownEvent>(e =>
             {
                 //確保Tab分頁在1個以上時才能關閉
-                if (e.button == 1 && tabs.Count > 1)
+                if (tabs.Count > 1)
                 {
-                    var menu = new OnionMenu();
-                    menu.AddItem("Close Tab", () => { CloseTab(tab); }, OnionDataEditor.GetIconTexture("Trash"));
-
-                    menu.Show();
+                    if(e.button == 2)
+                    {
+                        CloseTab(tab);
+                    }
                 }
             });
 
@@ -664,10 +699,33 @@ namespace OnionCollections.DataEditor.Editor
                 .AddTo(ve)
                 .AddClass("btn-icon");
 
+            Label label = new Label()
+                .AddTo(ve)
+                .AddClass("btn-text");
+
+            Button closeBtn = new Button()
+                .AddTo(ve)
+                .AddClass("btn-close")
+                .AddClass("pointer");
+
+            Image closeIcon = new Image()
+                .AddTo(closeBtn);
+            closeIcon.image = OnionDataEditor.GetIconTexture("Cross");
+
+            closeBtn.clicked += () =>
+            {
+                if (tabs.Count > 1)
+                {
+                    CloseTab(tab);
+                }
+            };
+
+            label.style.unityTextAlign = new StyleEnum<TextAnchor>(TextAnchor.MiddleLeft);
+
 
             tab.ve = ve;
             tab.iconVe = icon;
-
+            tab.labelVe = label;
 
             tabs.Add(tab);
 
@@ -745,8 +803,8 @@ namespace OnionCollections.DataEditor.Editor
             var tab = CurrentTab;
             tab.node = currentNode;
 
-            tab.ve.tooltip = currentNode.displayName;
             tab.iconVe.image = currentNode.icon == null ? OnionDataEditor.GetIconTexture("Compass") : currentNode.icon;
+            tab.labelVe.text = currentNode.displayName;
         }
 
 
@@ -883,8 +941,6 @@ namespace OnionCollections.DataEditor.Editor
             TreeNode targetNode = new TreeNode(newTarget);
             window.ReplaceTarget(targetNode);
         }
-
-
 
     }
 

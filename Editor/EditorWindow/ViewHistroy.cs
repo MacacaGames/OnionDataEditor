@@ -29,6 +29,8 @@ namespace OnionCollections.DataEditor.Editor
 
             public string DisplayName { get; private set; }
 
+            public Texture Icon { get; private set; }
+
             public ViewHistroyState(Object target)
             {
                 this.target = target;
@@ -47,6 +49,7 @@ namespace OnionCollections.DataEditor.Editor
                 }
                 
                 DisplayName = node.displayName;
+                Icon = node.icon;
             }
 
             public TreeNode GetNode()
@@ -64,7 +67,7 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
-        readonly Stack<ViewHistroyState> histroy = new Stack<ViewHistroyState>();
+        public readonly Stack<ViewHistroyState> histroy = new Stack<ViewHistroyState>();
 
         public int Count => histroy.Count;
 
@@ -163,7 +166,24 @@ namespace OnionCollections.DataEditor.Editor
 
                 HistroyChange(node);
             }
+        }
 
+        public void Back(int times)
+        {
+            if (histroy.Count > times)
+            {
+                for (int i = 0; i < times; i++)
+                {
+                    histroy.Pop();
+                }
+
+                var state = histroy.Peek();
+                var node = state.GetNode();
+                window.OnTargetChange(node);
+
+
+                HistroyChange(node);
+            }
         }
 
         public void Clear()
