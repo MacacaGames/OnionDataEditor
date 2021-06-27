@@ -6,14 +6,14 @@
                 <ui:VisualElement name="oniondataeditor-icon" class="btn-icon" style="width: 16px; height: 16px; opacity: 0.05;" />
             </ui:VisualElement>
             <ui:VisualElement name="TabListContainer" style="flex-grow: 0; flex-shrink: 1;" />
-            <ui:Button name="btn-add-tab" class="btn-tab pointer" style="flex-grow: 0;">
+            <ui:Button name="btn-add-tab" tooltip="Add Tab" class="btn-tab pointer" style="flex-grow: 0;">
                 <ui:VisualElement name="btn-add-tab-icon" class="btn-icon" />
             </ui:Button>
             <ui:VisualElement style="flex-grow: 1;" />
-            <ui:Button name="btn-bookmark" class="btn-tab pointer" style="flex-grow: 0; background-color: rgba(56, 56, 56, 0);">
+            <ui:Button name="btn-bookmark" tooltip="Open Bookmarks Tab" class="btn-tab pointer" style="flex-grow: 0; background-color: rgba(56, 56, 56, 0);">
                 <ui:VisualElement name="btn-bookmark-icon" class="btn-icon" />
             </ui:Button>
-            <ui:Button name="btn-setting" class="btn-tab pointer" style="flex-grow: 0; background-color: rgba(56, 56, 56, 0);">
+            <ui:Button name="btn-setting" tooltip="Open Settings Tab" class="btn-tab pointer" style="flex-grow: 0; background-color: rgba(56, 56, 56, 0);">
                 <ui:VisualElement name="btn-setting-icon" class="btn-icon" />
             </ui:Button>
         </ui:VisualElement>

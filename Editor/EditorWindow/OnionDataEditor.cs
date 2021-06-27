@@ -138,9 +138,8 @@ namespace OnionCollections.DataEditor.Editor
             UnityEngine.Object selectObj = Selection.activeObject;
             if (selectObj != null)
             {
-                var window = EditorWindow.GetWindow<OnionDataEditorWindow>();
                 TreeNode targetNode = new TreeNode(selectObj);
-                window.OpenTarget(targetNode);
+                OnionDataEditorWindow.ShowWindow(targetNode);
             }
         }
 

@@ -17,7 +17,8 @@ namespace OnionCollections.DataEditor.Editor
 
         internal DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
         {
-            rowHeight = 22F;
+            rowHeight = 25F;
+
             isSelectChange = false;
 
             SetData(tree);
@@ -48,12 +49,8 @@ namespace OnionCollections.DataEditor.Editor
             rowList = new List<TreeViewItem>();
 
             Build(tree, rootViewItem);
-            //Build(0, tree, result);
-
 
             SetupDepthsFromParentsAndChildren(rootViewItem);
-
-            //SetupParentsAndChildrenFromDepths(root, result);
         }
 
         enum RowState { Normal, Pseudo, Error };
@@ -62,18 +59,19 @@ namespace OnionCollections.DataEditor.Editor
             GUIStyle style = new GUIStyle(GUI.skin.label)
             {
                 alignment = TextAnchor.MiddleLeft,
-                padding = new RectOffset(0, 0, 0, 3)
+                padding = new RectOffset(0, 0, 0, 3),
+                fontSize = 12,
             };
+
             switch (state)
             {
-                //一般
                 case RowState.Normal:
                     break;
-                //偽
+
                 case RowState.Pseudo:
                     style.normal.textColor = new Color(0.5F, 0.5F, 0.5F, 1F);
                     break;
-                //警告
+
                 case RowState.Error:
                     style.normal.textColor = new Color(0.85F, 0.18F, 0.18F);
                     break;

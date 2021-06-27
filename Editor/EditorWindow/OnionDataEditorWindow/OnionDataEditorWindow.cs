@@ -50,10 +50,9 @@ namespace OnionCollections.DataEditor.Editor
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
-            if (node.IsNull)
-                window.OpenTarget(OnionDataEditor.Setting.OnboardingNode);
-            else
-                window.OpenTarget(node);
+            Tab tab = window.CreateNewEmptyTab();
+            window.ChangeTabTo(tab);
+            window.ReplaceTarget(node);
 
             return window;
         }
@@ -746,6 +745,7 @@ namespace OnionCollections.DataEditor.Editor
             var tab = CurrentTab;
             tab.node = currentNode;
 
+            tab.ve.tooltip = currentNode.displayName;
             tab.iconVe.image = currentNode.icon == null ? OnionDataEditor.GetIconTexture("Compass") : currentNode.icon;
         }
 
@@ -796,6 +796,19 @@ namespace OnionCollections.DataEditor.Editor
 
 
 
+        // Internal Methods
+
+        internal static bool IsTarget(Object target)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            TreeNode node = window.CurrentTab.node;
+            
+            if (node.IsPseudo || node.IsNull)
+                return false;
+
+            return node.Target == target;
+        }
+
 
         // Public Methods
 
@@ -830,6 +843,7 @@ namespace OnionCollections.DataEditor.Editor
             window.OpenTarget(targetNode);
         }
 
+
         public static void Open(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
@@ -853,6 +867,7 @@ namespace OnionCollections.DataEditor.Editor
             TreeNode targetNode = new TreeNode(newTarget);
             window.viewHistroy.ReplaceState(targetNode);
         }
+
 
 
     }
