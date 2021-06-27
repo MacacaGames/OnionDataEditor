@@ -223,14 +223,18 @@ namespace OnionCollections.DataEditor.Editor
         {
             IEnumerable<string> keys = FilterPlayerPrefByRegexs().Select(pref => pref.Key);
 
-            foreach (var key in keys)
+            if (EditorUtility.DisplayDialog("Delet All", $"Do you want to delete {keys.Count()} prefs?", "Delete", "Cancel"))
             {
-                PlayerPrefs.DeleteKey(key);
+                foreach (var key in keys)
+                {
+                    PlayerPrefs.DeleteKey(key);
+                }
+
+                OnionDataEditorWindow.RebuildNode();
+
+                OnionDataEditorWindow.ShowNotification(new GUIContent($"There are {keys.Count()} prefs been deleted."), 1F);
             }
 
-            OnionDataEditorWindow.RebuildNode();
-
-            EditorUtility.DisplayDialog("Delet All", $"{keys.Count()} prefs have been deleted.", "OK");
         }
 
 

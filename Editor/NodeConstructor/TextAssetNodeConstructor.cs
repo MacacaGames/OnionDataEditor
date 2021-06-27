@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEditor;
 using System.IO;
 using System.Text;
+using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -20,17 +22,16 @@ namespace OnionCollections.DataEditor.Editor
             }
 
 
+            Init(target);
 
-            node.OnInspectorGUI = OnInspectorGUI;
+
+            //node.OnInspectorGUI = OnInspectorGUI;
+            node.OnInspectorVisualElementRoot = CreateInspectorRoot();
 
             node.NodeActions = new List<OnionAction>
             {
                 new OnionAction(Save, "Save"),
             };
-
-            Init(target);
-
-            //node.GetElementTree();
 
             return node;
         }
@@ -43,6 +44,62 @@ namespace OnionCollections.DataEditor.Editor
             textAsset = target as TextAsset;
             editingContent = textAsset.text;
         }
+
+
+        void Save()
+        {
+            string assetPath = AssetDatabase.GetAssetPath(textAsset).Substring("Asset/".Length);
+
+            string projectPath = Application.dataPath;
+
+            string path = $"{projectPath}{assetPath}";
+
+            try
+            {
+                File.WriteAllText(path, editingContent, Encoding.UTF8);
+
+                EditorUtility.SetDirty(textAsset);
+                AssetDatabase.Refresh();
+
+                OnionDataEditorWindow.ShowNotification(new GUIContent("Saved Success!"), 0.5F);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError(e.Message);
+            }
+        }
+
+
+        VisualElement CreateInspectorRoot()
+        {
+            VisualElement root = new VisualElement();
+
+            TextField textField = new TextField().AddTo(root);
+            textField.multiline = true;
+            textField.value = editingContent;
+
+            textField
+                .SetFlexGrow(1F)
+                .SetBorderWidth(1)
+                .SetBorderColor(new Color(0,0,0,0.3F))
+                .SetBorderRadius(6);
+
+            textField.style.fontSize = new StyleLength(13);
+
+            textField.SelectRange(0, 0);
+            textField.RegisterValueChangedCallback(n => editingContent = n.newValue);
+
+            VisualElement textInput = textField.Q("unity-text-input");
+            textInput
+                .SetPadding(12F)
+                .SetBorderWidth(0);
+
+
+            return root;
+        }
+
+
+
 
         GUIStyle textFieldGUIStyle;
         string editingContent;
@@ -64,27 +121,6 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        void Save()
-        {
-            string assetPath = AssetDatabase.GetAssetPath(textAsset).Substring("Asset/".Length);
-
-            string projectPath = Application.dataPath;
-
-            string path = $"{projectPath}{assetPath}";
-
-            try
-            {
-                File.WriteAllText(path, editingContent, Encoding.UTF8);
-
-                EditorUtility.DisplayDialog("Onion Data Editor", "Saved Success!", "OK");
-                EditorUtility.SetDirty(textAsset);
-                AssetDatabase.Refresh();
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError(e.Message);
-            }
-        }
 
 
     }

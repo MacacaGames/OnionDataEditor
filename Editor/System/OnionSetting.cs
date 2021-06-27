@@ -98,7 +98,7 @@ namespace OnionCollections.DataEditor.Editor
                             {
                                 OnDoubleClick = () =>
                                 {
-                                    OnionDataEditorWindow.Push(obj);
+                                    OnionDataEditorWindow.OpenInNewTab(obj);
                                 },
                             };
                             return n;

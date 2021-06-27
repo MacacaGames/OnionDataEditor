@@ -709,7 +709,7 @@ namespace OnionCollections.DataEditor.Editor
                 currentTabIndex = tabs.Count - 1;
             }
 
-            UpdateAllTabView();
+            ChangeTabTo(tabs[currentTabIndex]);
         }
 
         void ChangeTabTo(Tab tab)
@@ -776,10 +776,20 @@ namespace OnionCollections.DataEditor.Editor
 
         // ## NOTE ##
         // Open、Push、Replace 和 Public Methods 的三個方法是對稱的，
-        // 一個是 TreeNode 一個是 Object，都是操作 viewHistroy
+        // 一個是 TreeNode 一個是 Object，都是直接/間接操作 viewHistroy
 
         internal void OpenTarget(TreeNode newTarget)
         {
+            viewHistroy.Clear();
+            viewHistroy.PushState(newTarget);
+        }
+
+        internal void OpenTargetInNewTab(TreeNode newTarget)
+        {
+            Tab tab = CreateNewEmptyTab();
+
+            ChangeTabTo(tab);
+
             viewHistroy.Clear();
             viewHistroy.PushState(newTarget);
         }
@@ -811,6 +821,12 @@ namespace OnionCollections.DataEditor.Editor
 
 
         // Public Methods
+
+        public static void ShowNotification(GUIContent content, float fadeOutWait = 1F)
+        {
+            var window = GetWindow<OnionDataEditorWindow>();
+            ((EditorWindow)window).ShowNotification(content, fadeOutWait);
+        }
 
         public static void RebuildNode()
         {
@@ -844,28 +860,28 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        public static void Open(Object newTarget)
+        public static void OpenInNewTab(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
 
             if (newTarget == null)
-                window.OpenTarget(OnionDataEditor.Setting.OnboardingNode);
+                window.OpenTargetInNewTab(OnionDataEditor.Setting.OnboardingNode);
             else
-                window.OpenTarget(new TreeNode(newTarget));
+                window.OpenTargetInNewTab(new TreeNode(newTarget));
         }
 
         public static void Push(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
             TreeNode targetNode = new TreeNode(newTarget);
-            window.viewHistroy.PushState(targetNode);
+            window.PushTarget(targetNode);
         }
 
         public static void Replace(Object newTarget)
         {
             var window = GetWindow<OnionDataEditorWindow>();
             TreeNode targetNode = new TreeNode(newTarget);
-            window.viewHistroy.ReplaceState(targetNode);
+            window.ReplaceTarget(targetNode);
         }
 
 

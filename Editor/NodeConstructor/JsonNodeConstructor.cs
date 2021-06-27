@@ -2,16 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-//using LitJson;
 using System;
 using System.Linq;
 using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace OnionCollections.DataEditor.Editor
 {
-#if (true || ONIONDATAEDITOR_USE_JSON)
     internal class JsonNodeConstructor : NodeConstructorBase
     {
 
@@ -355,5 +352,4 @@ namespace OnionCollections.DataEditor.Editor
 
     }
 
-#endif
 }
