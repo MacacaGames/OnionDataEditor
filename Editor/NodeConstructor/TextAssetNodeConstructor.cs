@@ -30,7 +30,7 @@ namespace OnionCollections.DataEditor.Editor
 
             node.NodeActions = new List<OnionAction>
             {
-                new OnionAction(Save, "Save"),
+                new OnionAction(Save, "Save", OnionDataEditor.GetIconTexture("Save")),
             };
 
             return node;

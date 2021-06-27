@@ -194,7 +194,7 @@ namespace OnionCollections.DataEditor.Editor
         }
 
 
-        [NodeAction(actionName = "Add Random (Test)", iconName = "Edit", userTags = new[] { "OnionDataEditorDeveloper" })]
+        [NodeAction(actionName = "Add Random (Test)", iconName = "Lab", userTags = new[] { "OnionDataEditorDeveloper" })]
         void AddRandom()
         {
             int times = UnityEngine.Random.Range(1, 5);

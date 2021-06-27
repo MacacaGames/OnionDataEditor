@@ -103,3 +103,9 @@ MonoBehaviour:
   - id: Arrow_Right
     defaultIcon: {fileID: 2800000, guid: 59ec74d513d45bd4c90abe4c2c9475e6, type: 3}
     darkModeIcon: {fileID: 2800000, guid: 59ec74d513d45bd4c90abe4c2c9475e6, type: 3}
+  - id: Save
+    defaultIcon: {fileID: 2800000, guid: 1d85d98347c2c0e46893af1fa255b3a1, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 1d85d98347c2c0e46893af1fa255b3a1, type: 3}
+  - id: Lab
+    defaultIcon: {fileID: 2800000, guid: 4ac56c953d940354a9574def7a355656, type: 3}
+    darkModeIcon: {fileID: 2800000, guid: 4ac56c953d940354a9574def7a355656, type: 3}

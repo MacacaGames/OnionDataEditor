@@ -145,6 +145,7 @@
     opacity: 0.3;
     width: 18px;
     height: 18px;
+    margin-right: 2px;
 }
 
 .onion-btn.onion-icon-btn {
@@ -208,5 +209,49 @@
 }
 
 .active-tab .btn-icon {
+    opacity: 1;
+}
+
+.btn-tab-btn {
+    height: 32px;
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    width: 32px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    border-top-left-radius: 999px;
+    border-bottom-left-radius: 999px;
+    border-top-right-radius: 999px;
+    border-bottom-right-radius: 999px;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.btn-tab-btn:hover {
+    background-color: rgba(137, 137, 137, 0.1);
+}
+
+.btn-tab-btn .btn-icon {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    opacity: 0.5;
+}
+
+.btn-tab-btn:hover .btn-icon {
     opacity: 1;
 }

@@ -34,7 +34,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 string jsonText = JsonBridge.GetJsonText(root);
                 Save(jsonText);
-            }, "Save");
+            }, "Save", OnionDataEditor.GetIconTexture("Save"));
 
             node.NodeActions = new List<OnionAction> { saveAction };
 
