@@ -211,10 +211,11 @@ namespace OnionCollections.DataEditor.Editor
             get
             {
                 const string propertyTitle = "User Tags";
+                SerializedObject so = new SerializedObject(this);
 
                 if (userTagsList == null)
                 {
-                    userTagsList = new OnionReorderableList(new SerializedObject(this).FindProperty("userTags"))
+                    userTagsList = new OnionReorderableList(so.FindProperty("userTags"))
                     {
                         title = propertyTitle,
                         titleIcon = OnionDataEditor.GetIconTexture("Tag"),
@@ -226,11 +227,36 @@ namespace OnionCollections.DataEditor.Editor
                     displayName = propertyTitle,
                     icon = OnionDataEditor.GetIconTexture("Tag"),
                     OnInspectorGUI = userTagsList.OnInspectorGUI,
+                    //OnInspectorVisualElementRoot = CreateInspectorVisualElement(),
                     tags = new[] { "UserTags" },
                 };
 
 
                 return node;
+
+
+                VisualElement CreateInspectorVisualElement()
+                {
+                    VisualElement content = new VisualElement();
+
+                    //不知道為什麼ListView就是無法顯示
+                    ListView listView = new ListView()
+                    {
+                        bindingPath = "userTags",
+                        itemHeight = 30,
+                        itemsSource = userTags,
+
+
+                    }.AddTo(content);
+
+                    listView.Bind(so);
+
+                    OnionPanelVisualElement root = new OnionPanelVisualElement(propertyTitle, OnionDataEditor.GetIconTexture("Tag"), content);
+                    root.Bind(so);
+
+                    return root;
+                }
+
             }
         }
 
@@ -423,7 +449,7 @@ namespace OnionCollections.DataEditor.Editor
                         objectField.ShowIf((OnboardingPageType)(n.changedProperty.intValue) == OnboardingPageType.Custom);
                     });
 
-                    VisualElement root = GetContainer("Onboarding Page", OnionDataEditor.GetIconTexture("Edit"), content);
+                    OnionPanelVisualElement root = new OnionPanelVisualElement("Onboarding Page", OnionDataEditor.GetIconTexture("Edit"), content);
                     root.Bind(so);
 
                     return root;
@@ -452,7 +478,7 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     displayName = propertyTitle,
                     icon = OnionDataEditor.GetIconTexture("Trash"),
-                    tags = new[] { "OnboardingPage" },
+                    tags = new[] { "Other" },
                     OnInspectorVisualElementRoot = CreateOnBoardingPageOnInspector(),
                 };
 
@@ -462,20 +488,24 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     VisualElement content = new VisualElement();
 
-                    PropertyField isFullWidthField = new PropertyField()
-                    {
-                        label = "Full Width",
-                        bindingPath = "isFullWidth",
-                    }.AddTo(content);
 
+                    //Full Width
+                    OnionToggleVisualElement isFullWidthField = new OnionToggleVisualElement()
+                        {
+                            label = "Full Width",
+                            bindingPath = "isFullWidth",
+                        }
+                        .SetHeight(24F)
+                        .AddTo(content);
 
-                    isFullWidthField.RegisterValueChangeCallback(n =>
+                    isFullWidthField.RegisterValueChangedCallback(n =>
                     {
-                        bool f = n.changedProperty.boolValue;
-                        OnionDataEditorWindow.SetInspectorWidthFull(f);
+                        OnionDataEditorWindow.SetInspectorWidthFull(n.newValue);
                     });
 
-                    VisualElement root = GetContainer("Other", OnionDataEditor.GetIconTexture("Trash"), content);
+
+
+                    OnionPanelVisualElement root = new OnionPanelVisualElement("Other", OnionDataEditor.GetIconTexture("Trash"), content);
                     root.Bind(so);
 
                     return root;
@@ -486,55 +516,6 @@ namespace OnionCollections.DataEditor.Editor
 
         #endregion
 
-        VisualElement GetContainer(string title, Texture2D icon, VisualElement content)
-        {
-            VisualElement root = new VisualElement().SetFlexGrow(1);
-
-            VisualElement header = new VisualElement().AddTo(root);
-
-            new IMGUIContainer(() => DrawHeader(header.layout)).AddTo(header);
-
-            content.AddTo(root);
-
-            header.SetBorderColor(new Color(0.14F, 0.14F, 0.14F));
-            header.SetBorderWidth(1F);
-            content.SetBorderColor(new Color(0.14F, 0.14F, 0.14F));
-            content.SetBorderWidth(1F);
-            content.style.borderTopWidth = new StyleFloat(0F);
-
-            header.style.borderTopLeftRadius = new StyleLength(3F);
-            header.style.borderTopRightRadius = new StyleLength(3F);
-            content.style.borderBottomLeftRadius = new StyleLength(3F);
-            content.style.borderBottomRightRadius = new StyleLength(3F);
-
-            content.style.paddingLeft = new StyleLength(3);
-            content.style.paddingRight = new StyleLength(3);
-            content.style.paddingTop = new StyleLength(5);
-            content.style.paddingBottom = new StyleLength(5);
-
-            header.style.backgroundColor = new StyleColor(new Color(0.2F, 0.2F, 0.2F));
-            content.style.backgroundColor = new StyleColor(new Color(0.255F, 0.255F, 0.255F));
-
-            header.SetHeight(20);
-            header.style.paddingLeft = new StyleLength(5);
-
-            root.style.marginBottom = new StyleLength(10);
-
-            return root;
-
-
-            void DrawHeader(Rect rect)
-            {
-                var aRect = rect;
-                aRect.height = EditorGUIUtility.singleLineHeight;
-
-                if (icon != null)
-                {
-                    EditorGUI.LabelField(new Rect(rect.x + 0, rect.y + 1, 16, 16), new GUIContent("", icon));
-                    aRect.x += 19;
-                }
-                EditorGUI.LabelField(aRect, title);
-            }
-        }
+        
     }
 }
