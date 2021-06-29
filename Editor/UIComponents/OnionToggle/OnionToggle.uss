@@ -1,0 +1,71 @@
+
+
+.pointer *, .pointer {
+	cursor: link;
+}
+
+.onion-toggle {
+	margin: 0;
+	height: 28px;
+}
+.onion-toggle:hover {
+	background-color: rgba(0, 0, 0, 0.05);
+}
+
+.unity-label {
+	margin-left: 8px;
+}
+.unity-label:focus {
+	color: rgb(196, 196, 196);
+}
+
+.toggle-box {
+	width: 24px;
+	height: 8px;
+	background-color: rgba(255, 255, 255, 0.1);
+	border-radius: 4px;
+}
+
+.toggle-inner-box {
+	position: absolute;
+	width: 14px;
+	height: 14px;
+	background-color: rgba(128, 128, 128, 1);
+	border-radius: 7px;
+	right: 12px;
+}
+
+.onion-toggle:hover .toggle-inner-box {
+	background-color: rgba(148, 148, 148, 1);
+}
+
+.toggle-box.active {
+	
+}
+
+.toggle-inner-box.active {
+	background-color: rgba(200, 200, 200, 1);
+	right: 0;
+}
+
+.onion-toggle:hover .toggle-inner-box.active {
+	background-color: rgba(230, 230, 230, 1);
+}
+
+
+/*--------------------------------------------------*/
+
+#unity-checkmark {
+	display: none;
+}
+
+.unity-label {
+	-unity-text-align: middle-left;
+}
+
+.unity-toggle__input {
+	flex-direction: row;
+	margin-right: 8px;
+	align-items: center;
+	justify-content: flex-end;
+}

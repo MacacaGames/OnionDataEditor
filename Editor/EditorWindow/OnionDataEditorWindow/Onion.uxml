@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
     <Style src="Onion.uss" />
     <ui:VisualElement name="page-main" style="flex-grow: 1; flex-direction: column; background-color: rgb(56, 56, 56);">
-        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.2); flex-direction: row; flex-shrink: 0; flex-grow: 0; height: 36px;">
+        <ui:VisualElement name="TabContainer" style="background-color: rgba(0, 0, 0, 0.27); flex-direction: row; flex-shrink: 0; flex-grow: 0; height: 36px;">
             <ui:VisualElement style="width: 36px; height: 36px; align-items: center; justify-content: center; flex-shrink: 0;">
                 <ui:VisualElement name="oniondataeditor-icon" class="btn-icon" style="width: 20px; height: 20px; opacity: 0.1;" />
             </ui:VisualElement>

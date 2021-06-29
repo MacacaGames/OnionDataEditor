@@ -251,7 +251,7 @@ namespace OnionCollections.DataEditor.Editor
 
                     listView.Bind(so);
 
-                    OnionPanelVisualElement root = new OnionPanelVisualElement(propertyTitle, OnionDataEditor.GetIconTexture("Tag"), content);
+                    OnionPanel root = new OnionPanel(propertyTitle, OnionDataEditor.GetIconTexture("Tag"), content);
                     root.Bind(so);
 
                     return root;
@@ -449,7 +449,7 @@ namespace OnionCollections.DataEditor.Editor
                         objectField.ShowIf((OnboardingPageType)(n.changedProperty.intValue) == OnboardingPageType.Custom);
                     });
 
-                    OnionPanelVisualElement root = new OnionPanelVisualElement("Onboarding Page", OnionDataEditor.GetIconTexture("Edit"), content);
+                    OnionPanel root = new OnionPanel("Onboarding Page", OnionDataEditor.GetIconTexture("Edit"), content);
                     root.Bind(so);
 
                     return root;
@@ -464,6 +464,9 @@ namespace OnionCollections.DataEditor.Editor
 
         [SerializeField]
         public bool isFullWidth = true;
+
+        [SerializeField]
+        public bool isRowGUIActive = true;
 
 
         public TreeNode OtherNode
@@ -490,13 +493,12 @@ namespace OnionCollections.DataEditor.Editor
 
 
                     //Full Width
-                    OnionToggleVisualElement isFullWidthField = new OnionToggleVisualElement()
-                        {
-                            label = "Full Width",
-                            bindingPath = "isFullWidth",
-                        }
-                        .SetHeight(24F)
-                        .AddTo(content);
+                    OnionToggle isFullWidthField = new OnionToggle()
+                    {
+                        label = "Full Width",
+                        bindingPath = "isFullWidth",
+                    }
+                    .AddTo(content);
 
                     isFullWidthField.RegisterValueChangedCallback(n =>
                     {
@@ -504,8 +506,22 @@ namespace OnionCollections.DataEditor.Editor
                     });
 
 
+                    //Full Width
+                    OnionToggle isRowGUIActiveField = new OnionToggle()
+                    {
+                        label = "Show Row Additive GUI",
+                        bindingPath = "isRowGUIActive",
+                    }
+                    .AddTo(content);
 
-                    OnionPanelVisualElement root = new OnionPanelVisualElement("Other", OnionDataEditor.GetIconTexture("Trash"), content);
+                    isRowGUIActiveField.RegisterValueChangedCallback(n =>
+                    {
+                        OnionDataEditorWindow.SetRowGUIActive(n.newValue);
+                    });
+
+
+
+                    OnionPanel root = new OnionPanel("Other", OnionDataEditor.GetIconTexture("Trash"), content);
                     root.Bind(so);
 
                     return root;

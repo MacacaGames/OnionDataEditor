@@ -147,6 +147,18 @@ namespace OnionCollections.DataEditor.Editor
             ve.AddToClassList(className);
             return ve;
         }
+        public static T AddClassIf<T>(this T ve, string className, bool condition) where T : VisualElement
+        {
+            if (condition == true)
+            {
+                ve.AddToClassList(className);
+            }
+            else
+            {
+                ve.RemoveFromClassList(className);
+            }
+            return ve;
+        }
 
 
     }

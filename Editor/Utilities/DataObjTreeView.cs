@@ -94,7 +94,10 @@ namespace OnionCollections.DataEditor.Editor
             GUIStyle style = GetStateGUIStyle(state, args.item);
             bool hasIcon = node.icon != null;
 
-            DrawNodeRowGUI();
+            if (OnionDataEditorWindow.IsRowGUIActive)
+            {
+                DrawNodeRowGUI();
+            }
 
             DrawIcon();
 

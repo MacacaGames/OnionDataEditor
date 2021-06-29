@@ -70,6 +70,8 @@ namespace OnionCollections.DataEditor.Editor
             Init();
 
             OpenTarget(treeRoot ?? OnionDataEditor.Setting.OnboardingNode);
+
+            this.SetAntiAliasing(4);
         }
 
 
@@ -94,7 +96,7 @@ namespace OnionCollections.DataEditor.Editor
                 ChangeTabTo(tab);
             };
             SetIcon(root.Q("btn-add-tab-icon"), "Add");
-            
+
             root.Q("TabBlank").RegisterCallback<DragUpdatedEvent>(OnTabDragUpdateObject);
             root.Q("TabBlank").RegisterCallback<DragPerformEvent>(OnTabDragPerformObject);
 
@@ -120,13 +122,13 @@ namespace OnionCollections.DataEditor.Editor
             root.Q<Button>("btn-add-bookmark").clicked += OnToggleBookmark;
 
             //Bind btn-toggle-inspector
-            root.Q<Button>("btn-toggle-inspector").clicked += ()=>
+            root.Q<Button>("btn-toggle-inspector").clicked += () =>
             {
                 SetInspectorActive(true);
             };
             SetIcon(root.Q("btn-toggle-inspector-icon"), "Arrow_Right");
 
-
+            BindTitleBarDragWindow();
 
             BuildTreeView();
 
@@ -219,7 +221,7 @@ namespace OnionCollections.DataEditor.Editor
 
             //
 
-            
+
 
             void OnToggleBookmark()
             {
@@ -246,14 +248,14 @@ namespace OnionCollections.DataEditor.Editor
             void ShowViewHistroyMenu()
             {
                 var menu = new OnionMenu();
-                
+
                 menu.AddLabel("Tab Histroy");
 
                 int i = 0;
-                foreach(var state in viewHistroy.histroy.Skip(1))
+                foreach (var state in viewHistroy.histroy.Skip(1))
                 {
                     int times = i + 1;
-                    menu.AddItem(state.DisplayName, () => 
+                    menu.AddItem(state.DisplayName, () =>
                     {
                         viewHistroy.Back(times);
                         Debug.Log(times);
@@ -278,6 +280,35 @@ namespace OnionCollections.DataEditor.Editor
 
                 Object target = DragAndDrop.objectReferences[0];
                 OpenInNewTab(target);
+            }
+
+            void BindTitleBarDragWindow()
+            {
+                var ve = root.Q("TabBlank");
+
+                Vector2 startPos = Vector2.zero;
+                bool isPress = false;
+
+                ve.RegisterCallback<MouseDownEvent>(n =>
+                {
+                    isPress = true;
+                    startPos = n.mousePosition;
+                });
+                ve.RegisterCallback<MouseMoveEvent>(n =>
+                {
+                    if (isPress)
+                    {
+                        var currentPos = n.mousePosition;
+                        var delta = currentPos - startPos;
+
+                        var r = position;
+                        r.x += delta.x;
+                        r.y += delta.y;
+                        position = r;
+                    }
+                });
+                ve.RegisterCallback<MouseUpEvent>(n => isPress = false);
+                ve.RegisterCallback<MouseLeaveEvent>(n => isPress = false);
             }
         }
 
@@ -449,7 +480,7 @@ namespace OnionCollections.DataEditor.Editor
 
             UpdateActionButtonInfo(newNode);
         }
-        
+
         static bool IsSystemTarget(TreeNode node)
         {
             return
@@ -490,8 +521,7 @@ namespace OnionCollections.DataEditor.Editor
 
         // Inspector
 
-        float originInspectorWidth = 0;
-        bool IsInspectorActive = true;
+        bool IsInspectorActive { get; set; } = true;
         void SetInspectorActive(bool active)
         {
             if (IsInspectorActive == active)
@@ -534,6 +564,7 @@ namespace OnionCollections.DataEditor.Editor
 
         }
 
+        float originInspectorWidth = 0;
         internal static void SetInspectorWidthFull(bool isFullWidth)
         {
             var window = GetWindow<OnionDataEditorWindow>();
@@ -632,6 +663,11 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
+        internal static bool IsRowGUIActive { get; private set; } = true;
+        internal static void SetRowGUIActive(bool isRowGUIActive)
+        {
+            IsRowGUIActive = isRowGUIActive;
+        }
 
 
 
