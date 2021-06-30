@@ -514,12 +514,6 @@ namespace OnionCollections.DataEditor.Editor
                     }
                     .AddTo(content);
 
-                    isRowGUIActiveField.RegisterValueChangedCallback(n =>
-                    {
-                        OnionDataEditorWindow.SetRowGUIActive(n.newValue);
-                    });
-
-
 
                     OnionPanel root = new OnionPanel("Other", OnionDataEditor.GetIconTexture("Trash"), content);
                     root.Bind(so);

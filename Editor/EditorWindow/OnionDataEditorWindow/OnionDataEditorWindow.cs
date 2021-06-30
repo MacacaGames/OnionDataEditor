@@ -663,14 +663,6 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-        internal static bool IsRowGUIActive { get; private set; } = true;
-        internal static void SetRowGUIActive(bool isRowGUIActive)
-        {
-            IsRowGUIActive = isRowGUIActive;
-        }
-
-
-
 
         //Tab
 
