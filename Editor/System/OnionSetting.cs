@@ -239,15 +239,20 @@ namespace OnionCollections.DataEditor.Editor
                 {
                     VisualElement content = new VisualElement();
 
-                    //不知道為什麼ListView就是無法顯示
                     ListView listView = new ListView()
                     {
                         bindingPath = "userTags",
-                        itemHeight = 30,
-                        itemsSource = userTags,
+                        itemHeight = 24,
+                        reorderable = true,
+                        showBoundCollectionSize = false,
+                    }
+                    .AddClass("label-hidden-list")
+                    .SetFlexGrow(1F)
+                    .AddTo(content);
 
 
-                    }.AddTo(content);
+                    //必須設定高度才有辦法顯示ListView，且他無法自動撐開內容(Bug？)
+                    listView.style.minHeight = new StyleLength(80F);
 
                     listView.Bind(so);
 

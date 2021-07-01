@@ -37,4 +37,12 @@
 	padding-bottom: 5px;
 }
 
+.unity-list-view.label-hidden-list .unity-label {
+	display: none;
+}
+
+.unity-listview-item{
+	justify-content: center;
+	padding-left: 30px;
+}
 
