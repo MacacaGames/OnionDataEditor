@@ -60,6 +60,9 @@ namespace OnionCollections.DataEditor.Editor
         /// <summary>Action will be executed when node be selected.</summary>
         public Action OnSelected { get; set; }
 
+        /// <summary> Action will be executed when a node is no longer selected.</summary>
+        public Action OnDeselected { get; set; }
+        
         /// <summary>Action will be executed when node be double clicked.</summary>
         public Action OnDoubleClick { get; set; }
 
@@ -179,6 +182,7 @@ namespace OnionCollections.DataEditor.Editor
             {
                 NodeActions = Target.GetTargetActions();
                 OnSelected = Target.GetTargetOnSelectedAction();
+                OnDeselected = Target.GetTargetOnDeselectedAction();
                 OnDoubleClick = Target.GetTargetOnDoubleClickAction();
             }
 

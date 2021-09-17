@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEditor;
 using System.Reflection;
 using System.Linq;
+using Object = UnityEngine.Object;
 
 namespace OnionCollections.DataEditor.Editor
 {
@@ -143,7 +144,14 @@ namespace OnionCollections.DataEditor.Editor
             }
         }
 
-
+public static void OpenWithOnionDataEditor(Object selectObj)
+{
+    if (selectObj != null)
+    {
+        TreeNode targetNode = new TreeNode(selectObj);
+        OnionDataEditorWindow.ShowWindow(targetNode);
+    }
+}
 
         static readonly Dictionary<Type, bool?> openWithDataEditorQuery = new Dictionary<Type, bool?>();
 

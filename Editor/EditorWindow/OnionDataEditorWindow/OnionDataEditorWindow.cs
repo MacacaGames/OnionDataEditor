@@ -502,6 +502,13 @@ namespace OnionCollections.DataEditor.Editor
             SelectedNode = node;
             node.OnSelected?.Invoke();
         }
+        
+        public void OnDeselectItem(TreeNode node)
+        {
+            SelectedNode = node;
+            node.OnDeselected?.Invoke();
+        }
+        
         public void OnDoubleClickItem(TreeNode node)
         {
             Action onDoubleClickAction = node.OnDoubleClick;

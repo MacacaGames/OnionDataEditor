@@ -14,6 +14,7 @@ namespace OnionCollections.DataEditor.Editor
         TreeNode tree;
         TreeViewItem rootViewItem;
         List<TreeViewItem> rowList;
+        private int previousSelection = -1;
 
         internal DataObjTreeView(TreeNode tree, TreeViewState state) : base(state)
         {
@@ -326,7 +327,12 @@ namespace OnionCollections.DataEditor.Editor
             if (selectedIds.Count > 0)
             {
                 isSelectChange = true;
+                
+                if (previousSelection != -1 && selectedIds[0] != previousSelection) 
+                    EditorWindow.GetWindow<OnionDataEditorWindow>().OnDeselectItem(treeQuery[previousSelection]);
+                
                 EditorWindow.GetWindow<OnionDataEditorWindow>().OnTriggerItem(treeQuery[selectedIds[0]]);
+                previousSelection = selectedIds[0];
             }
         }
 
