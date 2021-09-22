@@ -3,7 +3,7 @@
 namespace OnionCollections.DataEditor.Editor
 {
     /// <summary>
-    /// If node be selected, will execute this function.
+    /// If the node has been deselected, this function will execute.
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
     public class NodeOnDeselectedAttribute : Attribute
