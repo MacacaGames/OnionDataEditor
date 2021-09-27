@@ -646,6 +646,24 @@ namespace OnionCollections.DataEditor.Editor
             }
             return null;
         }
+        
+        internal static Action GetTargetOnDeselectedAction(this Object target)
+        {
+            if (target != null)
+            {
+                var type = target.GetType();
+                var method = type.GetMethods(defaultBindingFlags).FilterWithAttribute(typeof(NodeOnDeselectedAttribute))
+                    .Where(_ => _.GetGenericArguments().Length == 0)
+                    .Select(_ => (methodInfo: _, attr: _.GetCustomAttribute<NodeOnDeselectedAttribute>()))
+                    .SingleOrDefault(_ => _.attr.userTags.Length == 0 || _.attr.userTags.Intersect(OnionDataEditor.Setting.userTags).Any())
+                    .methodInfo;
+
+                if (method != null)
+                    return new OnionAction(method, target, method.Name).action;
+            }
+
+            return null;
+        }
 
         internal static Action GetTargetOnDoubleClickAction(this Object target)
         {

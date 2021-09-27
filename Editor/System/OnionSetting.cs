@@ -43,9 +43,9 @@ namespace OnionCollections.DataEditor.Editor
         }
 
         public TreeNode OnboardingNode =>
-            (onboardingPageType == OnboardingPageType.Bookmark && customOnboardingPage != null) ?
-            OnionDataEditor.Bookmarks :
-            new TreeNode(customOnboardingPage);
+            (onboardingPageType == OnboardingPageType.Custom && customOnboardingPage != null) 
+                ? new TreeNode(customOnboardingPage) 
+                : OnionDataEditor.Bookmarks;
 
         #region Bookmark
 
